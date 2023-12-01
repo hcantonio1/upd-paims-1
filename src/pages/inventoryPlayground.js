@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "gatsby";
 
 function DataTable({ apiEndpoint, columns, caption }) {
-  const [data, setData] = useSyncExternalStore([]);
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
