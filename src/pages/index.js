@@ -4,8 +4,13 @@ import * as styles from "../styles/index.module.css";
 
 const IndexPage = () => {
   return (
-    <Layout pageTitle="Home Page">
-      <p>content for the home page here</p>
+    <Layout pageTitle="Dashboard">
+      <div>
+        <p>Hello User!</p>
+      </div>
+      <div>
+        <p>Here's the summary of the properties in your custody.</p>
+      </div>
     </Layout>
   );
 };

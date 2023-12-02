@@ -55,7 +55,6 @@ const SubmitPage = () => {
   return (
     <Layout pageTitle='Submit Form Page'>
       <main>
-        <h1>Submit Form Page</h1>
         <h2>Create a record in purchase_order, property, and item_document</h2>
         <p>Insert into supplier if it does not exist</p>
         <p>item_category untouched and item_location untouched since under the assumption the tables have complete data already and no need to update with new locations or categories.</p>
