@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, graphql, PageProps } from "gatsby";
+import { Link, graphql } from "gatsby";
 
 // DEFINE TABLES FOR QUERIES
 
@@ -64,34 +64,6 @@ function ItemCategoryTable(props) {
 // DEFINE PAGE COMPONENTS
 
 const IndexPage = ({ data }) => {
-  const handleUpdateClick = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/insertData", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          CategoryID: 12,
-          CategoryName: "switch",
-          Category_Desc: "switch",
-          LocationID: 7,
-          Building: "Test",
-          RoomNumber: 1,
-        }),
-      });
-
-      if (response.ok) {
-        console.log("Data updated successfully!");
-      } else {
-        console.error("Error updating data1:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error updating data:", error);
-    }
-  };
-  //  console.log(data);
-
   const itemCategories = data.allMysqlItemCategory.edges;
   const purchaseOrders = data.allMysqlPurchaseOrder.edges;
 
