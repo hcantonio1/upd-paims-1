@@ -133,7 +133,110 @@ app.post('/addData', (req, res) => {
       });
     });
   }
+});
 
+app.post('/updateProperty', (req, res) => {
+  const { userInput } = req.body;
+
+  connection.beginTransaction((beginTransactionErr) => {
+    if (beginTransactionErr) {
+      console.error('Error beginning transaction:', beginTransactionErr);
+      res.status(500).send('Error beginning transaction');
+      return;
+    }
+    let updatedCheck = 0;
+    if (userInput.StatusID1 != '') {
+      updateStatus();
+      updatedCheck = 1;
+    } 
+    if (userInput.LocationID1 != '') {
+      updateLocation();
+      updatedCheck = 1;
+    }
+    if (userInput.PropertySupervisorID1 != '') {
+      updateSupervisor();
+      updatedCheck = 1;
+    }
+    if (updatedCheck === 1) {
+      connection.commit((commitErr) => {
+        if (commitErr) {
+          console.error('Error committing transaction:', commitErr);
+          connection.rollback(() => {
+            res.status(500).send('Error committing transaction');
+          });
+          return;
+        }
+        console.log('Transaction committed successfully!');
+        res.status(200).send('Data inserted successfully');
+      });
+    }
+  });
+
+  function updateStatus() {
+    connection.beginTransaction((beginTransactionErr) => {
+      if (beginTransactionErr) {
+        console.error('Error beginning transaction:', beginTransactionErr);
+        res.status(500).send('Error beginning transaction');
+        return;
+      }
+  
+      const statuspropquery = `UPDATE property SET StatusID = ? WHERE PropertyID = ?`;
+      connection.query(statuspropquery, [userInput.StatusID1, userInput.PropertyID1], (statuspropQueryErr, statusPropResults) => {
+        if (statuspropQueryErr) {
+          console.error('Error updating status in property:', statuspropQueryErr);
+          connection.rollback(() => {
+            res.status(500).send('Error updating status in property:');
+          });
+          return;
+        }
+        console.log('Property status updated successfully!');
+      });
+    });
+  }
+
+  function updateLocation() {
+    connection.beginTransaction((beginTransactionErr) => {
+      if (beginTransactionErr) {
+        console.error('Error beginning transaction:', beginTransactionErr);
+        res.status(500).send('Error beginning transaction');
+        return;
+      }
+  
+      const proplocquery = `UPDATE property SET LocationID = ? WHERE PropertyID = ?`;
+      connection.query(proplocquery, [userInput.LocationID1, userInput.PropertyID1], (proplocQueryErr, proplocResults) => {
+        if (proplocQueryErr) {
+          console.error('Error updating location in property:', proplocQueryErr);
+          connection.rollback(() => {
+            res.status(500).send('Error updating location in property:');
+          });
+          return;
+        }
+        console.log('Property location updated successfully!');
+      });
+    });
+  }
+
+  function updateSupervisor() {
+    connection.beginTransaction((beginTransactionErr) => {
+      if (beginTransactionErr) {
+        console.error('Error beginning transaction:', beginTransactionErr);
+        res.status(500).send('Error beginning transaction');
+        return;
+      }
+  
+      const propsupquery = `UPDATE property SET PropertySupervisorID = ? WHERE PropertyID = ?`;
+      connection.query(propsupquery, [userInput.PropertySupervisorID1, userInput.PropertyID1], (propsupQueryErr, propsupResults) => {
+        if (propsupQueryErr) {
+          console.error('Error updating property supervisor in property:', propsupQueryErr);
+          connection.rollback(() => {
+            res.status(500).send('Error updating property supervisor in property:');
+          });
+          return;
+        }
+        console.log('Property supervisor updated successfully!');
+      });
+    });
+  }
 });
 
 app.use((err, req, res, next) => {
