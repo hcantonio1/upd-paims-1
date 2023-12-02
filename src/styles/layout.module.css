@@ -32,3 +32,26 @@ color: black;
 .main {
   display: flex;
 }
+
+.wrapper {
+  display: flex;
+  flex-flow: column wrap;
+}
+
+.midsection {
+  display:flex;
+}
+
+.main {
+  display:flex;
+  flex-flow: column wrap;
+  background-color: #e5e5e5;
+  font-family: Univers, sans-serif;
+  flex-grow: 1;
+}
+
+.main h2{
+  color: #014421;
+  font-weight: bold;
+  font-size: 35px;
+}
