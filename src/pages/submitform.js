@@ -53,7 +53,7 @@ const SubmitPage = () => {
       };
 
   return (
-    <Layout pageTitle='Submit Form Page'>
+    <Layout pageTitle='SUBMIT FORM'>
       <main>
         <h2>Create a record in purchase_order, property, and item_document</h2>
         <p>Insert into supplier if it does not exist</p>

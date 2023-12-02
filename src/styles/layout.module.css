@@ -48,6 +48,8 @@ color: black;
   background-color: #e5e5e5;
   font-family: Univers, sans-serif;
   flex-grow: 1;
+  letter-spacing: -1px;
+  max-width: 1355px;
 }
 
 .main h2{
