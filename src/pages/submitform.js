@@ -77,32 +77,31 @@ const SubmitPage = () => {
       };
 
   return (
-    <main>
-      <Layout pageTitle='Submit Form Page'>
-        <h1>Submit Form Page</h1>
-      </Layout>
-      <button onClick={handleUpdateClick}>Update item_category and item_location</button>
-      <p>Assume that the item_category, item_location, status, user and supplier tables will not be modified, meaning the inputs here for the meantime already exist in the aforementioned tables.</p>
-      <form onSubmit={handleInsert}>
-        <input type="text" name="ItemCategoryID" value={inputData.ItemCategoryID} onChange={handleInputChange} placeholder="ItemCategoryID"/>
-        <input type="text" name="DocumentNumber" value={inputData.DocumentNumber} onChange={handleInputChange} placeholder="DocumentNumber"/>
-        <input type="text" name="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} placeholder="DocumentType"/>
-        <input type="text" name="DateIssued" value={inputData.DateIssued} onChange={handleInputChange} placeholder="DateIssued"/>
-        <input type="text" name="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} placeholder="IssuedBy"/>
-        <input type="text" name="ReceivedBy" value={inputData.ReceivedBy} onChange={handleInputChange} placeholder="ReceivedBy"/>
-        <input type="text" name="Link" value={inputData.Link} onChange={handleInputChange} placeholder="Link"/>
-        <input type="text" name="LocationID" value={inputData.LocationID} onChange={handleInputChange} placeholder="LocationID"/>
-        <input type="text" name="PropertyID" value={inputData.PropertyID} onChange={handleInputChange} placeholder="PropertyID"/>
-        <input type="text" name="PropertyName" value={inputData.PropertyName} onChange={handleInputChange} placeholder="PropertyName"/>
-        <input type="text" name="StatusID" value={inputData.StatusID} onChange={handleInputChange} placeholder="StatusID"/>
-        <input type="text" name="PropertySupervisorID" value={inputData.PropertySupervisorID} onChange={handleInputChange} placeholder="PropertySupervisorID"/>
-        <input type="text" name="SupplierID" value={inputData.SupplierID} onChange={handleInputChange} placeholder="SupplierID"/>
-        <input type="text" name="PurchaseOrderID" value={inputData.PurchaseOrderID} onChange={handleInputChange} placeholder="PurchaseOrderID"/>
-        <input type="text" name="PurchaseDate" value={inputData.PurchaseDate} onChange={handleInputChange} placeholder="PurchaseDate"/>
-        <input type="text" name="TotalCost" value={inputData.TotalCost} onChange={handleInputChange} placeholder="TotalCost"/>
-        <button type="submit">Submit</button>
-      </form>
-    </main>
+    <Layout pageTitle='Submit Form Page'>
+      <main>
+        <button onClick={handleUpdateClick}>Update item_category and item_location</button>
+        <p>Assume that the item_category, item_location, status, user and supplier tables will not be modified, meaning the inputs here for the meantime already exist in the aforementioned tables.</p>
+        <form onSubmit={handleInsert}>
+          <input type="text" name="ItemCategoryID" value={inputData.ItemCategoryID} onChange={handleInputChange} placeholder="ItemCategoryID"/>
+          <input type="text" name="DocumentNumber" value={inputData.DocumentNumber} onChange={handleInputChange} placeholder="DocumentNumber"/>
+          <input type="text" name="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} placeholder="DocumentType"/>
+          <input type="text" name="DateIssued" value={inputData.DateIssued} onChange={handleInputChange} placeholder="DateIssued"/>
+          <input type="text" name="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} placeholder="IssuedBy"/>
+          <input type="text" name="ReceivedBy" value={inputData.ReceivedBy} onChange={handleInputChange} placeholder="ReceivedBy"/>
+          <input type="text" name="Link" value={inputData.Link} onChange={handleInputChange} placeholder="Link"/>
+          <input type="text" name="LocationID" value={inputData.LocationID} onChange={handleInputChange} placeholder="LocationID"/>
+          <input type="text" name="PropertyID" value={inputData.PropertyID} onChange={handleInputChange} placeholder="PropertyID"/>
+          <input type="text" name="PropertyName" value={inputData.PropertyName} onChange={handleInputChange} placeholder="PropertyName"/>
+          <input type="text" name="StatusID" value={inputData.StatusID} onChange={handleInputChange} placeholder="StatusID"/>
+          <input type="text" name="PropertySupervisorID" value={inputData.PropertySupervisorID} onChange={handleInputChange} placeholder="PropertySupervisorID"/>
+          <input type="text" name="SupplierID" value={inputData.SupplierID} onChange={handleInputChange} placeholder="SupplierID"/>
+          <input type="text" name="PurchaseOrderID" value={inputData.PurchaseOrderID} onChange={handleInputChange} placeholder="PurchaseOrderID"/>
+          <input type="text" name="PurchaseDate" value={inputData.PurchaseDate} onChange={handleInputChange} placeholder="PurchaseDate"/>
+          <input type="text" name="TotalCost" value={inputData.TotalCost} onChange={handleInputChange} placeholder="TotalCost"/>
+          <button type="submit">Submit</button>
+        </form>
+      </main>
+    </Layout>
   )
 }
 
