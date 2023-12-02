@@ -7,9 +7,17 @@ const Layout = ({ pageTitle, children }) => {
   return (
     <div>
       <Header />
-      <Navbar />
-      <h2> {pageTitle} </h2>
-      <div className="content">{children}</div>
+
+      <main>
+        <aside>
+          <Navbar />
+        </aside>
+        <section>
+          <h2> {pageTitle} </h2>
+          <div className="content">{children}</div>
+        </section>
+      </main>
+
       <footer>
         <p>Copyright 2023 Team COLA</p>
       </footer>
