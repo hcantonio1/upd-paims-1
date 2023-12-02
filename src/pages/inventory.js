@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Link, graphql } from "gatsby";
+import Layout from "../components/layout";
 
 // DEFINE TABLES FOR QUERIES
 
@@ -63,73 +64,71 @@ function ItemCategoryTable(props) {
 
 // DEFINE PAGE COMPONENTS
 
-const IndexPage = ({ data }) => {
+const InventoryPage = ({ data }) => {
   const itemCategories = data.allMysqlItemCategory.edges;
   const purchaseOrders = data.allMysqlPurchaseOrder.edges;
 
   return (
-    <main>
-      <h1>Inventory Page</h1>
-      <Link to="/about">About</Link>
-      <br />
-      <Link to="/">Back to Home</Link>
-      <Link to="/inventoryPlayground">Playground</Link>
+    <Layout pageTitle="Inventory Page">
+      <main>
+        <Link to="/inventoryPlayground">Playground</Link>
 
-      <div>
-        <h1>ItemCategory Information:</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            {itemCategories.map(({ node }) => (
-              <tr key={node.CategoryID}>
-                <td>{node.CategoryID}</td>
-                <td>{node.CategoryName}</td>
-                <td>{node.Category_Desc}</td>
+        <div>
+          <h1>ItemCategory Information:</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {itemCategories.map(({ node }) => (
+                <tr key={node.CategoryID}>
+                  <td>{node.CategoryID}</td>
+                  <td>{node.CategoryName}</td>
+                  <td>{node.Category_Desc}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      <div>
-        <h1>Purchase Order Information:</h1>
-        <table>
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Property ID</th>
-              <th>Supplier ID</th>
-              <th>Purchase Date</th>
-              <th>Total Cost</th>
-            </tr>
-          </thead>
-          <tbody>
-            {purchaseOrders.map(({ node }) => (
-              <tr key={node.PropertyID}>
-                <td>{node.PurchaseOrderID}</td>
-                <td>{node.PropertyID}</td>
-                <td>{node.SupplierID}</td>
-                <td>{node.PurchaseDate}</td>
-                <td>{node.TotalCost}</td>
+        <div>
+          <h1>Purchase Order Information:</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Property ID</th>
+                <th>Supplier ID</th>
+                <th>Purchase Date</th>
+                <th>Total Cost</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {purchaseOrders.map(({ node }) => (
+                <tr key={node.PropertyID}>
+                  <td>{node.PurchaseOrderID}</td>
+                  <td>{node.PropertyID}</td>
+                  <td>{node.SupplierID}</td>
+                  <td>{node.PurchaseDate}</td>
+                  <td>{node.TotalCost}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      <div>
-        <PurchaseOrderTable purchaseOrders={purchaseOrders} />
-      </div>
-      <div>
-        <ItemCategoryTable itemCategories={itemCategories} />
-      </div>
-    </main>
+        <div>
+          <PurchaseOrderTable purchaseOrders={purchaseOrders} />
+        </div>
+        <div>
+          <ItemCategoryTable itemCategories={itemCategories} />
+        </div>
+      </main>
+    </Layout>
   );
 };
 
@@ -162,7 +161,7 @@ export const data = graphql`
 `;
 
 // You'll learn about this in the next task, just copy it for now
-export const Head = () => <title>Home Page</title>;
+export const Head = () => <title>Inventory Page</title>;
 
 // Step 3: Export your component
-export default IndexPage;
+export default InventoryPage;

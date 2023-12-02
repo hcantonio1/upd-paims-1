@@ -4,9 +4,14 @@ import Seo from "../components/seo";
 
 const AboutPage = () => {
   return (
-    <Layout pageTitle="About Me">
+    <Layout pageTitle="PAIMS">
       <p>
-        Hi there! I'm the proud creator of this site, which I built with Gatsby.
+        Properties, Accountabilities Inventory Management System keeps track of
+        the properties of the College of Engineering UPD.
+      </p>
+      <p>
+        A project of Team COLA under M?s. Ligaya Figueroa in CS 191-192 Software
+        Engineering course.
       </p>
     </Layout>
   );

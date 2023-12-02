@@ -44,7 +44,7 @@ function DataTable({ apiEndpoint, columns, caption }) {
   );
 }
 
-const IndexPage = () => {
+const InventoryPlaygroundPage = () => {
   const itemCategoryColumns = [
     { key: "CategoryID", label: "BITCH SID" },
     { key: "CategoryName", label: "Name" },
@@ -68,4 +68,4 @@ const IndexPage = () => {
   );
 };
 
-export default IndexPage;
+export default InventoryPlaygroundPage;

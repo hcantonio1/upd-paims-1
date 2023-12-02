@@ -1,20 +1,22 @@
-// Step 1: Import React
 import * as React from "react";
 import Layout from "../components/layout";
 import * as styles from "../styles/index.module.css";
 
 const IndexPage = () => {
   return (
-    <Layout pageTitle="HOME">
-      <p>content for the home page here</p>
+    <Layout pageTitle="Dashboard">
+      <div>
+        <p>Hello User!</p>
+      </div>
+      <div>
+        <p>Here's the summary of the properties in your custody.</p>
+      </div>
     </Layout>
   );
 };
 
-// You'll learn about this in the next task, just copy it for now
 export const Head = () => <title>Home Page</title>;
 
-// Step 3: Export your component
 export default IndexPage;
 
 /*
