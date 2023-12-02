@@ -144,33 +144,47 @@ app.post('/updateProperty', (req, res) => {
       res.status(500).send('Error beginning transaction');
       return;
     }
+
     let updatedCheck = 0;
-    if (userInput.StatusID1 != '') {
-      updateStatus();
-      updatedCheck = 1;
-    } 
-    if (userInput.LocationID1 != '') {
-      updateLocation();
-      updatedCheck = 1;
-    }
-    if (userInput.PropertySupervisorID1 != '') {
-      updateSupervisor();
-      updatedCheck = 1;
-    }
-    if (updatedCheck === 1) {
-      connection.commit((commitErr) => {
-        if (commitErr) {
-          console.error('Error committing transaction:', commitErr);
-          connection.rollback(() => {
-            res.status(500).send('Error committing transaction');
-          });
-          return;
+    const propertyexistquery = `SELECT * FROM property WHERE PropertyID = ?`;
+    connection.query(propertyexistquery, [userInput.PropertyID1], (err, results) => {
+      if (err) {
+        console.error('Error querying the database:', err);
+        res.status(500).send('Error querying the database');
+        return;
+      }
+      //check first if propertyid is present in table
+      if (results.length > 0) {
+        if (userInput.StatusID1 != '') {
+          updateStatus();
+          updatedCheck = 1;
+        } 
+        if (userInput.LocationID1 != '') {
+          updateLocation();
+          updatedCheck = 1;
         }
-        console.log('Transaction committed successfully!');
-        res.status(200).send('Data inserted successfully');
+        if (userInput.PropertySupervisorID1 != '') {
+          updateSupervisor();
+          updatedCheck = 1;
+        }
+        if (updatedCheck === 1) {
+          connection.commit((commitErr) => {
+            if (commitErr) {
+              console.error('Error committing transaction:', commitErr);
+              connection.rollback(() => {
+                res.status(500).send('Error committing transaction');
+              });
+              return;
+            }
+            console.log('Transaction committed successfully!');
+            res.status(200).send('Data inserted successfully');
+          });
+        }
+      } else {
+          console.log('Property does not exist!');
+        };
       });
-    }
-  });
+    });
 
   function updateStatus() {
     connection.beginTransaction((beginTransactionErr) => {
