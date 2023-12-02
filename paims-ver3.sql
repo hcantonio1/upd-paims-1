@@ -116,7 +116,8 @@ CREATE TABLE `property` (
   `SupplierID` int NOT NULL,
   `LocationID` int NOT NULL,
   `CategoryID` int NOT NULL,
-  `DocumentID` varchar(20) DEFAULT NULL,
+  `DocumentID` varchar(20) NOT NULL,
+  `ArchiveStatus` int NOT NULL,
   PRIMARY KEY (`PropertyID`),
   UNIQUE KEY `PropertyID_UNIQUE` (`PropertyID`),
   KEY `ItemCategoryID_idx` (`CategoryID`),
@@ -140,7 +141,7 @@ CREATE TABLE `property` (
 
 LOCK TABLES `property` WRITE;
 /*!40000 ALTER TABLE `property` DISABLE KEYS */;
-INSERT INTO `property` VALUES (318530,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020'),(318531,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020'),(318532,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020'),(318533,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020'),(318534,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020'),(318535,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020'),(318536,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020');
+INSERT INTO `property` VALUES (318530,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020',1),(318531,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020',1),(318532,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020',1),(318533,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020',1),(318534,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020',1),(318535,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020',1),(318536,'Chair Conference',1,2,40213,1,4,'IRRUP-2022-020',1);
 /*!40000 ALTER TABLE `property` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -270,4 +271,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-02 20:55:43
+-- Dump completed on 2023-12-02 21:26:26
