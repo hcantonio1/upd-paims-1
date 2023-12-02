@@ -31,6 +31,17 @@ const SubmitPage = () => {
         TotalCost: ''
       });
 
+      const [updateData, setUpdateData] = useState({
+        SupplierContact1: '',
+        UnitNumber1: '',
+        StreetNumber1: '',
+        City1: '',
+        State1: '',
+        StatusID1: '',
+        PropertySupervisorID1: '',
+        LocationID1: '',
+      });
+
       const handleInsert = async (e) => {
         e.preventDefault();
     
@@ -45,12 +56,33 @@ const SubmitPage = () => {
         }
       };
 
+      const handleUpdate = async (e) => {
+        e.preventDefault();
+    
+        try {
+          const response = await axios.post('http://localhost:3000/updateData', {
+            userInput: updateData
+          });
+    
+          console.log(response.data); // Success message
+        } catch (error) {
+          console.error('Error cannot access:', error);
+        }
+      };
+
       const handleInputChange = (e) => {
         setInputData({
           ...inputData,
           [e.target.name]: e.target.value
         });
       };
+
+      const handleUpdateChange = (e) => {
+        setUpdateData({
+          ...updateData,
+          [e.target.name]: e.target.value
+        });
+      }
 
   return (
     <Layout pageTitle='Submit Form Page'>
@@ -89,6 +121,26 @@ const SubmitPage = () => {
           </div>
           <button type="submit">Submit</button>
         </form>
+        <h2>Update a record in property or supplier</h2>
+        <p>Fields that may be updated are: StatusID, LocationID, PropertySupervisorID, SupplierContact, UnitNumber, StreetName, City, State</p>
+        <p>Others pretty much untouched since they are dates, prices, etc.</p>
+        <form onSubmit={handleUpdate}>
+          <div>
+            <p>Update Supplier</p>
+            <input type="text" name="SupplierContact1" value={updateData.SupplierContact1} onChange={handleUpdateChange} placeholder="Contact Number"/>
+            <input type="text" name="UnitNumber1" value={updateData.UnitNumber1} onChange={handleUpdateChange} placeholder="Unit Number"/>
+            <input type="text" name="StreetName1" value={updateData.StreetName1} onChange={handleUpdateChange} placeholder="Street Name"/>
+            <input type="text" name="City1" value={updateData.City1} onChange={handleUpdateChange} placeholder="City"/>
+            <input type="text" name="State1" value={updateData.State1} onChange={handleUpdateChange} placeholder="State"/>
+          </div>
+          <div>
+            <p>Update Property</p>
+            <input type="text" name="StatusID1" value={updateData.StatusID1} onChange={handleUpdateChange} placeholder="Status"/>
+            <input type="text" name="PropertySupervisorID1" value={updateData.PropertySupervisorID1} onChange={handleUpdateChange} placeholder="Property Supervisor ID"/>
+            <input type="text" name="LocationID1" value={updateData.LocationID1} onChange={handleUpdateChange} placeholder="Location ID"/>
+          </div>
+          <button type="submit">Submit</button>
+        </form>
       </main>
     </Layout>
   )
@@ -99,3 +151,9 @@ export const Head = () => <title>Submit Form</title>
 
 // Step 3: Export your component
 export default SubmitPage
+
+//personal notes
+//current problems with adding record:
+  //lengthy process if doing it one by one per property
+//current problems with updating record:
+  //
