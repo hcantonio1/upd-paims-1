@@ -1,10 +1,11 @@
 import React from "react";
-import { StaticImage } from "gatsby-plugin-image";
+import { StaticImage } from "gatsby-plugin-image"
+import * as styles from "../styles/header.module.css"
 
 const Header = () => {
   return (
-    <header className="header">
-      <div className="logo">
+    <header className={styles.header}>
+      <div className={styles.box}>
         <StaticImage
           alt="Logo"
           src="https://upload.wikimedia.org/wikipedia/en/5/5a/UP_Diliman_Engineering_Logo.png"
