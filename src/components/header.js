@@ -9,8 +9,8 @@ const Header = () => {
         alt="Logo"
         src="https://upload.wikimedia.org/wikipedia/en/5/5a/UP_Diliman_Engineering_Logo.png"
       />
-      <h2 className={styles.h2}>Properties, Accountabilites and&nbsp;Inventory Management System</h2>
-      {/* <div className={styles.rectangle} /> */}
+      <h2 className={styles.title}>Properties, Accountabilites and&nbsp;Inventory Management System</h2>
+      <button className={styles.logoutbutton}> Log Out </button>
     </header>
   );
 };

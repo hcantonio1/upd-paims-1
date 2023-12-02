@@ -5,7 +5,7 @@ import styles from "../styles/layout.module.css"
 
 const Layout = ({ pageTitle, children }) => {
   return (
-    <div className="layout">
+    <div>
       <Header />
       <Navbar />
       <h2> {pageTitle} </h2>
