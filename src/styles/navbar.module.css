@@ -1,0 +1,22 @@
+.navcontainer {
+  display: flex;
+  flex-direction: column;
+  font-family: Univers, sans-serif;
+  color: #e5e5e5;
+}
+
+.navcontainer:link {
+  text-decoration: none;
+}
+
+.navcontainer:visited {
+  text-decoration: none;
+}
+
+.navcontainer:hover {
+  text-decoration: none;
+}
+
+.navcontainer:active {
+  text-decoration: none;
+}

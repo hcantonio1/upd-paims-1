@@ -1,14 +1,13 @@
 // Step 1: Import React
 import * as React from "react";
 import Layout from "../components/layout";
+import * as styles from "../styles/index.module.css";
 
 const IndexPage = () => {
   return (
-    <main>
-      <Layout pageTitle="Home Page">
-        <p>content for the home page here</p>
-      </Layout>
-    </main>
+    <Layout pageTitle="Home Page">
+      <p>content for the home page here</p>
+    </Layout>
   );
 };
 

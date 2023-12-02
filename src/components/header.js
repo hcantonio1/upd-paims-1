@@ -11,6 +11,8 @@ const Header = () => {
       />
       <h2 className={styles.title}>Properties, Accountabilites and&nbsp;Inventory Management System</h2>
       <button className={styles.logoutbutton}> Log Out </button>
+      <div className={styles.green_rectangle}/>
+      <div className={styles.yellow_rectangle}/>
     </header>
   );
 };
