@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Link, graphql } from "gatsby";
 import Layout from "../components/layout";
 import * as styles from "../styles/index.module.css";
 
@@ -11,6 +12,7 @@ const IndexPage = () => {
       <div>
         <p>Here's the summary of the properties in your custody.</p>
       </div>
+      <PropertiesTable />
     </Layout>
   );
 };
@@ -18,6 +20,45 @@ const IndexPage = () => {
 export const Head = () => <title>Home Page</title>;
 
 export default IndexPage;
+
+function PropertiesTable(props) {
+  // const propertyData = graphql`
+  //   query MyQuery {
+  //     allMysqlProperty(sort: { PropertyID: ASC }) {
+  //       edges {
+  //         node {
+  //           PropertyID
+  //           PropertyName
+  //           StatusID
+  //           PropertySupervisorID
+  //           LocationID
+  //           ItemCategoryID
+  //           SupplierID
+  //         }
+  //       }
+  //     }
+  //   }
+  // `;
+
+  // const properties = propertyData.allMysqlProperty.edges;
+  return (
+    <table>
+      <caption>Property</caption>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>StatusID</th>
+          <th>PropertySupervisorID</th>
+          <th>LocationID</th>
+          <th>ItemCategoryID</th>
+          <th>SupplierID</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  );
+}
 
 /*
 import * as React from "react"
