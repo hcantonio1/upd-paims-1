@@ -63,7 +63,7 @@ function ItemCategoryTable(props) {
 
 // DEFINE PAGE COMPONENTS
 
-const IndexPage = ({ data }) => {
+const InventoryPage = ({ data }) => {
   const itemCategories = data.allMysqlItemCategory.edges;
   const purchaseOrders = data.allMysqlPurchaseOrder.edges;
 
@@ -162,7 +162,7 @@ export const data = graphql`
 `;
 
 // You'll learn about this in the next task, just copy it for now
-export const Head = () => <title>Home Page</title>;
+export const Head = () => <title>Inventory Page</title>;
 
 // Step 3: Export your component
-export default IndexPage;
+export default InventoryPage;
