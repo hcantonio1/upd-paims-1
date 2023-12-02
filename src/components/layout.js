@@ -1,14 +1,14 @@
 import * as React from "react";
 import Navbar from "../components/navbar";
-import Header from "./header";
-import styles from "../styles/layout.module.css"
+import Header from "./header"
+import * as styles from "../styles/layout.module.css"
 
 const Layout = ({ pageTitle, children }) => {
   return (
     <div>
       <Header />
 
-      <main>
+      <main className={styles.main}>
         <aside>
           <Navbar />
         </aside>

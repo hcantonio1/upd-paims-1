@@ -29,3 +29,6 @@ color: black;
   margin: 3rem 0;
 }
 
+.main {
+  display: flex;
+}

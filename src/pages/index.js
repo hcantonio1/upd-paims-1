@@ -5,13 +5,9 @@ import * as styles from "../styles/index.module.css";
 
 const IndexPage = () => {
   return (
-    <html>
-      <body className={styles.bodyobject}>
-        <Layout pageTitle="Home Page">
-          <p>content for the home page here</p>
-        </Layout>
-      </body>
-    </html>
+    <Layout pageTitle="Home Page">
+      <p>content for the home page here</p>
+    </Layout>
   );
 };
 
