@@ -11,6 +11,10 @@
   text-decoration: none;
   color: #e5e5e5;
   font-weight: bold;
+  margin-top: 10px;
+  margin-right: 25px;
+  margin-bottom: 10px;
+  margin-left: 25px;
 }
 
 .navcontainer:visited {

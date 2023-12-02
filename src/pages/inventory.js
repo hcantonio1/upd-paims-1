@@ -69,7 +69,7 @@ const InventoryPage = ({ data }) => {
   const purchaseOrders = data.allMysqlPurchaseOrder.edges;
 
   return (
-    <Layout pageTitle="Inventory Page">
+    <Layout pageTitle="INVENTORY">
       <main>
         <Link to="/inventoryPlayground">Playground</Link>
 

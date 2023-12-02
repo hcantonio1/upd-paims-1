@@ -17,7 +17,7 @@ const Layout = ({ pageTitle, children }) => {
 
             <article className={styles.main}>
               <h2> {pageTitle} </h2>
-              <div className="content">{children}</div>
+              <div>{children}</div>
             </article>
           </div>
           <footer>
