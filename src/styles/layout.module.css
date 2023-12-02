@@ -54,4 +54,15 @@ color: black;
   color: #014421;
   font-weight: bold;
   font-size: 35px;
+  margin-top: 10px;
+  margin-right: 25px;
+  margin-bottom: 10px;
+  margin-left: 25px;
+}
+
+.main div {
+  margin-top: 10px;
+  margin-right: 25px;
+  margin-bottom: 10px;
+  margin-left: 25px;
 }
