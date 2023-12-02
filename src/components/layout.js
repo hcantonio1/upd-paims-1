@@ -5,23 +5,27 @@ import * as styles from "../styles/layout.module.css"
 
 const Layout = ({ pageTitle, children }) => {
   return (
-    <div>
-      <Header />
+    <html>
+      <body>
+        <div className={styles.wrapper}>
 
-      <main className={styles.main}>
-        <aside>
-          <Navbar />
-        </aside>
-        <section>
-          <h2> {pageTitle} </h2>
-          <div className="content">{children}</div>
-        </section>
-      </main>
+          <Header />
+          <div className={styles.midsection}>
+            <aside>
+              <Navbar />
+            </aside>
 
-      <footer>
-        <p>Copyright 2023 Team COLA</p>
-      </footer>
-    </div>
+            <article className={styles.main}>
+              <h2> {pageTitle} </h2>
+              <div className="content">{children}</div>
+            </article>
+          </div>
+          <footer>
+            <p>Copyright 2023 Team COLA</p>
+          </footer>
+        </div>
+      </body>
+    </html>
   );
 };
 

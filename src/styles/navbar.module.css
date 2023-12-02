@@ -3,10 +3,14 @@
   flex-direction: column;
   font-family: Univers, sans-serif;
   color: #e5e5e5;
+  background-color: white;
+  flex-grow: 1;
 }
 
-.navcontainer:link {
+.navcontainer a {
   text-decoration: none;
+  color: #e5e5e5;
+  font-weight: bold;
 }
 
 .navcontainer:visited {

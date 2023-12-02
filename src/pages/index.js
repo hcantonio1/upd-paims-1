@@ -5,7 +5,7 @@ import * as styles from "../styles/index.module.css";
 
 const IndexPage = () => {
   return (
-    <Layout pageTitle="Home Page">
+    <Layout pageTitle="HOME">
       <p>content for the home page here</p>
     </Layout>
   );
