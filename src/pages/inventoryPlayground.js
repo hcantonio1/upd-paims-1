@@ -36,24 +36,68 @@ const InventoryPlaygroundPage = () => {
     { key: 'Category_Desc', label: 'Description' },
   ];
 
-  const [data, setData] = useState([]);
+  const PropertyColumns = [
+    { key: 'PropertyID', label: 'PropertyID' },
+    { key: 'PropertyName', label: 'PropertyName' },
+    { key: 'StatusID', label: 'StatusID' },
+    { key: 'PropertySupervisorID', label: 'PropertySupervisorID' },
+    { key: 'SupplierID', label: 'SupplierID' },
+    { key: 'LocationID', label: 'LocationID' },
+    { key: 'CategoryID', label: 'CategoryID' },
+    { key: 'DocumentID', label: 'DocumentID' },
+    { key: 'ArchiveStatus', label: 'ArchiveStatus' },
+  ];
+
+
+
+  // const [data, setData] = useState([]);
+
+  const [itemCategoryData, setItemCategoryData] = useState([]);
+  const [propertyData, setPropertyData] = useState([]);
+
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchItemCategoryData = async () => {
       try {
         const response = await fetch('http://localhost:3000/item_category');
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const result = await response.json();
-        setData(result.data || []); // Assuming the data is nested under the 'data' property
+        setItemCategoryData(result.data || []);
       } catch (error) {
-        console.error('Error fetching data:', error.message);
+        console.error('Error fetching item category data:', error.message);
       }
     };
 
-    fetchData();
+    const fetchPropertyData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/property');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const result = await response.json();
+        setPropertyData(result.data || []);
+      } catch (error) {
+        console.error('Error fetching property data:', error.message);
+      }
+    };
+
+    // Fetch data for both item category and property
+    fetchItemCategoryData();
+    fetchPropertyData();
   }, []); // Empty dependency array ensures the effect runs only once on component mount
+
+
+
+
+
+
+
+
+
+
+
 
   return (
     <main>
@@ -62,9 +106,16 @@ const InventoryPlaygroundPage = () => {
       <Link to="/inventory">Inventory</Link>
       <div>
         <DataTable
-          data={data}
+          data={itemCategoryData}
           columns={itemCategoryColumns}
           caption="ItemCategory Information"
+        />
+      </div>
+      <div>
+        <DataTable
+          data={propertyData}
+          columns={PropertyColumns}
+          caption="Property Information"
         />
       </div>
     </main>

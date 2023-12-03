@@ -4,76 +4,76 @@ import Layout from "./layout";
 
 // DEFINE TABLES FOR QUERIES
 
-function PurchaseOrderTable(props) {
-  const { purchaseOrders } = props;
+// function PurchaseOrderTable(props) {
+//   const { purchaseOrders } = props;
 
-  return (
-    <table>
-      <caption>Purchase Orders</caption>
-      <thead>
-        <tr>
-          <th>Purchase Order ID</th>
-          <th>Property ID</th>
-          <th>Supplier ID</th>
-          <th>Purchase Date</th>
-          <th>Total Cost</th>
-        </tr>
-      </thead>
-      <tbody>
-        {purchaseOrders.map((order) => (
-          <tr key={order.node.PurchaseOrderID}>
-            <td>{order.node.PurchaseOrderID}</td>
-            <td>{order.node.PropertyID}</td>
-            <td>{order.node.SupplierID}</td>
-            <td>{order.node.PurchaseDate}</td>
-            <td>{order.node.TotalCost}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
+//   return (
+//     <table>
+//       <caption>Purchase Orders</caption>
+//       <thead>
+//         <tr>
+//           <th>Purchase Order ID</th>
+//           <th>Property ID</th>
+//           <th>Supplier ID</th>
+//           <th>Purchase Date</th>
+//           <th>Total Cost</th>
+//         </tr>
+//       </thead>
+//       <tbody>
+//         {purchaseOrders.map((order) => (
+//           <tr key={order.node.PurchaseOrderID}>
+//             <td>{order.node.PurchaseOrderID}</td>
+//             <td>{order.node.PropertyID}</td>
+//             <td>{order.node.SupplierID}</td>
+//             <td>{order.node.PurchaseDate}</td>
+//             <td>{order.node.TotalCost}</td>
+//           </tr>
+//         ))}
+//       </tbody>
+//     </table>
+//   );
+// }
 
-function ItemCategoryTable(props) {
-  const { itemCategories } = props;
+// function ItemCategoryTable(props) {
+//   const { itemCategories } = props;
 
-  return (
-    <table>
-      <caption>Item Category</caption>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        {itemCategories.map((item) => (
-          <tr key={item.node.CategoryID}>
-            <td>{item.node.CategoryID}</td>
-            <td>{item.node.CategoryName}</td>
-            <td>{item.node.Category_Desc}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
+//   return (
+//     <table>
+//       <caption>Item Category</caption>
+//       <thead>
+//         <tr>
+//           <th>ID</th>
+//           <th>Name</th>
+//           <th>Description</th>
+//         </tr>
+//       </thead>
+//       <tbody>
+//         {itemCategories.map((item) => (
+//           <tr key={item.node.CategoryID}>
+//             <td>{item.node.CategoryID}</td>
+//             <td>{item.node.CategoryName}</td>
+//             <td>{item.node.Category_Desc}</td>
+//           </tr>
+//         ))}
+//       </tbody>
+//     </table>
+//   );
+// }
 
 //
 
 // DEFINE PAGE COMPONENTS
 
 const InventoryPage = ({ data }) => {
-  const itemCategories = data.allMysqlItemCategory.edges;
-  const purchaseOrders = data.allMysqlPurchaseOrder.edges;
+  // const itemCategories = data.allMysqlItemCategory.edges;
+  // const purchaseOrders = data.allMysqlPurchaseOrder.edges;
 
   return (
     <Layout pageTitle="INVENTORY">
       <main>
         <Link to="/inventoryPlayground">Playground</Link>
 
-        <div>
+        {/* <div>
           <h1>ItemCategory Information:</h1>
           <table>
             <thead>
@@ -126,7 +126,7 @@ const InventoryPage = ({ data }) => {
         </div>
         <div>
           <ItemCategoryTable itemCategories={itemCategories} />
-        </div>
+        </div> */}
       </main>
     </Layout>
   );
