@@ -24,6 +24,44 @@ connection.connect((err) => {
   console.log('Connected to MySQL!');
 });
 
+
+// CHANGES FOR INVENTORY STARTING HERE
+
+app.get('/', (req, res) => {
+  res.send('Hello, World!'); // Replace this with your desired response
+});
+
+
+
+
+app.get('/property', (req, res) => {
+  connection.query('SELECT * FROM property', (error, results, fields) => {
+    if (error) {
+      console.error('Error executing property query:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+    res.json({ data: results });
+  });
+});
+
+app.get('/item_category', (req, res) => {
+  connection.query('SELECT * FROM item_category', (error, results, fields) => {
+    if (error) {
+      console.error('Error executing item_category query:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+    res.json({ data: results });
+  });
+});
+
+
+
+
+// CHANGES DONE
+
+
 app.post('/addData', (req, res) => {
   const { userInput } = req.body;
 
@@ -251,6 +289,12 @@ app.post('/updateProperty', (req, res) => {
       });
     });
   }
+});
+
+process.on('SIGINT', () => {
+  connection.end();
+  console.log('Connection closed');
+  process.exit();
 });
 
 app.use((err, req, res, next) => {
