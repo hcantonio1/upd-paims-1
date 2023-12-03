@@ -3,6 +3,9 @@ import Layout from "./layout";
 import { navigate } from "gatsby";
 import { handleLogin, isLoggedIn } from "../services/auth";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 class Login extends React.Component {
   state = {
     username: ``,

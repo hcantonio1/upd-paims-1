@@ -1,3 +1,4 @@
+import { navigate } from "gatsby";
 import { app } from "../firebase-config";
 import {
   getAuth,
@@ -18,20 +19,22 @@ const setUser = (user) =>
 export const handleLogin = ({ username, password }) => {
   const authentication = getAuth();
   const email = username;
-  signInWithEmailAndPassword(authentication, email, password).then(
-    (response) => {
+  signInWithEmailAndPassword(authentication, email, password)
+    .then((response) => {
       sessionStorage.setItem(
         "Auth Token",
         response._tokenResponse.refreshToken
       );
-      return setUser({
+      setUser({
         username: `paims`,
         name: `upd paims`,
         email: email,
       });
-    }
-  );
-  return false;
+      navigate(`/app/home`);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
 
 export const isLoggedIn = () => {
