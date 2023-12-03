@@ -23,7 +23,7 @@ export default function NavBar() {
       <nav>
         <Link to="/app/home/">Home</Link>
         {` `}
-        <Link to="/app/profile/">Profile</Link>
+        <Link to="/app/acount/">Profile</Link>
         {` `}
         <Link to="/">Logout</Link>
         {isLoggedIn() ? (

@@ -12,7 +12,7 @@ export default function Home() {
         {isLoggedIn() ? (
           <>
             You are logged in, so check your{" "}
-            <Link to="/app/profile">profile</Link>
+            <Link to="/app/account">profile</Link>
           </>
         ) : (
           <>

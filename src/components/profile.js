@@ -3,7 +3,7 @@ import Layout from "./layout";
 import { getUser } from "../services/auth";
 
 const Profile = () => (
-  <Layout>
+  <Layout pageTitle="Account">
     <h1>Your profile</h1>
     <ul>
       <li>Name: {getUser().name}</li>
