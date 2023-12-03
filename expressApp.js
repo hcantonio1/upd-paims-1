@@ -253,6 +253,12 @@ app.post('/updateProperty', (req, res) => {
   }
 });
 
+process.on('SIGINT', () => {
+  connection.end();
+  console.log('Connection closed');
+  process.exit();
+});
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
