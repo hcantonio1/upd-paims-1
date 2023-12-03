@@ -11,6 +11,7 @@ const Navbar = () => {
         <Link to="/app/submitform">Submit Form</Link>
         <Link to="/app/about">About</Link>
         <Link to="/app/account">Account</Link>
+        <Link to="/app/home">How to Use PAIMS</Link>
       </div>
     </nav>
   );
