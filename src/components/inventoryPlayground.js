@@ -49,11 +49,31 @@ const InventoryPlaygroundPage = () => {
   ];
 
 
+  const InventoryColumns = [
+    { key: 'InvPID', label: 'Property ID' },
+    { key: 'InvPName', label: 'Name' },
+    { key: 'InvCName', label: 'Category' },
+    { key: 'StatusName', label: 'Status' },
+    { key: 'PropertySupervisor', label: 'Property Supervisor' },
+    { key: 'Location', label: 'Location' },
+    { key: 'InvPOID', label: 'Purchase Order' },
+    { key: 'SupplierName', label: 'Supplier' },
+    { key: 'Address', label: 'Address' },
+    { key: 'InvDID', label: 'Document' },
+    { key: 'InvDate', label: 'Date Issued' },
+
+
+  ];
+
+
+
 
   // const [data, setData] = useState([]);
 
   const [itemCategoryData, setItemCategoryData] = useState([]);
   const [propertyData, setPropertyData] = useState([]);
+  const [inventoryData, setInventoryData] = useState([]);
+
 
 
   useEffect(() => {
@@ -83,9 +103,23 @@ const InventoryPlaygroundPage = () => {
       }
     };
 
+    const fetchInventoryData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/combo');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const result = await response.json();
+        setInventoryData(result.data || []);
+      } catch (error) {
+        console.error('Error fetching inventory data:', error.message);
+      }
+    };
+
     // Fetch data for both item category and property
     fetchItemCategoryData();
     fetchPropertyData();
+    fetchInventoryData();
   }, []); // Empty dependency array ensures the effect runs only once on component mount
 
 
@@ -116,6 +150,13 @@ const InventoryPlaygroundPage = () => {
           data={propertyData}
           columns={PropertyColumns}
           caption="Property Information"
+        />
+      </div>
+      <div>
+        <DataTable
+          data={inventoryData}
+          columns={InventoryColumns}
+          caption="Records"
         />
       </div>
     </main>
