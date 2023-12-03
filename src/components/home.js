@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Link, graphql } from "gatsby";
 import Layout from "./layout";
 import * as styles from "../styles/index.module.css";
@@ -19,7 +19,7 @@ const HomePage = () => {
 
 export default HomePage;
 
-function PropertiesTable(props) {
+function PropertiesTable() {
   // const propertyData = graphql`
   //   query MyQuery {
   //     allMysqlProperty(sort: { PropertyID: ASC }) {

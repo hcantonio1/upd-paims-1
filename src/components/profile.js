@@ -2,7 +2,7 @@ import React from "react";
 import Layout from "./layout";
 import { getUser } from "../services/auth";
 
-const Profile = () => (
+const Account = () => (
   <Layout pageTitle="Account">
     <h1>Your profile</h1>
     <ul>
@@ -12,4 +12,4 @@ const Profile = () => (
   </Layout>
 );
 
-export default Profile;
+export default Account;

@@ -1,97 +1,104 @@
 // Step 1: Import React
-import * as React from 'react'
-import { Link } from 'gatsby'
-import Layout from '../components/layout'
-import { useState } from 'react';
-import axios from 'axios';
+import * as React from "react";
+import { Link } from "gatsby";
+import Layout from "./layout";
+import { useState } from "react";
+import axios from "axios";
 
 const SubmitPage = () => {
-    const [inputData, setInputData] = useState({
-        SupplierID: '',
-        SupplierName: '',
-        SupplierContact: '',
-        UnitNumber: '',
-        StreetNumber: '',
-        City: '',
-        State: '',
-        DocumentID: '',
-        DocumentType: '',
-        DateIssued: '',
-        IssuedBy: '',
-        ReceivedBy: '',
-        Link: '',
-        PropertyID: '',
-        PropertyName: '',
-        StatusID: '',
-        PropertySupervisorID: '',
-        LocationID: '',
-        CategoryID: '',
-        PurchaseOrderID: '',
-        PurchaseDate: '',
-        TotalCost: ''
+  const [inputData, setInputData] = useState({
+    SupplierID: "",
+    SupplierName: "",
+    SupplierContact: "",
+    UnitNumber: "",
+    StreetNumber: "",
+    City: "",
+    State: "",
+    DocumentID: "",
+    DocumentType: "",
+    DateIssued: "",
+    IssuedBy: "",
+    ReceivedBy: "",
+    Link: "",
+    PropertyID: "",
+    PropertyName: "",
+    StatusID: "",
+    PropertySupervisorID: "",
+    LocationID: "",
+    CategoryID: "",
+    PurchaseOrderID: "",
+    PurchaseDate: "",
+    TotalCost: "",
+  });
+
+  const [updateProperty, setUpdateProperty] = useState({
+    //SupplierContact1: '',
+    //UnitNumber1: '',
+    //StreetNumber1: '',
+    //City1: '',
+    //State1: '',
+    StatusID1: "",
+    PropertySupervisorID1: "",
+    LocationID1: "",
+    //SupplierID1: '',
+    PropertyID: "",
+  });
+
+  const handleInsert = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:3000/addData", {
+        userInput: inputData,
       });
 
-      const [updateProperty, setUpdateProperty] = useState({
-        //SupplierContact1: '',
-        //UnitNumber1: '',
-        //StreetNumber1: '',
-        //City1: '',
-        //State1: '',
-        StatusID1: '',
-        PropertySupervisorID1: '',
-        LocationID1: '',
-        //SupplierID1: '',
-        PropertyID: '',
-      });
+      console.log(response.data); // Success message
+    } catch (error) {
+      console.error("Error cannot access:", error);
+    }
+  };
 
-      const handleInsert = async (e) => {
-        e.preventDefault();
-    
-        try {
-          const response = await axios.post('http://localhost:3000/addData', {
-            userInput: inputData
-          });
-    
-          console.log(response.data); // Success message
-        } catch (error) {
-          console.error('Error cannot access:', error);
+  const handleUpdateProp = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/updateProperty",
+        {
+          userInput: updateProperty,
         }
-      };
+      );
 
-      const handleUpdateProp = async (e) => {
-        e.preventDefault();
-    
-        try {
-          const response = await axios.post('http://localhost:3000/updateProperty', {
-            userInput: updateProperty
-          });
-    
-          console.log(response.data); // Success message
-        } catch (error) {
-          console.error('Error cannot access:', error);
-        }
-      };
+      console.log(response.data); // Success message
+    } catch (error) {
+      console.error("Error cannot access:", error);
+    }
+  };
 
-      const handleInputChange = (e) => {
-        setInputData({
-          ...inputData,
-          [e.target.name]: e.target.value
-        });
-      };
+  const handleInputChange = (e) => {
+    setInputData({
+      ...inputData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-      const handleUpdatePropChange = (e) => {
-        setUpdateProperty({
-          ...updateProperty,
-          [e.target.name]: e.target.value
-        });
-      }
+  const handleUpdatePropChange = (e) => {
+    setUpdateProperty({
+      ...updateProperty,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   return (
-    <Layout pageTitle='SUBMIT FORM'>
+    <Layout pageTitle="SUBMIT FORM">
       <main>
         <h2>Create a record in purchase_order, property, and item_document</h2>
         <p>Insert into supplier if it does not exist</p>
-        <p>item_category untouched and item_location untouched since under the assumption the tables have complete data already and no need to update with new locations or categories.</p>
+        <p>
+          item_category untouched and item_location untouched since under the
+          assumption the tables have complete data already and no need to update
+          with new locations or categories.
+        </p>
         <form onSubmit={handleInsert}>
           <div>
             <p>Supplier</p>
@@ -138,17 +145,17 @@ const SubmitPage = () => {
         </form>
       </main>
     </Layout>
-  )
-}
+  );
+};
 
 // You'll learn about this in the next task, just copy it for now
-export const Head = () => <title>Submit Form</title>
+export const Head = () => <title>Submit Form</title>;
 
 // Step 3: Export your component
-export default SubmitPage
+export default SubmitPage;
 
 //personal notes
 //current problems with adding record:
-  //lengthy process if doing it one by one per property
+//lengthy process if doing it one by one per property
 //current problems with updating record:
-  //
+//

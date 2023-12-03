@@ -1,10 +1,13 @@
 import React from "react";
-import { Link } from "gatsby";
+import App from "./app";
+import { Link, navigate } from "gatsby";
 import { getUser, isLoggedIn } from "../services/auth";
-
 import Layout from "../components/lay-out";
 
 export default function Home() {
+  navigate("/app/login");
+
+  // below code is not reached; artifact from tutorial
   return (
     <Layout>
       <h1>Hello {isLoggedIn() ? getUser().name : "world"}!</h1>

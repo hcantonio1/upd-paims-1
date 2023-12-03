@@ -22,7 +22,7 @@ class Login extends React.Component {
 
   render() {
     if (isLoggedIn()) {
-      navigate(`/app/profile`);
+      navigate(`/app/home`);
     }
 
     return (
