@@ -449,6 +449,55 @@ app.post('/updateSupplier', (req, res) => {
   }
 });
 
+app.post('/archiveData', (req, res) => {
+  const { userInput } = req.body;
+
+  connection.beginTransaction((beginTransactionErr) => {
+    if (beginTransactionErr) {
+      console.error('Error beginning transaction:', beginTransactionErr);
+      res.status(500).send('Error beginning transaction');
+      return;
+    }
+    
+    const existquery = `SELECT * FROM property WHERE PropertyID = ? AND ArchiveStatus = 1`;
+    connection.query(existquery, [userInput.PropertyID2], (err, results) => {
+      if (err) {
+        console.error('Error querying the database:', err);
+        res.status(500).send('Error querying the database');
+        return;
+      }
+
+      if (results.length > 0) {
+        const archivequery = `UPDATE property SET ArchiveStatus = 0 WHERE PropertyID = ?`;
+        connection.query(archivequery, [userInput.PropertyID2], (archiveQueryErr, archiveResults) => {
+          if (archiveQueryErr) {
+            console.error('Error updating archive status in property:', archiveQueryErr);
+            connection.rollback(() => {
+              res.status(500).send('Error updating archive status in property:');
+            });
+            return;
+          }
+          console.log('Property record was archived!');
+          connection.commit((commitErr) => {
+            if (commitErr) {
+              console.error('Error committing transaction:', commitErr);
+              connection.rollback(() => {
+                res.status(500).send('Error committing transaction');
+              });
+              return;
+            }
+            console.log('Transaction committed successfully!');
+            res.status(200).send('Data updated successfully');
+          });
+        });
+      } else {
+        console.log('Property does not exist, or is already archived!');
+        res.status(500).send('Property does not exist.');
+      }
+    });
+  });
+});
+
 process.on('SIGINT', () => {
   connection.end();
   console.log('Connection closed');

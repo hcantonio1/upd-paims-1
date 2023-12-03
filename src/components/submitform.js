@@ -47,6 +47,10 @@ const SubmitPage = () => {
     SupplierID1: '',
   });
 
+  const [archiveData, setArchiveData] = useState({
+    PropertyID2: "",
+  });
+
   const handleInsert = async (e) => {
     e.preventDefault();
 
@@ -95,6 +99,20 @@ const SubmitPage = () => {
     }
   };
 
+  const handleArchive = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:3000/archiveData", {
+        userInput: archiveData,
+      });
+
+      console.log(response.data); // Success message
+    } catch (error) {
+      console.error("Error cannot access:", error);
+    }
+  };
+
   const handleInputChange = (e) => {
     setInputData({
       ...inputData,
@@ -112,6 +130,13 @@ const SubmitPage = () => {
   const handleUpdateSupChange = (e) => {
     setUpdateSupplier({
       ...updateSupplier,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleArchiveChange = (e) => {
+    setArchiveData({
+      ...archiveData,
       [e.target.name]: e.target.value,
     });
   };
@@ -179,6 +204,15 @@ const SubmitPage = () => {
             <input type="text" name="StreetName1" value={updateSupplier.StreetName1} onChange={handleUpdateSupChange} placeholder="Street Name"/>
             <input type="text" name="City1" value={updateSupplier.City1} onChange={handleUpdateSupChange} placeholder="City"/>
             <input type="text" name="State1" value={updateSupplier.State1} onChange={handleUpdateSupChange} placeholder="State"/>
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+        <h2>Archive a record</h2>
+        <p>Will only pretty much just change archive status in property table. If record is already archived, will say so in console.</p>
+        <form onSubmit={handleArchive}>
+          <div>
+            <p>Archive a record</p>
+            <input type="text" name="PropertyID2" value={archiveData.PropertyID2} onChange={handleArchiveChange} placeholder="Property ID"/>
           </div>
           <button type="submit">Submit</button>
         </form>
