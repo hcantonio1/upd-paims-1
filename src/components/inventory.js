@@ -71,7 +71,7 @@ const InventoryPage = ({ data }) => {
   return (
     <Layout pageTitle="INVENTORY">
       <main>
-        <Link to="/inventoryPlayground">Playground</Link>
+        <Link to="/app/inventoryPlayground">Playground</Link>
 
         {/* <div>
           <h1>ItemCategory Information:</h1>

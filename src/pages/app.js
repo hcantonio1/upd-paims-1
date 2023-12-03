@@ -7,6 +7,7 @@ import SubmitPage from "../components/submitform";
 import AboutPage from "../components/about";
 import Account from "../components/profile";
 import Login from "../components/login";
+import InventoryPlaygroundPage from "../components/inventoryPlayground";
 
 const App = () => (
   <Router>
@@ -15,6 +16,10 @@ const App = () => (
     <PrivateRoute path="/app/submitform" component={SubmitPage} />
     <PrivateRoute path="/app/about" component={AboutPage} />
     <PrivateRoute path="/app/account" component={Account} />
+    <PrivateRoute
+      path="/app/inventoryPlayground"
+      component={InventoryPlaygroundPage}
+    />
     <Login path="/app/login" />
   </Router>
 );
