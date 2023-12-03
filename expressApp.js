@@ -96,18 +96,6 @@ app.post('/addData', (req, res) => {
           console.log('Data inserted into supplier successfully!');
 
           insertRecord();
-
-          connection.commit((commitErr) => {
-            if (commitErr) {
-              console.error('Error committing transaction:', commitErr);
-              connection.rollback(() => {
-                res.status(500).send('Error committing transaction');
-              });
-              return;
-            }
-            console.log('Transaction committed successfully!');
-            res.status(200).send('Data inserted successfully');
-          });
         });
       }
     });
@@ -133,8 +121,8 @@ app.post('/addData', (req, res) => {
         }
         console.log('Data inserted into item_document successfully!');
   
-        const insertproperty = `INSERT INTO property (PropertyID, PropertyName, StatusID, PropertySupervisorID, SupplierID, LocationID, CategoryID, DocumentID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-        connection.query(insertproperty, [userInput.PropertyID, userInput.PropertyName, userInput.StatusID, userInput.PropertySupervisorID, userInput.SupplierID, userInput.LocationID, userInput.CategoryID, userInput.DocumentID], (propertyQueryErr, propertyResults) => {
+        const insertproperty = `INSERT INTO property (PropertyID, PropertyName, StatusID, PropertySupervisorID, SupplierID, LocationID, CategoryID, DocumentID, ArchiveStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        connection.query(insertproperty, [userInput.PropertyID, userInput.PropertyName, userInput.StatusID, userInput.PropertySupervisorID, userInput.SupplierID, userInput.LocationID, userInput.CategoryID, userInput.DocumentID, 1], (propertyQueryErr, propertyResults) => {
           if (propertyQueryErr) {
             console.error('Error inserting data into property:', propertyQueryErr);
             connection.rollback(() => {
@@ -286,6 +274,176 @@ app.post('/updateProperty', (req, res) => {
           return;
         }
         console.log('Property supervisor updated successfully!');
+      });
+    });
+  }
+});
+
+app.post('/updateSupplier', (req, res) => {
+  const { userInput } = req.body;
+
+  connection.beginTransaction((beginTransactionErr) => {
+    if (beginTransactionErr) {
+      console.error('Error beginning transaction:', beginTransactionErr);
+      res.status(500).send('Error beginning transaction');
+      return;
+    }
+
+    let updatedCheck = 0;
+    const supplierexistquery = `SELECT * FROM supplier WHERE SupplierID = ?`;
+    connection.query(supplierexistquery, [userInput.SupplierID1], (err, results) => {
+      if (err) {
+        console.error('Error querying the database:', err);
+        res.status(500).send('Error querying the database');
+        return;
+      }
+      //check first if propertyid is present in table
+      if (results.length > 0) {
+        if (userInput.SupplierContact1 != '') {
+          updateContact();
+          updatedCheck = 1;
+        } 
+        if (userInput.UnitNumber1 != '') {
+          updateUnit();
+          updatedCheck = 1;
+        }
+        if (userInput.StreetName1 != '') {
+          updateStreet();
+          updatedCheck = 1;
+        }
+        if (userInput.City1 != '') {
+          updateCity();
+          updatedCheck = 1;
+        }
+        if (userInput.State1 != '') {
+          updateState();
+          updatedCheck = 1;
+        }
+        if (updatedCheck === 1) {
+          connection.commit((commitErr) => {
+            if (commitErr) {
+              console.error('Error committing transaction:', commitErr);
+              connection.rollback(() => {
+                res.status(500).send('Error committing transaction');
+              });
+              return;
+            }
+            console.log('Transaction committed successfully!');
+            res.status(200).send('Data inserted successfully');
+          });
+        }
+      } else {
+          console.log('Supplier does not exist!');
+        };
+      });
+    });
+
+  function updateContact() {
+    connection.beginTransaction((beginTransactionErr) => {
+      if (beginTransactionErr) {
+        console.error('Error beginning transaction:', beginTransactionErr);
+        res.status(500).send('Error beginning transaction');
+        return;
+      }
+  
+      const supconquery = `UPDATE supplier SET SupplierContact = ? WHERE SupplierID = ?`;
+      connection.query(supconquery, [userInput.SupplierContact1, userInput.SupplierID1], (supconQueryErr, supconResults) => {
+        if (supconQueryErr) {
+          console.error('Error updating contact in supplier:', supconQueryErr);
+          connection.rollback(() => {
+            res.status(500).send('Error updating status in supplier:');
+          });
+          return;
+        }
+        console.log('Supplier contact updated successfully!');
+      });
+    });
+  }
+
+  function updateUnit() {
+    connection.beginTransaction((beginTransactionErr) => {
+      if (beginTransactionErr) {
+        console.error('Error beginning transaction:', beginTransactionErr);
+        res.status(500).send('Error beginning transaction');
+        return;
+      }
+  
+      const unitquery = `UPDATE supplier SET UnitNumber = ? WHERE SupplierID = ?`;
+      connection.query(unitquery, [userInput.UnitNumber1, userInput.SupplierID1], (unitQueryErr, unitResults) => {
+        if (unitQueryErr) {
+          console.error('Error updating unit number in supplier:', unitQueryErr);
+          connection.rollback(() => {
+            res.status(500).send('Error updating unit number in supplier:');
+          });
+          return;
+        }
+        console.log('Supplier unit number updated successfully!');
+      });
+    });
+  } 
+
+  function updateStreet() {
+    connection.beginTransaction((beginTransactionErr) => {
+      if (beginTransactionErr) {
+        console.error('Error beginning transaction:', beginTransactionErr);
+        res.status(500).send('Error beginning transaction');
+        return;
+      }
+  
+      const streetquery = `UPDATE supplier SET StreetName = ? WHERE SupplierID = ?`;
+      connection.query(streetquery, [userInput.StreetName1, userInput.SupplierID1], (streetQueryErr, streetResults) => {
+        if (streetQueryErr) {
+          console.error('Error updating street in supplier:', streetQueryErr);
+          connection.rollback(() => {
+            res.status(500).send('Error updating street in supplier:');
+          });
+          return;
+        }
+        console.log('Supplier street updated successfully!');
+      });
+    });
+  }
+
+  function updateCity() {
+    connection.beginTransaction((beginTransactionErr) => {
+      if (beginTransactionErr) {
+        console.error('Error beginning transaction:', beginTransactionErr);
+        res.status(500).send('Error beginning transaction');
+        return;
+      }
+  
+      const cityquery = `UPDATE supplier SET City = ? WHERE SupplierID = ?`;
+      connection.query(cityquery, [userInput.City1, userInput.SupplierID1], (cityQueryErr, cityResults) => {
+        if (cityQueryErr) {
+          console.error('Error updating city in supplier:', cityQueryErr);
+          connection.rollback(() => {
+            res.status(500).send('Error updating city in supplier:');
+          });
+          return;
+        }
+        console.log('Supplier city updated successfully!');
+      });
+    });
+  }
+
+  function updateState() {
+    connection.beginTransaction((beginTransactionErr) => {
+      if (beginTransactionErr) {
+        console.error('Error beginning transaction:', beginTransactionErr);
+        res.status(500).send('Error beginning transaction');
+        return;
+      }
+  
+      const statequery = `UPDATE supplier SET State = ? WHERE SupplierID = ?`;
+      connection.query(statequery, [userInput.State1, userInput.SupplierID1], (stateQueryErr, stateResults) => {
+        if (stateQueryErr) {
+          console.error('Error updating state in supplier:', stateQueryErr);
+          connection.rollback(() => {
+            res.status(500).send('Error updating state in supplier:');
+          });
+          return;
+        }
+        console.log('Supplier state updated successfully!');
       });
     });
   }

@@ -11,7 +11,7 @@ const SubmitPage = () => {
     SupplierName: "",
     SupplierContact: "",
     UnitNumber: "",
-    StreetNumber: "",
+    StreetName: "",
     City: "",
     State: "",
     DocumentID: "",
@@ -32,16 +32,19 @@ const SubmitPage = () => {
   });
 
   const [updateProperty, setUpdateProperty] = useState({
-    //SupplierContact1: '',
-    //UnitNumber1: '',
-    //StreetNumber1: '',
-    //City1: '',
-    //State1: '',
     StatusID1: "",
     PropertySupervisorID1: "",
     LocationID1: "",
-    //SupplierID1: '',
-    PropertyID: "",
+    PropertyID1: "",
+  });
+
+  const [updateSupplier, setUpdateSupplier] = useState({
+    SupplierContact1: '',
+    UnitNumber1: '',
+    StreetName1: '',
+    City1: '',
+    State1: '',
+    SupplierID1: '',
   });
 
   const handleInsert = async (e) => {
@@ -75,6 +78,23 @@ const SubmitPage = () => {
     }
   };
 
+  const handleUpdateSup = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/updateSupplier",
+        {
+          userInput: updateSupplier,
+        }
+      );
+
+      console.log(response.data); // Success message
+    } catch (error) {
+      console.error("Error cannot access:", error);
+    }
+  };
+
   const handleInputChange = (e) => {
     setInputData({
       ...inputData,
@@ -85,6 +105,13 @@ const SubmitPage = () => {
   const handleUpdatePropChange = (e) => {
     setUpdateProperty({
       ...updateProperty,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleUpdateSupChange = (e) => {
+    setUpdateSupplier({
+      ...updateSupplier,
       [e.target.name]: e.target.value,
     });
   };
@@ -140,6 +167,18 @@ const SubmitPage = () => {
             <input type="text" name="StatusID1" value={updateProperty.StatusID1} onChange={handleUpdatePropChange} placeholder="Status"/>
             <input type="text" name="PropertySupervisorID1" value={updateProperty.PropertySupervisorID1} onChange={handleUpdatePropChange} placeholder="Property Supervisor ID"/>
             <input type="text" name="LocationID1" value={updateProperty.LocationID1} onChange={handleUpdatePropChange} placeholder="Location ID"/>
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+        <form onSubmit={handleUpdateSup}>
+          <div>
+            <p>Update Supplier</p>
+            <input type="text" name="SupplierID1" value={updateSupplier.SupplierID1} onChange={handleUpdateSupChange} placeholder="Supplier ID"/>
+            <input type="text" name="SupplierContact1" value={updateSupplier.SupplierContact1} onChange={handleUpdateSupChange} placeholder="Contact Number"/>
+            <input type="text" name="UnitNumber1" value={updateSupplier.UnitNumber1} onChange={handleUpdateSupChange} placeholder="Unit Number"/>
+            <input type="text" name="StreetName1" value={updateSupplier.StreetName1} onChange={handleUpdateSupChange} placeholder="Street Name"/>
+            <input type="text" name="City1" value={updateSupplier.City1} onChange={handleUpdateSupChange} placeholder="City"/>
+            <input type="text" name="State1" value={updateSupplier.State1} onChange={handleUpdateSupChange} placeholder="State"/>
           </div>
           <button type="submit">Submit</button>
         </form>
