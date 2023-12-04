@@ -80,8 +80,8 @@ app.get('/combo', (req, res) => {
       -- Supplier details      
       purchase_order.PurchaseOrderID as InvPOID,
       supplier.SupplierName AS SupplierName,
-      CONCAT(supplier.UnitNumber, ' ', supplier.StreetName, ', ', supplier.City, ', ', supplier.State
-      ) AS Address,
+      -- CONCAT(supplier.UnitNumber, ' ', supplier.StreetName, ', ', supplier.City, ', ', supplier.State
+      -- ) AS Address,
             
       -- Document details
       item_document.DocumentID AS InvDID,

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "gatsby";
 import SearchBar from "./searchbar";
+import FilterBy from "./filter";
 
 
-function DataTable({ data, columns, caption }) {
+function DataTable({ data, columns, caption, onSort }) {
   if (data.length === 0) {
     return <p>No results found.</p>;
   }
@@ -16,7 +17,9 @@ function DataTable({ data, columns, caption }) {
         <thead>
           <tr>
             {columns.map((column) => (
-              <th key={column.key}>{column.label}</th>
+              <th key={column.key} onClick={() => onSort(column.key)}>
+                {column.label}
+              </th>
             ))}
           </tr>
         </thead>
@@ -37,17 +40,17 @@ function DataTable({ data, columns, caption }) {
 
 const InventoryPlaygroundPage = () => {
   const InventoryColumns = [
-    { key: 'InvPID', label: 'Property ID' },
-    { key: 'InvPName', label: 'Name' },
-    { key: 'InvCName', label: 'Category' },
-    { key: 'StatusName', label: 'Status' },
-    { key: 'PropertySupervisor', label: 'Property Supervisor' },
-    { key: 'Location', label: 'Location' },
-    { key: 'InvPOID', label: 'Purchase Order' },
-    { key: 'SupplierName', label: 'Supplier' },
-    { key: 'Address', label: 'Address' },
-    { key: 'InvDID', label: 'Document' },
-    { key: 'InvDate', label: 'Date Issued' },
+    { key: 'InvPID', label: 'Property ID', filterable: true  },
+    { key: 'InvPName', label: 'Name', filterable: true  },
+    { key: 'InvCName', label: 'Category', filterable: true  },
+    { key: 'StatusName', label: 'Status', filterable: true  },
+    { key: 'PropertySupervisor', label: 'Property Supervisor' , filterable: true },
+    { key: 'Location', label: 'Location', filterable: true  },
+    { key: 'InvPOID', label: 'Purchase Order' , filterable: true },
+    { key: 'SupplierName', label: 'Supplier', filterable: true  },
+    // { key: 'Address', label: 'Address', filterable: true  },
+    { key: 'InvDID', label: 'Document' , filterable: true },
+    { key: 'InvDate', label: 'Date Issued' , filterable: true },
   ];
 
 
@@ -75,27 +78,74 @@ const InventoryPlaygroundPage = () => {
   }, []);
 
 
+  const filterableColumns = InventoryColumns.filter((column) => column.filterable);
+
+
+
   const [filteredData, setFilteredData] = useState([]);
   const [searchResultsEmpty, setSearchResultsEmpty] = useState(false);
+  const [selectedFilter, setSelectedFilter] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: 'InvPID', direction: 'asc' });
+
 
 
   const handleSearch = (searchTerm) => {
-    // Filter the data based on the search term
-    const filteredResults = inventoryData.filter((item) =>
-      Object.values(item).some((value) => {
-        if (typeof value === 'string') {
+    console.log('Search Term:', searchTerm);
+    console.log('Selected Filter:', selectedFilter);
+  
+    // Filter the data based on the search term and selected filter
+    const filteredResults = inventoryData.filter((item) => {
+      const match = Object.entries(item).some(([key, value]) => {
+        console.log('Checking:', key, value);
+
+        if (key === selectedFilter) {
+          return value.toLowerCase().includes(searchTerm.toLowerCase());
+        } else if (typeof value === 'string') {
           return value.toLowerCase().includes(searchTerm.toLowerCase());
         } else if (typeof value === 'number') {
-          return value.toString().includes(searchTerm);
+          return value.toString().includes(searchTerm.toLowerCase());
         }
         return false;
-      })
-    );
-  
+      });
+
+      return match;
+    });
+
     setFilteredData(filteredResults);
     setSearchResultsEmpty(filteredResults.length === 0);
 
   };
+
+  const handleFilterChange = (filter) => {
+    setSelectedFilter(filter);
+  };
+
+  
+  const handleSort = (columnKey) => {
+    // If the same column is clicked, toggle the sort direction
+    const direction = columnKey === sortConfig.key && sortConfig.direction === 'asc' ? 'desc' : 'asc';
+    setSortConfig({ key: columnKey, direction });
+
+    // Perform sorting based on the selected column and direction
+    const sortedResults = [...filteredData].sort((a, b) => {
+      const aValue = a[columnKey];
+      const bValue = b[columnKey];
+
+      if (direction === 'asc') {
+        return aValue - bValue;
+      } else if (direction === 'desc') {
+        return bValue - aValue;
+      }
+
+      return 0;
+    });
+
+    setFilteredData(sortedResults);
+  };
+
+
+
+
 
 
   return (
@@ -104,6 +154,8 @@ const InventoryPlaygroundPage = () => {
       <br />
       <Link to="/inventory">Inventory</Link>
       <SearchBar onSearch={handleSearch} />
+      <FilterBy options={filterableColumns.map((column) => column.label)} onFilterChange={handleFilterChange} />
+
 
       <div>
         {searchResultsEmpty ? (
@@ -114,6 +166,7 @@ const InventoryPlaygroundPage = () => {
           // data={inventoryData}
           columns={InventoryColumns}
           caption="Records"
+          onSort={handleSort}
         />
         )}
       </div>
@@ -124,6 +177,51 @@ const InventoryPlaygroundPage = () => {
 export default InventoryPlaygroundPage;
 
 
+
+
+
+
+// const filteredResults = inventoryData.filter((item) => {
+//   const match = Object.entries(item).some(([key, value]) => {
+//     console.log('Checking:', key, value);
+
+//     // if (key === selectedFilter) {
+//     //   return value.toLowerCase().includes(searchTerm.toLowerCase());
+//     // }
+
+//     // const value = item[selectedFilter];
+
+    
+//     if (typeof value === 'string') {
+//       return value.toLowerCase().includes(searchTerm.toLowerCase());
+//     } else if (typeof value === 'number') {
+//       return value.toString().includes(searchTerm.toLowerCase());
+//     }
+//     return false;
+//   });
+
+//   return match;
+// });
+
+
+
+// const handleSearch = (searchTerm) => {
+//   // Filter the data based on the search term
+//   const filteredResults = inventoryData.filter((item) =>
+//     Object.values(item).some((value) => {
+//       if (typeof value === 'string') {
+//         return value.toLowerCase().includes(searchTerm.toLowerCase());
+//       } else if (typeof value === 'number') {
+//         return value.toString().includes(searchTerm);
+//       }
+//       return false;
+//     })
+//   );
+
+//   setFilteredData(filteredResults);
+//   setSearchResultsEmpty(filteredResults.length === 0);
+
+// };
 
 
 
