@@ -1,49 +1,31 @@
-<p align="center">
-  <a href="https://www.gatsbyjs.com/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter">
-    <img alt="Gatsby" src="https://www.gatsbyjs.com/Gatsby-Monogram.svg" width="60" />
-  </a>
-</p>
-<h1 align="center">
-  Gatsby Minimal Starter
-</h1>
+Installation
+    1. Install Node.js and Node Package Manager (npm)
+        - Direct installation: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm#using-a-node-installer-to-install-nodejs-and-npm
+        - To check if you have successfully installed Node.js, open a terminal window and execute node
+            - Please ensure that your Node.js is at least version 18 or higher
+        - To check if you have successfully installed npm, open a terminal window and execute npm --version
+    
+    2. Install Gatsby Command Line Interface (CLI)
+        - Gatsby CLI is an npm package, so simply install via npm install -g gatsby-cli
+        - To check if you have it installed, run gatsby --version and ensure that you are on version 3 or newer
+    
+    3. Install other packages
+        - Relevant packages are already included in the .zip file
+        - Simply run npm install
 
-## 🚀 Quick start
-
-1.  **Create a Gatsby site.**
-
-    Use the Gatsby CLI to create a new site, specifying the minimal starter.
-
-    ```shell
-    # create a new Gatsby site using the minimal starter
-    npm init gatsby
-    ```
-
-2.  **Start developing.**
-
-    Navigate into your new site’s directory and start it up.
-
-    ```shell
-    cd my-gatsby-site/
-    npm run develop
-    ```
-
-3.  **Open the code and start customizing!**
-
-    Your site is now running at http://localhost:8000!
-
-    Edit `src/pages/index.js` to see your site update in real-time!
-
-4.  **Learn more**
-
-    - [Documentation](https://www.gatsbyjs.com/docs/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-    - [Tutorials](https://www.gatsbyjs.com/docs/tutorial/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-    - [Guides](https://www.gatsbyjs.com/docs/how-to/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-    - [API Reference](https://www.gatsbyjs.com/docs/api-reference/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-    - [Plugin Library](https://www.gatsbyjs.com/plugins?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-    - [Cheat Sheet](https://www.gatsbyjs.com/docs/cheat-sheet/?utm_source=starter&utm_medium=readme&utm_campaign=minimal-starter)
-
-## 🚀 Quick start (Netlify)
-
-Deploy this starter with one click on [Netlify](https://app.netlify.com/signup):
-
-[<img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" />](https://app.netlify.com/start/deploy?repository=https://github.com/gatsbyjs/gatsby-starter-minimal)
+    4. Install the database
+        - The database is included in the .zip file, labeled paims-recheck-ver3.sql
+        - Ensure that you have MySQL installed (either the workbench or as a package)
+            - (Further instructions to be added)
+        - Import the database
+        - Make sure MySQL is running in Services
+    
+Running the software
+    - Ensure that your terminal windows is inside the proper directory (the .zip file contents)
+    - On one terminal window, run gatsby develop
+        - Once the development bundle has finished, you are free to proceed and go to localhost:8000 for the website
+    - On another terminal window, run node expressApp.js
+        - This is necessary to run queries for the database in the website
+    - As of now, the current username and password for testing is:
+        - Username: hcantonio1@up.edu.ph
+        - Password: thispass
