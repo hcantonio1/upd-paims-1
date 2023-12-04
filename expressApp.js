@@ -59,6 +59,8 @@ app.get('/item_category', (req, res) => {
 
 app.get('/combo', (req, res) => {
   const propertyId = req.params.propertyId;
+  const searchTerm = req.query.searchTerm; // Extract search term from query parameters
+
 
   const query = `
   SELECT 
@@ -93,16 +95,21 @@ app.get('/combo', (req, res) => {
     LEFT JOIN status ON property.StatusID = status.StatusID
     LEFT JOIN supplier ON property.SupplierID = supplier.SupplierID
     LEFT JOIN user ON property.PropertySupervisorID = user.UserID
+
+
   `;
 
-  connection.query(query, [propertyId], (error, results, fields) => {
-    if (error) {
-      console.error('Error executing combinedData query:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-      return;
-    }
-    res.json({ data: results });
-  });
+  const searchWildcard = `%${searchTerm}%`; // Add wildcards for partial matching
+
+  connection.query(query, [propertyId, searchWildcard, searchWildcard, searchWildcard, searchWildcard],
+    (error, results, fields) => {
+      if (error) {
+        console.error('Error executing combinedData query:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+        return;
+      }
+      res.json({ data: results });
+    });
 });
 
 

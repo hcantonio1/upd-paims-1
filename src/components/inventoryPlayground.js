@@ -73,6 +73,7 @@ const InventoryPlaygroundPage = () => {
   const [itemCategoryData, setItemCategoryData] = useState([]);
   const [propertyData, setPropertyData] = useState([]);
   const [inventoryData, setInventoryData] = useState([]);
+  const [combinedData, setCombinedData] = useState([]);
 
 
 
@@ -126,7 +127,20 @@ const InventoryPlaygroundPage = () => {
 
 
 
+  // const [searchTerm, setSearchTerm] = useState('');
 
+  // const handleSearch = async (value) => {
+  //   try {
+  //     const response = await fetch(`http://localhost:3000/combo/123?searchTerm=${encodeURIComponent(searchTerm)}`);
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     }
+  //     const result = await response.json();
+  //     setCombinedData(result.data || []);
+  //   } catch (error) {
+  //     console.error('Error fetching combined data:', error.message);
+  //   }
+  // };
 
 
 
@@ -138,7 +152,7 @@ const InventoryPlaygroundPage = () => {
       <Link to="/">Back to Home</Link>
       <br />
       <Link to="/inventory">Inventory</Link>
-      <div>
+      {/* <div>
         <DataTable
           data={itemCategoryData}
           columns={itemCategoryColumns}
@@ -151,7 +165,15 @@ const InventoryPlaygroundPage = () => {
           columns={PropertyColumns}
           caption="Property Information"
         />
-      </div>
+      </div> */}
+       {/* <div>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button onClick={handleSearch}>Search</button>
+      </div> */}
       <div>
         <DataTable
           data={inventoryData}
