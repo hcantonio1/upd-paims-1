@@ -1,10 +1,12 @@
 import React from "react";
-import Layout from "./layout";
+import { StaticImage } from "gatsby-plugin-image";
 import { navigate } from "gatsby";
 import { handleLogin, isLoggedIn } from "../services/auth";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import * as styles from "../styles/login.module.css";
 
 class Login extends React.Component {
   state = {
@@ -29,30 +31,43 @@ class Login extends React.Component {
     }
 
     return (
-      <Layout>
-        <h1>Log in</h1>
-        <form
-          method="post"
-          onSubmit={(event) => {
-            this.handleSubmit(event);
-            navigate(`/app/home`);
-          }}
-        >
-          <label>
-            Username
-            <input type="text" name="username" onChange={this.handleUpdate} />
-          </label>
-          <label>
-            Password
-            <input
-              type="password"
-              name="password"
-              onChange={this.handleUpdate}
-            />
-          </label>
-          <input type="submit" value="Log In" />
-        </form>
-      </Layout>
+      <>
+        <div className={styles["login-page"]}>
+          <StaticImage
+            className={styles.logo}
+            alt="Logo"
+            src="../images/coe_logo.png"
+          />
+
+          <div className={styles.form}>
+            <h1>Login to PAIMS</h1>
+            <form
+              className={styles["login-form"]}
+              method="post"
+              onSubmit={(event) => {
+                this.handleSubmit(event);
+                navigate(`/app/home`);
+              }}
+            >
+              <input
+                type="text"
+                placeholder="Username"
+                name="username"
+                onChange={this.handleUpdate}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                name="password"
+                onChange={this.handleUpdate}
+              />
+              <button type="submit" value="Log In">
+                Login
+              </button>
+            </form>
+          </div>
+        </div>
+      </>
     );
   }
 }

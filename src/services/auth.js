@@ -33,6 +33,7 @@ export const handleLogin = ({ username, password }) => {
       navigate(`/app/home`);
     })
     .catch((error) => {
+      alert("Invalid username or password.");
       console.log(error);
     });
 };
