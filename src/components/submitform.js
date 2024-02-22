@@ -250,7 +250,12 @@ const SubmitPage = () => {
             <input type="text" name="PropertyName" value={inputData.PropertyName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
             <br />
             <label htmlFor="StatusID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="StatusID" value={inputData.StatusID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
+            <select name="StatusID" value={updateProperty.StatusID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }}>
+              <option value =""></option>
+              <option value ="1">1: In use</option>
+              <option value ="2">2: Available</option>
+              <option value ="3">3: Broken</option>
+            </select>
             <br />
             <label htmlFor="PropertySupervisorID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor ID<span style={{ color: 'red' }}>*</span>:   </label>
             <input type="text" name="PropertySupervisorID" value={inputData.PropertySupervisorID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
@@ -259,7 +264,18 @@ const SubmitPage = () => {
             <input type="text" name="LocationID" value={inputData.LocationID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
             <br />
             <label htmlFor="CategoryID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Category ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="CategoryID" value={inputData.CategoryID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
+            <select name="CategoryID" value={inputData.CategoryID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }} required>
+              <option value =""></option>
+              <option value ="1">1: Mouse</option>
+              <option value ="2">2: Keyboard</option>
+              <option value ="3">3: Fan</option>
+              <option value ="4">4: Chair</option>
+              <option value ="5">5: Table</option>
+              <option value ="6">6: Laptop</option>
+              <option value ="7">7: PC</option>
+              <option value ="8">8: Cord</option>
+              <option value ="9">9: AC</option>
+            </select>
             <br />
             <label htmlFor="PurchaseOrderID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Purchase Order ID<span style={{ color: 'red' }}>*</span>:   </label>
             <input type="text" name="PurchaseOrderID" value={inputData.PurchaseOrderID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
@@ -282,7 +298,12 @@ const SubmitPage = () => {
             <input type="text" name="PropertyID1" value={updateProperty.PropertyID1} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
             <br />
             <label htmlFor="StatusID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status ID:   </label>
-            <input type="text" name="StatusID1" value={updateProperty.StatusID1} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." />
+            <select name="StatusID1" value={updateProperty.StatusID1} onChange={handleUpdatePropChange} style={{ width: '310px', display: 'inline-block' }}>
+              <option value =""></option>
+              <option value ="1">1: In use</option>
+              <option value ="2">2: Available</option>
+              <option value ="3">3: Broken</option>
+            </select>
             <br />
             <label htmlFor="PropertySupervisorID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor ID:   </label>
             <input type="text" name="PropertySupervisorID1" value={updateProperty.PropertySupervisorID1} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only."/>
