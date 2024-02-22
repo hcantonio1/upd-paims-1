@@ -128,8 +128,14 @@ const SubmitPage = () => {
       });
 
       console.log(response.data); // Success message
+
+      if (response.status === 200) {
+        window.location.reload();
+      }
+
     } catch (error) {
       console.error("Error cannot access:", error);
+      alert("Already archived.");
     }
   };
 
@@ -174,31 +180,73 @@ const SubmitPage = () => {
         <form onSubmit={handleInsert}>
           <div>
             <p>Supplier</p>
-            <input type="text" name="SupplierID" value={inputData.SupplierID} onChange={handleInputChange} placeholder="Supplier ID"/>
-            <input type="text" name="SupplierName" value={inputData.SupplierName} onChange={handleInputChange} placeholder="Supplier Name"/>
-            <input type="text" name="SupplierContact" value={inputData.SupplierContact} onChange={handleInputChange} placeholder="Contact Number"/>
-            <input type="text" name="UnitNumber" value={inputData.UnitNumber} onChange={handleInputChange} placeholder="Unit Number"/>
-            <input type="text" name="StreetName" value={inputData.StreetName} onChange={handleInputChange} placeholder="Street Name"/>
-            <input type="text" name="City" value={inputData.City} onChange={handleInputChange} placeholder="City"/>
-            <input type="text" name="State" value={inputData.State} onChange={handleInputChange} placeholder="State"/>
+            <label htmlFor="SupplierID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="SupplierID" value={inputData.SupplierID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="SupplierName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Name<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="SupplierName" value={inputData.SupplierName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="SupplierContact" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Contact<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="SupplierContact" value={inputData.SupplierContact} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="UnitNumber" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Unit Number<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="UnitNumber" value={inputData.UnitNumber} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="StreetName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Street Name<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="StreetName" value={inputData.StreetName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="City" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>City<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="City" value={inputData.City} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="State" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>State<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="State" value={inputData.State} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
           </div>
           <div>
             <p>Insert Record Details</p>
-            <input type="text" name="DocumentID" value={inputData.DocumentID} onChange={handleInputChange} placeholder="Document ID"/>
-            <input type="text" name="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} placeholder="Document Type"/>
-            <input type="text" name="DateIssued" value={inputData.DateIssued} onChange={handleInputChange} placeholder="Date Issued"/>
-            <input type="text" name="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} placeholder="Issued By"/>
-            <input type="text" name="ReceivedBy" value={inputData.ReceivedBy} onChange={handleInputChange} placeholder="Received By"/>
-            <input type="text" name="Link" value={inputData.Link} onChange={handleInputChange} placeholder="Link"/>
-            <input type="text" name="PropertyID" value={inputData.PropertyID} onChange={handleInputChange} placeholder="Property ID"/>
-            <input type="text" name="PropertyName" value={inputData.PropertyName} onChange={handleInputChange} placeholder="Property Name"/>
-            <input type="text" name="StatusID" value={inputData.StatusID} onChange={handleInputChange} placeholder="Status"/>
-            <input type="text" name="PropertySupervisorID" value={inputData.PropertySupervisorID} onChange={handleInputChange} placeholder="Property Supervisor ID"/>
-            <input type="text" name="LocationID" value={inputData.LocationID} onChange={handleInputChange} placeholder="Location ID"/>
-            <input type="text" name="CategoryID" value={inputData.CategoryID} onChange={handleInputChange} placeholder="Category ID"/>
-            <input type="text" name="PurchaseOrderID" value={inputData.PurchaseOrderID} onChange={handleInputChange} placeholder="Purchase Order ID"/>
-            <input type="text" name="PurchaseDate" value={inputData.PurchaseDate} onChange={handleInputChange} placeholder="Purchase Date"/>
-            <input type="text" name="TotalCost" value={inputData.TotalCost} onChange={handleInputChange} placeholder="Total Cost"/>
+            <label htmlFor="DocumentID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Document ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="DocumentID" value={inputData.DocumentID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="DocumentType" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Documment Type<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="DateIssued" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Date Issued<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="DateIssued" value={inputData.DateIssued} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="IssuedBy" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Issued By<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="ReceivedBy" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Received By<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="ReceivedBy" value={inputData.ReceivedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="Link" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Link<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="Link" value={inputData.Link} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="PropertyID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="PropertyID" value={inputData.PropertyID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="PropertyName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Name<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="PropertyName" value={inputData.PropertyName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="StatusID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="StatusID" value={inputData.StatusID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="PropertySupervisorID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="PropertySupervisorID" value={inputData.PropertySupervisorID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="LocationID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="LocationID" value={inputData.LocationID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="CategoryID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Category ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="CategoryID" value={inputData.CategoryID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="PurchaseOrderID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Purchase Order ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="PurchaseOrderID" value={inputData.PurchaseOrderID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="PurchaseDate" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Purchase Date<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="PurchaseDate" value={inputData.PurchaseDate} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="TotalCost" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Total Cost<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="TotalCost" value={inputData.TotalCost} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
           </div>
           <button type="submit">Submit</button>
         </form>
@@ -208,7 +256,7 @@ const SubmitPage = () => {
         <form onSubmit={handleUpdateProp}>
           <div>
             <p>Update Property</p>
-            <label htmlFor="PropertyID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID:   </label>
+            <label htmlFor="PropertyID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>:   </label>
             <input type="text" name="PropertyID1" value={updateProperty.PropertyID1} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} required/>
             <br />
             <label htmlFor="StatusID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status ID:   </label>
@@ -226,7 +274,7 @@ const SubmitPage = () => {
         <form onSubmit={handleUpdateSup}>
           <div>
             <p>Update Supplier</p>
-            <label htmlFor="SupplierID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier ID:   </label>
+            <label htmlFor="SupplierID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier ID<span style={{ color: 'red' }}>*</span>:   </label>
             <input type="text" name="SupplierID1" value={updateSupplier.SupplierID1} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} required/>
             <br />
             <label htmlFor="SupplierContact1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Contact:   </label>
@@ -251,7 +299,7 @@ const SubmitPage = () => {
         <form onSubmit={handleArchive}>
           <div>
             <p>Archive a record</p>
-            <label htmlFor="PropertyID2" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID:   </label>
+            <label htmlFor="PropertyID2" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>:   </label>
             <input type="text" name="PropertyID2" value={archiveData.PropertyID2} onChange={handleArchiveChange} style={{ width: '300px', display: 'inline-block' }} required/>
           </div>
           <button type="submit">Submit</button>
