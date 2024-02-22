@@ -353,7 +353,7 @@ app.post('/updateSupplier', (req, res) => {
         res.status(500).send('Error querying the database');
         return;
       }
-      //check first if propertyid is present in table
+      //check first if supplierid is present in table
       if (results.length > 0) {
         if (userInput.SupplierContact1 != '') {
           updateContact();
@@ -562,7 +562,7 @@ process.on('SIGINT', () => {
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Something broke!');
+  res.status(500).json({ error: err.message });
 });
 
 app.listen(port, () => {

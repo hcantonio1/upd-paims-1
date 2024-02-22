@@ -68,6 +68,15 @@ const SubmitPage = () => {
   const handleUpdateProp = async (e) => {
     e.preventDefault();
 
+    if (
+      !updateProperty.StatusID1 &&
+      !updateProperty.PropertySupervisorID1 &&
+      !updateProperty.LocationID1
+    ) {
+      alert('Please enter at least one of Status ID, Property Supervisor ID, or Location ID');
+      return;
+    }
+
     try {
       const response = await axios.post(
         "http://localhost:3000/updateProperty",
@@ -84,6 +93,17 @@ const SubmitPage = () => {
 
   const handleUpdateSup = async (e) => {
     e.preventDefault();
+
+    if (
+      !updateSupplier.SupplierContact1 &&
+      !updateSupplier.UnitNumber1 &&
+      !updateSupplier.StreetName1 &&
+      !updateSupplier.City1 &&
+      !updateSupplier.State1
+    ) {
+      alert('Please enter at least one of Supplier Contact, Unit Number, Street Name, City or State.');
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -188,22 +208,41 @@ const SubmitPage = () => {
         <form onSubmit={handleUpdateProp}>
           <div>
             <p>Update Property</p>
-            <input type="text" name="PropertyID1" value={updateProperty.PropertyID1} onChange={handleUpdatePropChange} placeholder="Property ID"/>
-            <input type="text" name="StatusID1" value={updateProperty.StatusID1} onChange={handleUpdatePropChange} placeholder="Status"/>
-            <input type="text" name="PropertySupervisorID1" value={updateProperty.PropertySupervisorID1} onChange={handleUpdatePropChange} placeholder="Property Supervisor ID"/>
-            <input type="text" name="LocationID1" value={updateProperty.LocationID1} onChange={handleUpdatePropChange} placeholder="Location ID"/>
+            <label htmlFor="PropertyID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID:   </label>
+            <input type="text" name="PropertyID1" value={updateProperty.PropertyID1} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="StatusID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status ID:   </label>
+            <input type="text" name="StatusID1" value={updateProperty.StatusID1} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} />
+            <br />
+            <label htmlFor="PropertySupervisorID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor ID:   </label>
+            <input type="text" name="PropertySupervisorID1" value={updateProperty.PropertySupervisorID1} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} />
+            <br />
+            <label htmlFor="LocationID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location ID:   </label>
+            <input type="text" name="LocationID1" value={updateProperty.LocationID1} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} />
+            <br />
           </div>
           <button type="submit">Submit</button>
         </form>
         <form onSubmit={handleUpdateSup}>
           <div>
             <p>Update Supplier</p>
-            <input type="text" name="SupplierID1" value={updateSupplier.SupplierID1} onChange={handleUpdateSupChange} placeholder="Supplier ID"/>
-            <input type="text" name="SupplierContact1" value={updateSupplier.SupplierContact1} onChange={handleUpdateSupChange} placeholder="Contact Number"/>
-            <input type="text" name="UnitNumber1" value={updateSupplier.UnitNumber1} onChange={handleUpdateSupChange} placeholder="Unit Number"/>
-            <input type="text" name="StreetName1" value={updateSupplier.StreetName1} onChange={handleUpdateSupChange} placeholder="Street Name"/>
-            <input type="text" name="City1" value={updateSupplier.City1} onChange={handleUpdateSupChange} placeholder="City"/>
-            <input type="text" name="State1" value={updateSupplier.State1} onChange={handleUpdateSupChange} placeholder="State"/>
+            <label htmlFor="SupplierID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier ID:   </label>
+            <input type="text" name="SupplierID1" value={updateSupplier.SupplierID1} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="SupplierContact1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Contact:   </label>
+            <input type="text" name="SupplierContact1" value={updateSupplier.SupplierContact1} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }}/>
+            <br />
+            <label htmlFor="UnitNumber1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Unit Number:   </label>
+            <input type="text" name="UnitNumber1" value={updateSupplier.UnitNumber1} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }}/>
+            <br />
+            <label htmlFor="StreetName1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Street Name:   </label>
+            <input type="text" name="StreetName1" value={updateSupplier.StreetName1} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} />
+            <br />
+            <label htmlFor="City1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>City:   </label>
+            <input type="text" name="City1" value={updateSupplier.City1} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} />
+            <br />
+            <label htmlFor="State1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>State:   </label>
+            <input type="text" name="State1" value={updateSupplier.State1} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} />
           </div>
           <button type="submit">Submit</button>
         </form>
@@ -212,7 +251,8 @@ const SubmitPage = () => {
         <form onSubmit={handleArchive}>
           <div>
             <p>Archive a record</p>
-            <input type="text" name="PropertyID2" value={archiveData.PropertyID2} onChange={handleArchiveChange} placeholder="Property ID"/>
+            <label htmlFor="PropertyID2" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID:   </label>
+            <input type="text" name="PropertyID2" value={archiveData.PropertyID2} onChange={handleArchiveChange} style={{ width: '300px', display: 'inline-block' }} required/>
           </div>
           <button type="submit">Submit</button>
         </form>
