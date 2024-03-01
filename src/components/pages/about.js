@@ -15,6 +15,8 @@ const AboutPage = () => {
         A project of Team COLA under Dr. Ligaya Figueroa in CS 191-192 Software
         Engineering course. This software is the idea of Ms. Grace Dumencel.
       </p>
+
+      <h1> Insert User Manual Here </h1>
     </Layout>
   );
 };
