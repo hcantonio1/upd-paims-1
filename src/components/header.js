@@ -3,8 +3,13 @@ import { StaticImage } from "gatsby-plugin-image";
 import { Link, navigate } from "gatsby";
 import { getUser, isLoggedIn, logout } from "../services/auth";
 import * as styles from "../styles/header.module.css";
-import { Typography } from "@material-ui/core"
+import { Typography, Box, AppBar, Toolbar, makeStyles } from "@material-ui/core"
 
+const useStyles = makeStyles({
+  appbar: {
+
+  }
+})
 const Header = () => {
   const handleLogout = (event) => {
     if (!isLoggedIn()) return false;
@@ -13,6 +18,16 @@ const Header = () => {
   };
 
   return (
+    // <AppBar
+    //     position="static"
+    //   >
+    //     <Toolbar>
+    //       <Typography>
+    //         Header
+    //       </Typography>
+    //     </Toolbar>
+    //   </AppBar>
+
     <header className={styles.header}>
       <StaticImage
         className={styles.logo}

@@ -15,9 +15,13 @@
     "clean": "gatsby clean"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
     "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
     "@mdx-js/react": "^2.3.0",
+    "@mui/material": "^5.15.11",
     "express": "^4.18.2",
     "firebase": "^10.7.0",
     "gatsby": "^5.12.11",
