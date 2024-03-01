@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Layout from "./layout";
-import SearchBar from "./searchbar";
-import FilterBy from "./filter";
+import Layout from "../layout";
+import SearchBar from "../searchbar";
+import FilterBy from "../filter";
 
 
 function DataTable({ data, columns, onSort, sortedField }) {

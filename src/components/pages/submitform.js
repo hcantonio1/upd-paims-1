@@ -1,7 +1,7 @@
 // Step 1: Import React
 import * as React from "react";
 import { Link } from "gatsby";
-import Layout from "./layout";
+import Layout from "../layout";
 import { useState } from "react";
 import axios from "axios";
 

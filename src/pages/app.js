@@ -1,12 +1,12 @@
 import React from "react";
 import { Router } from "@reach/router";
 import PrivateRoute from "../components/privateRoute";
-import HomePage from "../components/home";
-import InventoryPage from "../components/inventory";
-import SubmitPage from "../components/submitform";
-import AboutPage from "../components/about";
-import Account from "../components/profile";
-import Login from "../components/login";
+import HomePage from "../components/pages/home";
+import InventoryPage from "../components/pages/inventory";
+import SubmitPage from "../components/pages/submitform";
+import AboutPage from "../components/pages/about";
+import Account from "../components/pages/profile";
+import Login from "../components/pages/login";
 import InventoryPlaygroundPage from "../components/inventoryPlayground";
 
 const App = () => (

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "gatsby";
-import Layout from "./layout";
-import * as styles from "../styles/index.module.css";
+import Layout from "../layout";
+import * as styles from "../../styles/index.module.css";
 
 const HomePage = () => {
   const [propertyData, setPropertyData] = useState([]);
