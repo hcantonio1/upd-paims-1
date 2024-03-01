@@ -1,5 +1,8 @@
 import { navigate } from "gatsby";
-import { app } from "../firebase-config";
+
+// create the default app
+import { firebaseApp } from "./firebase-config";
+
 import {
   getAuth,
   signInWithEmailAndPassword,
