@@ -190,15 +190,9 @@ const SubmitPage = () => {
   };
 
   return (
-    <Layout pageTitle="SUBMIT FORM">
+    <Layout pageTitle="CREATE A RECORD">
       <main>
-        <div>
-          <Link to="/app/form_addrec/">Create Record</Link>
-          <br />
-          <Link to="/app/form_updaterec/">Update Record</Link>
-          <br />
-          <Link to="/app/form_archiverec/">Archive Record</Link>
-        </div>
+        <Link to="/app/submitform/">Submit Form</Link>
         <h2>Create a record in purchase_order, property, and item_document</h2>
         <p>Insert into supplier if it does not exist</p>
         <p>
