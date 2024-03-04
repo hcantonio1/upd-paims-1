@@ -12,9 +12,11 @@ const firebaseConfig = {
   storageBucket: "react-firebase-v9-b1a6f.appspot.com",
   messagingSenderId: "1089973929613",
   appId: "1:1089973929613:web:bd6cee73d6ed7db292c4c4",
-  databaseURL: "https://react-firebase-v9-b1a6f-default-rtdb.asia-southeast1.firebasedatabase.app",
 };
 
 // Initialize Firebase
+<<<<<<< HEAD:src/firebase-config.js
 export const app = initializeApp(firebaseConfig);
-export const database = getDatabase(app);
+=======
+export const firebaseApp = initializeApp(firebaseConfig);
+>>>>>>> 1cae993dce956785ea6dc33f94cc5b8d9234f8ae:src/services/firebase-config.js
