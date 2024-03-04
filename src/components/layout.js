@@ -72,7 +72,7 @@ const Layout = ({ pageTitle, children }) => {
     <Box className={classes.root}>
 
       {/* NAVIGATION BAR CODE */}
-      <div>
+      <Box>
         <Drawer
           className={classes.drawer}
           variant="permanent"
@@ -94,13 +94,20 @@ const Layout = ({ pageTitle, children }) => {
             ))}
           </List>
         </Drawer>
-      </div>
+      </Box>
 
       {/* HEADER CODE */}
-      <Header className={classes.header} />
+      <Box>
+        <Header className={classes.hea} />
+      </Box>
+
       {/* Page Content */}
-      <h2> {pageTitle} </h2>
-      <div>{children}</div>
+      <Box>
+        <h2> {pageTitle} </h2>
+        <Box>
+        <div>{children}</div>
+        </Box>
+      </Box>
     </Box>
   );
 };
