@@ -11,9 +11,10 @@ const navbarWidth = 200
 // CLASSES AND STYLES FOR DESIGNING
 const useStyles = makeStyles({
   root: {
-    display: 'flex'
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%'
   },
-
   page: {
     background: '#f9f9f9',
     width: '100%',
@@ -29,6 +30,9 @@ const useStyles = makeStyles({
   },
   active: {
     background: '#f4f4f4'
+  },
+  header: {
+    margin: 0
   }
 })
 
@@ -45,13 +49,13 @@ const Layout = ({ pageTitle, children }) => {
 
     {
       text: 'Inventory',
-      icon: <Folder/>,
+      icon: <Folder />,
       path: "/app/inventory"
     },
 
     {
       text: 'Submit Form',
-      icon: <AddCircleOutline/>,
+      icon: <AddCircleOutline />,
       path: "/app/submitform"
     },
 
@@ -66,8 +70,6 @@ const Layout = ({ pageTitle, children }) => {
   // LAYOUT PROPER
   return (
     <Box className={classes.root}>
-      {/* HEADER CODE */}
-      {/* <Header /> */}
 
       {/* NAVIGATION BAR CODE */}
       <div>
@@ -80,25 +82,25 @@ const Layout = ({ pageTitle, children }) => {
           <List>
             {menuItems.map(item => (
               <ListItem
-              button
-              key={item.text}
-            >
-              <ListItemIcon>
-                {item.icon}
-              </ListItemIcon>
+                button
+                key={item.text}
+              >
+                <ListItemIcon>
+                  {item.icon}
+                </ListItemIcon>
 
-              <ListItemText primary={item.text} />
-            </ListItem>
+                <ListItemText primary={item.text} />
+              </ListItem>
             ))}
           </List>
         </Drawer>
       </div>
 
+      {/* HEADER CODE */}
+      <Header className={classes.header} />
       {/* Page Content */}
-      <div>
-        <h2> {pageTitle} </h2>
-        <div>{children}</div>
-      </div>
+      <h2> {pageTitle} </h2>
+      <div>{children}</div>
     </Box>
   );
 };
