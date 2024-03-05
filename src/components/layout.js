@@ -2,7 +2,7 @@ import * as React from "react";
 import Navbar from "../components/navbar";
 import Header from "./header"
 import * as styles from "../styles/layout.module.css"
-import { makeStyles, Drawer, Typography, ListItem, List, ListItemIcon, ListItemText, AppBar, Toolbar, Box } from "@material-ui/core";
+import { makeStyles, Drawer, Typography, ListItem, List, ListItemIcon, ListItemText, AppBar, Toolbar, Box, Grid, GridSpacing } from "@material-ui/core";
 import { HomeRounded, Folder, AddCircleOutline } from '@material-ui/icons';
 
 
@@ -33,6 +33,13 @@ const useStyles = makeStyles({
   },
   header: {
     margin: 0
+  },
+  pageTitleStyle: {
+    color: '#014421',
+    padding: 10
+  },
+  contentContainer: {
+    margin: 20
   }
 })
 
@@ -96,18 +103,42 @@ const Layout = ({ pageTitle, children }) => {
         </Drawer>
       </Box>
 
-      {/* HEADER CODE */}
-      <Box>
-        <Header className={classes.hea} />
-      </Box>
-
-      {/* Page Content */}
-      <Box>
-        <h2> {pageTitle} </h2>
+      <Grid
+        container
+        direction="column"
+      >
+        {/* HEADER */}
         <Box>
-        <div>{children}</div>
+          <Header className={classes.header} />
         </Box>
-      </Box>
+
+        {/* Page Content */}
+        <Grid
+          container
+          direction='column'
+          justifyContent="flex-start"
+          alignItems="stretch"
+        >
+          {/* Page title */}
+          <Grid item>
+            <Typography
+              variant="h3"
+              className={classes.pageTitleStyle}
+            > {pageTitle} </Typography>
+          </Grid>
+
+          {/* Content Proper */}
+          <Grid item
+          className={classes.contentContainer}
+          >
+            <Box sx={{backgroundColor: '#ffffff'}}>
+              <div>{children}</div>
+            </Box>
+          </Grid>
+
+        </Grid>
+
+      </Grid>
     </Box>
   );
 };
