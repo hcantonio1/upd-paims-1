@@ -42,8 +42,8 @@ export const handleLogin = ({ username, password }) => {
 };
 
 export const isLoggedIn = () => {
+  // return !!auth.currentUser;
   const user = getUser();
-
   return !!user.username;
 };
 
@@ -52,10 +52,17 @@ export const logout = (callback) => {
   callback();
 };
 
+// roles
 export const setUserRole = async () => {
   const user = auth.currentUser;
   const docSnap = await getDoc(doc(db, "user", user.uid));
   const role = docSnap.data().Role;
   sessionStorage.setItem("userRole", role);
   console.log(sessionStorage.getItem("userRole"));
+};
+
+export const getUserRole = async () => {
+  const user = auth.currentUser;
+  const docSnap = await getDoc(doc(db, "user", user.uid));
+  return docSnap.data().Role;
 };
