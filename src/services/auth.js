@@ -1,13 +1,10 @@
 import { navigate } from "gatsby";
-
-// create the default app
-import { firebaseApp } from "./firebase-config";
-
+import { auth, db } from "./firebase-config";
 import {
-  getAuth,
   signInWithEmailAndPassword,
   // createUserWithEmailAndPassword,
 } from "firebase/auth";
+import { getDoc, doc } from "firebase/firestore";
 
 export const isBrowser = () => typeof window !== "undefined";
 
@@ -20,17 +17,19 @@ const setUser = (user) =>
   sessionStorage.setItem("paimsUser", JSON.stringify(user));
 
 export const handleLogin = ({ username, password }) => {
-  const authentication = getAuth();
   const email = username;
-  signInWithEmailAndPassword(authentication, email, password)
+  signInWithEmailAndPassword(auth, email, password)
     .then((response) => {
       sessionStorage.setItem(
         "Auth Token",
         response._tokenResponse.refreshToken
       );
+      setUserRole();
+    })
+    .then(() => {
       setUser({
         username: `paims`,
-        name: `upd paims`,
+        role: sessionStorage.getItem("userRole"),
         email: email,
       });
       navigate(`/app/home`);
@@ -50,4 +49,17 @@ export const isLoggedIn = () => {
 export const logout = (callback) => {
   setUser({});
   callback();
+};
+
+export const setUserRole = () => {
+  const user = auth.currentUser;
+  getDoc(doc(db, "user", user.uid))
+    .then((docSnap) => {
+      const role = docSnap.data().Role;
+      console.log(role);
+      sessionStorage.setItem("userRole", role);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
