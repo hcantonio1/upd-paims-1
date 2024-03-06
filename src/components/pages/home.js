@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "gatsby";
+import React from "react";
 import Layout from "../layout";
-import * as styles from "../../styles/index.module.css";
+// import * as styles from "../../styles/index.module.css";
 import { getUser } from "../../services/auth";
 
 const HomePage = () => {

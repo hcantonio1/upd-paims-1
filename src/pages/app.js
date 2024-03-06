@@ -10,6 +10,7 @@ import Login from "../components/pages/login";
 import AddRecordPage from "../components/pages/form_addrec";
 import UpdateRecordPage from "../components/pages/form_updaterec";
 import ArchiveRecordPage from "../components/pages/form_archiverec";
+import ManageAccounts from "../components/pages/manageaccounts";
 
 const App = () => (
   <Router>
@@ -21,6 +22,7 @@ const App = () => (
     <PrivateRoute path="/app/form_addrec" component={AddRecordPage} />
     <PrivateRoute path="/app/form_updaterec" component={UpdateRecordPage} />
     <PrivateRoute path="/app/form_archiverec" component={ArchiveRecordPage} />
+    <PrivateRoute path="/app/manageaccounts" component={ManageAccounts} />
     <Login path="/app/login" />
   </Router>
 );
