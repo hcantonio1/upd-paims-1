@@ -1,14 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { navigate } from "gatsby";
 import { isLoggedIn } from "../services/auth";
 
 const PrivateRoute = ({ component: Component, location, ...rest }) => {
-  // const [userRole, setUserRole] = useState("");
-  // useEffect(() => {
-  //   getUserRole().then((role) => {
-  //     setUserRole(role);
-  //   });
-  // });
   if (["/app", "/app/"].includes(location.pathname)) {
     navigate("/app/home");
   }
