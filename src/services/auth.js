@@ -2,6 +2,7 @@ import { navigate } from "gatsby";
 import { auth, db } from "./firebase-config";
 import {
   signInWithEmailAndPassword,
+  onAuthStateChanged,
   // createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { getDoc, doc } from "firebase/firestore";
@@ -58,7 +59,7 @@ export const setUserRole = async () => {
   const docSnap = await getDoc(doc(db, "user", user.uid));
   const role = docSnap.data().Role;
   sessionStorage.setItem("userRole", role);
-  console.log(sessionStorage.getItem("userRole"));
+  // console.log(sessionStorage.getItem("userRole"));
 };
 
 export const getUserRole = async () => {
@@ -66,3 +67,13 @@ export const getUserRole = async () => {
   const docSnap = await getDoc(doc(db, "user", user.uid));
   return docSnap.data().Role;
 };
+
+// onAuthStateChanged(auth, async (user) => {
+//   console.log(user);
+//   await setUserRole();
+//   setUser({
+//     username: `paims`,
+//     role: sessionStorage.getItem("userRole"),
+//     email: user.email,
+//   });
+// });

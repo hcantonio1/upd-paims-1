@@ -14,6 +14,7 @@ import ManageAccounts from "../components/pages/manageaccounts";
 
 const App = () => (
   <Router>
+    <PrivateRoute path="/app" component={HomePage} />
     <PrivateRoute path="/app/home" component={HomePage} />
     <PrivateRoute path="/app/inventory" component={InventoryPage} />
     <PrivateRoute path="/app/submitform" component={SubmitPage} />
