@@ -17,14 +17,15 @@ const setUser = (user) =>
   sessionStorage.setItem("paimsUser", JSON.stringify(user));
 
 export const handleLogin = ({ username, password }) => {
+  sessionStorage.clear();
   const email = username;
   signInWithEmailAndPassword(auth, email, password)
-    .then((response) => {
+    .then(async (response) => {
       sessionStorage.setItem(
         "Auth Token",
         response._tokenResponse.refreshToken
       );
-      setUserRole();
+      await setUserRole();
     })
     .then(() => {
       setUser({
@@ -51,15 +52,10 @@ export const logout = (callback) => {
   callback();
 };
 
-export const setUserRole = () => {
+export const setUserRole = async () => {
   const user = auth.currentUser;
-  getDoc(doc(db, "user", user.uid))
-    .then((docSnap) => {
-      const role = docSnap.data().Role;
-      console.log(role);
-      sessionStorage.setItem("userRole", role);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  const docSnap = await getDoc(doc(db, "user", user.uid));
+  const role = docSnap.data().Role;
+  sessionStorage.setItem("userRole", role);
+  console.log(sessionStorage.getItem("userRole"));
 };

@@ -5,8 +5,6 @@ import * as styles from "../../styles/index.module.css";
 import { getUser } from "../../services/auth";
 
 const HomePage = () => {
-  // const userRole = getUserRole();
-  // console.log(userRole);
   return (
     <Layout pageTitle="DASHBOARD">
       <main>
