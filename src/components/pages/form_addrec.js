@@ -2,164 +2,145 @@
 import * as React from "react";
 import { Link } from "gatsby";
 import Layout from "../layout";
-import { useState } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
+import { db, storage } from "../../services/firebase-config";
+import { doc, setDoc, Timestamp, getDoc, collection, getDocs } from "firebase/firestore"; 
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 
-const SubmitPage = () => {
+const InsertRecord = () => {
   const [inputData, setInputData] = useState({
-    SupplierID: "",
-    SupplierName: "",
-    SupplierContact: "",
-    UnitNumber: "",
-    StreetName: "",
-    City: "",
-    State: "",
     DocumentID: "",
     DocumentType: "",
     DateIssued: "",
     IssuedBy: "",
     ReceivedBy: "",
     Link: "",
+    CategoryID: "",
+    LocationID: "",
     PropertyID: "",
     PropertyName: "",
-    StatusID: "",
     PropertySupervisorID: "",
-    LocationID: "",
-    CategoryID: "",
-    PurchaseOrderID: "",
-    PurchaseDate: "",
-    TotalCost: "",
+    StatusID: "",
+    SupplierID: "",
   });
 
-  const [updateProperty, setUpdateProperty] = useState({
-    StatusID1: "",
-    PropertySupervisorID1: "",
-    LocationID1: "",
-    PropertyID1: "",
-  });
+  const [users, setUsers] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [statuses, setStatuses] = useState([]);
 
-  const [updateSupplier, setUpdateSupplier] = useState({
-    SupplierContact1: '',
-    UnitNumber1: '',
-    StreetName1: '',
-    City1: '',
-    State1: '',
-    SupplierID1: '',
-  });
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const userCollection = collection(db, 'user');
+        const snapshot = await getDocs(userCollection);
+        const users = snapshot.docs.map(doc => doc.data());
+        setUsers(users);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
 
-  const [archiveData, setArchiveData] = useState({
-    PropertyID2: "",
-  });
+    const fetchCategories = async () => {
+      try {
+        const categoryCollection = collection(db, 'item_category');
+        const snapshot = await getDocs(categoryCollection);
+        const categories = snapshot.docs.map(doc => doc.data());
+        setCategories(categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    const fetchLocations = async () => {
+      try {
+        const locationCollection = collection(db, 'item_location');
+        const snapshot = await getDocs(locationCollection);
+        const locations = snapshot.docs.map(doc => doc.data());
+        setLocations(locations);
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+      }
+    };
+
+    const fetchStatuses = async () => {
+      try {
+        const statusCollection = collection(db, 'status');
+        const snapshot = await getDocs(statusCollection);
+        const statuses = snapshot.docs.map(doc => doc.data());
+        setStatuses(statuses);
+      } catch (error) {
+        console.error("Error fetching statuses:", error);
+      }
+    };
+
+    fetchUsers();
+    fetchCategories();
+    fetchLocations();
+    fetchStatuses();
+  }, []);
+
+  const getFullName = (user) => {
+    return `${user.FirstName} ${user.LastName}`;
+  };  
+
+  const getFullLoc = (location) => {
+    return `${location.Building} ${location.RoomNumber}`;
+  };  
 
   const handleInsert = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await axios.post("http://localhost:3000/addData", {
-        userInput: inputData,
-      });
-
-      console.log(response.data); // Success message
-
-      if (response.status === 200) {
-        alert("Successfully inserted!");
-        window.location.reload();
-      }
-
-    } catch (error) {
-      console.error("Error cannot access:", error);
-      alert("Supplier or record already exists, or transaction failed.");
-    }
-  };
-
-  const handleUpdateProp = async (e) => {
-    e.preventDefault();
-
-    if (
-      !updateProperty.StatusID1 &&
-      !updateProperty.PropertySupervisorID1 &&
-      !updateProperty.LocationID1
-    ) {
-      alert('Please enter at least one of Status ID, Property Supervisor ID, or Location ID');
+    if (inputData.IssuedBy === inputData.ReceivedBy) {
+      alert("IssuedBy and ReceivedBy cannot be the same user.");
       return;
     }
 
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/updateProperty",
-        {
-          userInput: updateProperty,
-        }
-      );
-
-      console.log(response.data); // Success message
-
-      if (response.status === 200) {
-        alert("Successfully updated property!");
-        window.location.reload();
-      }
-
-    } catch (error) {
-      console.error("Error cannot access:", error);
-      alert("Failed to update property.");
-    }
-  };
-
-  const handleUpdateSup = async (e) => {
-    e.preventDefault();
-
-    if (
-      !updateSupplier.SupplierContact1 &&
-      !updateSupplier.UnitNumber1 &&
-      !updateSupplier.StreetName1 &&
-      !updateSupplier.City1 &&
-      !updateSupplier.State1
-    ) {
-      alert('Please enter at least one of Supplier Contact, Unit Number, Street Name, City or State.');
-      return;
-    }
+    const issuedByUser = users.find(user => getFullName(user) === inputData.IssuedBy);
+    const receivedByUser = users.find(user => getFullName(user) === inputData.ReceivedBy);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/updateSupplier",
-        {
-          userInput: updateSupplier,
-        }
-      );
-
-      console.log(response.data); // Success message
-
-      if (response.status === 200) {
-        alert("Successfully updated supplier!");
-        window.location.reload();
+      const docRef = doc(db, "item_document", inputData.DocumentID);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        alert("Document exists!");
+      } else {
+        try {
+          console.log("Uploading file to Firebase Storage");
+          const fileRef = ref(storage, "DCS/" + inputData.Link.name);
+          await uploadBytes(fileRef, inputData.Link);
+          const fileUrl = await getDownloadURL(fileRef);
+          console.log("File uploaded successfully:", fileUrl);
+          await setDoc(doc(db, "item_document", inputData.DocumentID), {
+            DateIssued: Timestamp.fromDate(new Date(inputData.DateIssued)),
+            DocumentID: inputData.DocumentID,
+            DocumentType: inputData.DocumentType,
+            IssuedBy: inputData.IssuedBy,
+            Link: fileUrl,
+            ReceivedBy: inputData.ReceivedBy,
+          });
+          await setDoc(doc(db, "property", inputData.PropertyID), {
+            CategoryID: inputData.CategoryID,
+            DocumentID: inputData.DocumentID,
+            isArhived: 0,
+            LocationID: inputData.LocationID,
+            PropertyID: inputData.PropertyID,
+            PropertyName: inputData.PropertyName,
+            PropertySupervisorID: inputData.PropertySupervisorID,
+            StatusID: inputData.StatusID,
+            SupplierID: inputData.SupplierID,
+          });
+          alert("Successfully inserted!");
+        } catch (error) {
+          console.error("Error inserting document:", error);
+          alert("Failed to insert record.");
+        } 
       }
-
     } catch (error) {
-      console.error("Error cannot access:", error);
-      alert("Failed to update supplier.");
+     console.error("Error checking for document:", error);
+      alert("Failed to check for document existence.");
     }
-  };
-
-  const handleArchive = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await axios.post("http://localhost:3000/archiveData", {
-        userInput: archiveData,
-      });
-
-      console.log(response.data); // Success message
-
-      if (response.status === 200) {
-        alert("Successfully archived!");
-        window.location.reload();
-      }
-
-    } catch (error) {
-      console.error("Error cannot access:", error);
-      alert("Already archived.");
-    }
-  };
+  }
 
   const handleInputChange = (e) => {
     setInputData({
@@ -168,81 +149,49 @@ const SubmitPage = () => {
     });
   };
 
-  const handleUpdatePropChange = (e) => {
-    setUpdateProperty({
-      ...updateProperty,
-      [e.target.name]: e.target.value,
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setInputData({
+      ...inputData,
+      Link: file,
     });
   };
-
-  const handleUpdateSupChange = (e) => {
-    setUpdateSupplier({
-      ...updateSupplier,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleArchiveChange = (e) => {
-    setArchiveData({
-      ...archiveData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  
 
   return (
     <Layout pageTitle="CREATE A RECORD">
       <main>
-        <Link to="/app/submitform/">Submit Form</Link>
-        <h2>Create a record in purchase_order, property, and item_document</h2>
-        <p>Insert into supplier if it does not exist</p>
-        <p>
-          item_category untouched and item_location untouched since under the
-          assumption the tables have complete data already and no need to update
-          with new locations or categories.
-        </p>
+        <Link to="/app/submitform/">Return to Submit Form Page</Link>
         <form onSubmit={handleInsert}>
           <div>
-            <p>Supplier</p>
-            <label htmlFor="SupplierID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="SupplierID" value={inputData.SupplierID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
-            <br />
-            <label htmlFor="SupplierName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Name:   </label>
-            <input type="text" name="SupplierName" value={inputData.SupplierName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} />
-            <br />
-            <label htmlFor="SupplierContact" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Contact:   </label>
-            <input type="text" name="SupplierContact" value={inputData.SupplierContact} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." />
-            <br />
-            <label htmlFor="UnitNumber" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Unit Number:   </label>
-            <input type="text" name="UnitNumber" value={inputData.UnitNumber} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." />
-            <br />
-            <label htmlFor="StreetName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Street Name:   </label>
-            <input type="text" name="StreetName" value={inputData.StreetName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} />
-            <br />
-            <label htmlFor="City" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>City:   </label>
-            <input type="text" name="City" value={inputData.City} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} />
-            <br />
-            <label htmlFor="State" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>State:   </label>
-            <input type="text" name="State" value={inputData.State} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} />
-          </div>
-          <div>
             <p>Insert Record Details</p>
-            <label htmlFor="DocumentID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Document ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <label htmlFor="DocumentID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Document Name<span style={{ color: 'red' }}>*</span>:   </label>
             <input type="text" name="DocumentID" value={inputData.DocumentID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
             <br />
             <label htmlFor="DocumentType" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Document Type<span style={{ color: 'red' }}>*</span>:   </label>
             <input type="text" name="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
             <br />
             <label htmlFor="DateIssued" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Date Issued<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="DateIssued" value={inputData.DateIssued} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="\d{4}-\d{2}-\d{2}" title="yyyy-mm-dd" required/>
+            <input type="date" name="DateIssued" value={inputData.DateIssued} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="\d{4}-\d{2}-\d{2}" title="yyyy-mm-dd" required/>
             <br />
             <label htmlFor="IssuedBy" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Issued By<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <select name="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required>
+              <option value="">Select Issued By</option>
+              {users.map((user, index) => (
+                <option key={`issuedBy_${index}`} value={user.username}>{getFullName(user)}</option>
+              ))}
+            </select>
             <br />
             <label htmlFor="ReceivedBy" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Received By<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="ReceivedBy" value={inputData.ReceivedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <select name="ReceivedBy" value={inputData.ReceivedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required>
+              <option value="">Select Received By</option>
+              {users.map((user, index) => (
+                <option key={`receivedBy_${index}`} value={user.username}>{getFullName(user)}</option>
+              ))}
+            </select>
             <br />
-            <label htmlFor="Link" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Link<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="Link" value={inputData.Link} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <label htmlFor="Link" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>File<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="file" name="Link" onChange={handleFileChange} style={{ width: '300px', display: 'inline-block' }} required/>
             <br />
             <label htmlFor="PropertyID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>:   </label>
             <input type="text" name="PropertyID" value={inputData.PropertyID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
@@ -251,7 +200,7 @@ const SubmitPage = () => {
             <input type="text" name="PropertyName" value={inputData.PropertyName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
             <br />
             <label htmlFor="StatusID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <select name="StatusID" value={updateProperty.StatusID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }}>
+            <select name="StatusID" value={inputData.StatusID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }}>
               <option value =""></option>
               <option value ="1">1: In use</option>
               <option value ="2">2: Available</option>
@@ -262,89 +211,21 @@ const SubmitPage = () => {
             <input type="text" name="PropertySupervisorID" value={inputData.PropertySupervisorID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
             <br />
             <label htmlFor="LocationID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="LocationID" value={inputData.LocationID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
+            <select name="LocationID" value={inputData.LocationID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }} required>
+              <option value ="">Select Location</option>
+              {locations.map((location, index) => (
+                <option key={`location_${index}`} value={location.LocationID}>{getFullLoc(location)}</option>
+              ))}
+            </select>
             <br />
             <label htmlFor="CategoryID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Category ID<span style={{ color: 'red' }}>*</span>:   </label>
             <select name="CategoryID" value={inputData.CategoryID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }} required>
-              <option value =""></option>
-              <option value ="1">1: Mouse</option>
-              <option value ="2">2: Keyboard</option>
-              <option value ="3">3: Fan</option>
-              <option value ="4">4: Chair</option>
-              <option value ="5">5: Table</option>
-              <option value ="6">6: Laptop</option>
-              <option value ="7">7: PC</option>
-              <option value ="8">8: Cord</option>
-              <option value ="9">9: AC</option>
+              <option value ="">Select Category</option>
+              {categories.map((category, index) => (
+                <option key={`category_${index}`} value={category.CategoryID}>{category.CategoryName}</option>
+              ))}
             </select>
             <br />
-            <label htmlFor="PurchaseOrderID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Purchase Order ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="PurchaseOrderID" value={inputData.PurchaseOrderID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
-            <br />
-            <label htmlFor="PurchaseDate" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Purchase Date<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="PurchaseDate" value={inputData.PurchaseDate} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="\d{4}-\d{2}-\d{2}" title="yyyy-mm-dd" required/>
-            <br />
-            <label htmlFor="TotalCost" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Total Cost<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="TotalCost" value={inputData.TotalCost} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="^\d*\.?\d+$" title="Please enter a positive number." required/>
-          </div>
-          <button type="submit">Submit</button>
-        </form>
-        <h2>Update a record in property or supplier</h2>
-        <p>Fields that may be updated are: StatusID, LocationID, PropertySupervisorID, SupplierContact, UnitNumber, StreetName, City, State</p>
-        <p>Others pretty much untouched since they are dates, prices, etc.</p>
-        <form onSubmit={handleUpdateProp}>
-          <div>
-            <p>Update Property</p>
-            <label htmlFor="PropertyID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="PropertyID1" value={updateProperty.PropertyID1} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
-            <br />
-            <label htmlFor="StatusID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status ID:   </label>
-            <select name="StatusID1" value={updateProperty.StatusID1} onChange={handleUpdatePropChange} style={{ width: '310px', display: 'inline-block' }}>
-              <option value =""></option>
-              <option value ="1">1: In use</option>
-              <option value ="2">2: Available</option>
-              <option value ="3">3: Broken</option>
-            </select>
-            <br />
-            <label htmlFor="PropertySupervisorID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor ID:   </label>
-            <input type="text" name="PropertySupervisorID1" value={updateProperty.PropertySupervisorID1} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only."/>
-            <br />
-            <label htmlFor="LocationID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location ID:   </label>
-            <input type="text" name="LocationID1" value={updateProperty.LocationID1} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only."/>
-            <br />
-          </div>
-          <button type="submit">Submit</button>
-        </form>
-        <form onSubmit={handleUpdateSup}>
-          <div>
-            <p>Update Supplier</p>
-            <label htmlFor="SupplierID1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="SupplierID1" value={updateSupplier.SupplierID1} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
-            <br />
-            <label htmlFor="SupplierContact1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Contact:   </label>
-            <input type="text" name="SupplierContact1" value={updateSupplier.SupplierContact1} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only."/>
-            <br />
-            <label htmlFor="UnitNumber1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Unit Number:   </label>
-            <input type="text" name="UnitNumber1" value={updateSupplier.UnitNumber1} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only."/>
-            <br />
-            <label htmlFor="StreetName1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Street Name:   </label>
-            <input type="text" name="StreetName1" value={updateSupplier.StreetName1} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} />
-            <br />
-            <label htmlFor="City1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>City:   </label>
-            <input type="text" name="City1" value={updateSupplier.City1} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} />
-            <br />
-            <label htmlFor="State1" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>State:   </label>
-            <input type="text" name="State1" value={updateSupplier.State1} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} />
-          </div>
-          <button type="submit">Submit</button>
-        </form>
-        <h2>Archive a record</h2>
-        <p>Will only pretty much just change archive status in property table. If record is already archived, will say so in console.</p>
-        <form onSubmit={handleArchive}>
-          <div>
-            <p>Archive a record</p>
-            <label htmlFor="PropertyID2" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="PropertyID2" value={archiveData.PropertyID2} onChange={handleArchiveChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
           </div>
           <button type="submit">Submit</button>
         </form>
@@ -354,13 +235,7 @@ const SubmitPage = () => {
 };
 
 // You'll learn about this in the next task, just copy it for now
-export const Head = () => <title>Submit Form</title>;
+export const Head = () => <title>Insert Record</title>;
 
 // Step 3: Export your component
-export default SubmitPage;
-
-//personal notes
-//current problems with adding record:
-//lengthy process if doing it one by one per property
-//current problems with updating record:
-//
+export default InsertRecord;
