@@ -22,6 +22,15 @@ const InsertRecord = () => {
     PropertySupervisorID: "",
     StatusID: "",
     SupplierID: "",
+    PurchaseDate: "",
+    PurchaseOrderID: "",
+    TotalCost: "",
+    City: "",
+    State: "",
+    StreetName: "",
+    SupplierContact: "",
+    SupplierName: "",
+    UnitNumber: "",
   });
 
   const [users, setUsers] = useState([]);
@@ -96,16 +105,26 @@ const InsertRecord = () => {
       return;
     }
 
-    const issuedByUser = users.find(user => getFullName(user) === inputData.IssuedBy);
-    const receivedByUser = users.find(user => getFullName(user) === inputData.ReceivedBy);
-
     try {
       const docRef = doc(db, "item_document", inputData.DocumentID);
       const docSnap = await getDoc(docRef);
+      const propRef = doc(db, "property", inputData.PropertyID);
+      const propSnap = await getDoc(propRef);
       if (docSnap.exists()) {
         alert("Document exists!");
+      } else if (propSnap.exists()) {
+        alert("Property exists!");
       } else {
         try {
+          await setDoc(doc(db, "supplier", inputData.SupplierName), {
+            City: inputData.City,
+            State: inputData.State,
+            StreetName: inputData.StreetName,
+            SupplierContact: inputData.SupplierContact.toString(),
+            SupplierID: inputData.SupplierID,
+            SupplierName: inputData.SupplierName,
+            UnitNumber: inputData.UnitNumber,
+          });
           console.log("Uploading file to Firebase Storage");
           const fileRef = ref(storage, "DCS/" + inputData.Link.name);
           await uploadBytes(fileRef, inputData.Link);
@@ -122,13 +141,20 @@ const InsertRecord = () => {
           await setDoc(doc(db, "property", inputData.PropertyID), {
             CategoryID: inputData.CategoryID,
             DocumentID: inputData.DocumentID,
-            isArhived: 0,
+            isArchived: 0,
             LocationID: inputData.LocationID,
             PropertyID: inputData.PropertyID,
             PropertyName: inputData.PropertyName,
             PropertySupervisorID: inputData.PropertySupervisorID,
             StatusID: inputData.StatusID,
             SupplierID: inputData.SupplierID,
+          });
+          await setDoc(doc(db, "purchase_order", inputData.PurchaseOrderID), {
+            PropertyID: inputData.PropertyID,
+            PurchaseDate: Timestamp.fromDate(new Date(inputData.PurchaseDate)),
+            PurchaseOrderID: inputData.PurchaseOrderID,
+            SupplierID: inputData.SupplierID,
+            TotalCost: inputData.TotalCost,
           });
           alert("Successfully inserted!");
         } catch (error) {
@@ -147,6 +173,47 @@ const InsertRecord = () => {
       ...inputData,
       [e.target.name]: e.target.value,
     });
+
+    if (e.target.name === 'DocumentID') {
+      fetchDocumentData(e.target.value);
+    }
+  };
+
+  const fetchDocumentData = async (documentId) => {
+    try {
+      const docRef = doc(db, "item_document", documentId);
+      const docSnap = await getDoc(docRef);
+  
+      if (docSnap.exists()) {
+        const docData = docSnap.data();
+        setInputData(prevData => ({
+          ...prevData,
+          DocumentType: docData.DocumentType,
+          DateIssued: docData.DateIssued.toDate().toISOString().split('T')[0],
+          IssuedBy: docData.IssuedBy,
+          ReceivedBy: docData.ReceivedBy,
+        }));
+        // Update IssuedBy dropdown
+        const issuedByUser = users.find(user => user.Username === docData.IssuedBy);
+        if (issuedByUser) {
+          setInputData(prevData => ({
+            ...prevData,
+            IssuedBy: docData.IssuedBy,
+          }));
+        }
+
+        // Update ReceivedBy dropdown
+        const receivedByUser = users.find(user => user.Username === docData.ReceivedBy);
+        if (receivedByUser) {
+          setInputData(prevData => ({
+            ...prevData,
+            ReceivedBy: docData.ReceivedBy,
+          }));
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching document:", error);
+    }
   };
 
   const handleFileChange = (e) => {
@@ -165,6 +232,27 @@ const InsertRecord = () => {
         <form onSubmit={handleInsert}>
           <div>
             <p>Insert Record Details</p>
+            <label htmlFor="SupplierID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="SupplierID" value={inputData.SupplierID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
+            <br />
+            <label htmlFor="SupplierName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Name:   </label>
+            <input type="text" name="SupplierName" value={inputData.SupplierName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} />
+            <br />
+            <label htmlFor="SupplierContact" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Contact:   </label>
+            <input type="text" name="SupplierContact" value={inputData.SupplierContact} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." />
+            <br />
+            <label htmlFor="UnitNumber" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Unit Number:   </label>
+            <input type="text" name="UnitNumber" value={inputData.UnitNumber} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." />
+            <br />
+            <label htmlFor="StreetName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Street Name:   </label>
+            <input type="text" name="StreetName" value={inputData.StreetName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} />
+            <br />
+            <label htmlFor="City" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>City:   </label>
+            <input type="text" name="City" value={inputData.City} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} />
+            <br />
+            <label htmlFor="State" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>State:   </label>
+            <input type="text" name="State" value={inputData.State} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} />
+            <br />
             <label htmlFor="DocumentID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Document Name<span style={{ color: 'red' }}>*</span>:   </label>
             <input type="text" name="DocumentID" value={inputData.DocumentID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
             <br />
@@ -172,13 +260,13 @@ const InsertRecord = () => {
             <input type="text" name="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
             <br />
             <label htmlFor="DateIssued" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Date Issued<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="date" name="DateIssued" value={inputData.DateIssued} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="\d{4}-\d{2}-\d{2}" title="yyyy-mm-dd" required/>
+            <input type="date" name="DateIssued" value={inputData.DateIssued} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
             <br />
             <label htmlFor="IssuedBy" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Issued By<span style={{ color: 'red' }}>*</span>:   </label>
             <select name="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required>
               <option value="">Select Issued By</option>
               {users.map((user, index) => (
-                <option key={`issuedBy_${index}`} value={user.username}>{getFullName(user)}</option>
+                <option key={user.Username} value={user.Username}>{getFullName(user)}</option>
               ))}
             </select>
             <br />
@@ -186,7 +274,7 @@ const InsertRecord = () => {
             <select name="ReceivedBy" value={inputData.ReceivedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required>
               <option value="">Select Received By</option>
               {users.map((user, index) => (
-                <option key={`receivedBy_${index}`} value={user.username}>{getFullName(user)}</option>
+                <option key={user.Username} value={user.Username}>{getFullName(user)}</option>
               ))}
             </select>
             <br />
@@ -199,18 +287,22 @@ const InsertRecord = () => {
             <label htmlFor="PropertyName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Name<span style={{ color: 'red' }}>*</span>:   </label>
             <input type="text" name="PropertyName" value={inputData.PropertyName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
             <br />
-            <label htmlFor="StatusID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <label htmlFor="StatusID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status<span style={{ color: 'red' }}>*</span>:   </label>
             <select name="StatusID" value={inputData.StatusID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }}>
-              <option value =""></option>
-              <option value ="1">1: In use</option>
-              <option value ="2">2: Available</option>
-              <option value ="3">3: Broken</option>
+            <option value ="">Select Status</option>
+              {statuses.map((status, index) => (
+                <option key={`status${index}`} value={status.StatusID}>{status.StatusName}</option>
+              ))}
             </select>
             <br />
-            <label htmlFor="PropertySupervisorID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="PropertySupervisorID" value={inputData.PropertySupervisorID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
-            <br />
-            <label htmlFor="LocationID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <label htmlFor="PropertySupervisorID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor<span style={{ color: 'red' }}>*</span>:   </label>
+            <select name="PropertySupervisorID" value={inputData.PropertySupervisorID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required>
+              <option value="">Select Property Supervisor</option>
+              {users.map((user, index) => (
+                <option key={`propertysupervisor_${index}`} value={user.UserID}>{getFullName(user)}</option>
+              ))}
+            </select>
+            <label htmlFor="LocationID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location<span style={{ color: 'red' }}>*</span>:   </label>
             <select name="LocationID" value={inputData.LocationID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }} required>
               <option value ="">Select Location</option>
               {locations.map((location, index) => (
@@ -218,7 +310,7 @@ const InsertRecord = () => {
               ))}
             </select>
             <br />
-            <label htmlFor="CategoryID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Category ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <label htmlFor="CategoryID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Category<span style={{ color: 'red' }}>*</span>:   </label>
             <select name="CategoryID" value={inputData.CategoryID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }} required>
               <option value ="">Select Category</option>
               {categories.map((category, index) => (
@@ -226,6 +318,14 @@ const InsertRecord = () => {
               ))}
             </select>
             <br />
+            <label htmlFor="PurchaseOrderID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Purchase Order ID<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="PurchaseOrderID" value={inputData.PurchaseOrderID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
+            <br />
+            <label htmlFor="PurchaseDate" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Purchase Date<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="date" name="PurchaseDate" value={inputData.PurchaseDate} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+            <br />
+            <label htmlFor="TotalCost" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Total Cost<span style={{ color: 'red' }}>*</span>:   </label>
+            <input type="text" name="TotalCost" value={inputData.TotalCost} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="^\d*\.?\d+$" title="Please enter a positive number." required/>
           </div>
           <button type="submit">Submit</button>
         </form>
