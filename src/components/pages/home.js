@@ -11,7 +11,7 @@ const useStyles = makeStyles({
 
   userInfo: {
     backgroundColor: '#e5e5e5',
-    padding: 20
+    padding: 10
   },
 
   changeLogTextContainer: {
@@ -34,6 +34,10 @@ const useStyles = makeStyles({
 
   recentChangesText: {
     fontStyle: 'italic'
+  },
+
+  roleText: {
+    fontWeight: 'bold'
   }
 })
 
@@ -54,30 +58,60 @@ const HomePage = () => {
         {/* user information container  */}
         <Box
           display='flex'
-          flexDirection='row'
-          className={classes.userInfo}
+          flexDirection='column'
         >
-          {/* user icon  */}
-          <Box>
+          {/* username container  */}
+          <Box
+            display='flex'
+            flexDirection='row'
+            className={classes.userInfo}
+          >
+            {/* user icon  */}
+            <Box>
 
+            </Box>
+
+            {/* username  */}
+            <Box>
+              <Typography
+                variant='h6'
+                className={classes.userText}
+              >
+                User:
+              </Typography>
+            </Box>
+
+            <Box>
+              <Typography
+                variant='h6'
+              >
+                {getUser().email}
+              </Typography>
+            </Box>
           </Box>
 
-          {/* username  */}
-          <Box>
-            <Typography
-              variant='h6'
-              className={classes.userText}
-            >
-              User:
-            </Typography>
-          </Box>
+          {/* role container  */}
+          <Box
+            display='flex'
+            flexDirection='row'
+            className={classes.userInfo}
+          >
+            <Box>
+              <Typography
+                variant='h6'
+                className={classes.roleText}
+              >
+                Role:
+              </Typography>
+            </Box>
 
-          <Box>
-            <Typography
-              variant='h6'
-            >
-              {getUser().email}
-            </Typography>
+            <Box>
+              <Typography
+                variant='h6'
+              >
+                {getUser().role}
+              </Typography>
+            </Box>
           </Box>
         </Box>
 
