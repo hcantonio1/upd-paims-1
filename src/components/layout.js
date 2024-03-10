@@ -1,27 +1,39 @@
 import * as React from "react";
 import Navbar from "../components/navbar";
-import Header from "./header"
-import * as styles from "../styles/layout.module.css"
-import { makeStyles, Drawer, Typography, ListItem, List, ListItemIcon, ListItemText, Box, Grid, GridSpacing } from "@material-ui/core";
-import { HomeRounded, Folder, AddCircleOutline } from '@material-ui/icons';
+import Header from "./header";
+import * as styles from "../styles/layout.module.css";
+import {
+  makeStyles,
+  Drawer,
+  Typography,
+  ListItem,
+  List,
+  ListItemIcon,
+  ListItemText,
+  Box,
+  Grid,
+  GridSpacing,
+} from "@material-ui/core";
+import { HomeRounded, Folder, AddCircleOutline } from "@material-ui/icons";
 // import { useNavigate } from "react-router-dom";
 import { navigate } from "gatsby";
+import RestrictedComponent from "./restrictedComponent";
 
-const navbarWidth = 200
+const navbarWidth = 200;
 
 // CLASSES AND STYLES FOR DESIGNING
 const useStyles = makeStyles({
   root: {
-    display: 'flex',
-    flexDirection: 'row',
-    height: '100%'
+    display: "flex",
+    flexDirection: "row",
+    height: "100%",
   },
   page: {
-    background: '#f9f9f9',
-    width: '100%',
+    background: "#f9f9f9",
+    width: "100%",
   },
   root: {
-    display: 'flex',
+    display: "flex",
   },
   drawer: {
     width: navbarWidth,
@@ -30,46 +42,51 @@ const useStyles = makeStyles({
     width: navbarWidth,
   },
   active: {
-    background: '#f4f4f4'
+    background: "#f4f4f4",
   },
   header: {
-    margin: 0
+    margin: 0,
   },
   pageTitleStyle: {
-    color: '#014421',
+    color: "#014421",
     padding: 10,
     marginTop: 10,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   contentContainer: {
     margin: 10,
     marginTop: 0,
-    backgroundColor: '#ffffff',
-  }
-})
+    backgroundColor: "#ffffff",
+  },
+});
 
 const Layout = ({ pageTitle, children }) => {
-  const classes = useStyles() // FOR STYLING
+  const classes = useStyles(); // FOR STYLING
 
   // NAVIGATION BAR ITEMS
   const menuItems = [
     {
-      text: 'Home',
+      text: "Home",
       icon: <HomeRounded />,
-      path: "/app/home"
+      path: "/app/home",
     },
 
     {
-      text: 'Inventory',
+      text: "Inventory",
       icon: <Folder />,
-      path: "/app/inventory"
+      path: "/app/inventory",
     },
 
     {
-      text: 'Submit Form',
+      text: "Submit Form",
       icon: <AddCircleOutline />,
-      path: "/app/submitform"
+      path: "/app/submitform",
     },
+    // {
+    //   text: 'Manage Accounts',
+    //   icon: null,
+    //   path: "/app/manageaccounts/"
+    // }
 
     // to be added once mafinalize na yung faq page
     // {
@@ -77,15 +94,12 @@ const Layout = ({ pageTitle, children }) => {
     //   icon: <AddCircleOutlineOutlined color="secondary"/>,
     //   path: "/create"
     // },
-  ]
+  ];
 
   // LAYOUT PROPER
   return (
-    // main container 
-    <Box
-      display='flex'
-      flexDirection='row'
-    >
+    // main container
+    <Box display="flex" flexDirection="row">
       {/* NAVIGATION BAR CODE */}
       <Box>
         <Drawer
@@ -95,53 +109,50 @@ const Layout = ({ pageTitle, children }) => {
           anchor="left"
         >
           <List>
-            {menuItems.map(item => (
+            {menuItems.map((item) => (
               <ListItem
                 button
                 key={item.text}
                 onClick={() => navigate(item.path)}
               >
-                <ListItemIcon>
-                  {item.icon}
-                </ListItemIcon>
+                <ListItemIcon>{item.icon}</ListItemIcon>
 
                 <ListItemText primary={item.text} />
               </ListItem>
             ))}
+            <RestrictedComponent>
+              <ListItem button onClick={() => navigate("/app/manageaccounts/")}>
+                <ListItemIcon></ListItemIcon>
+
+                <ListItemText primary={"Manage Accounts"} />
+              </ListItem>
+            </RestrictedComponent>
           </List>
         </Drawer>
       </Box>
 
       {/* NON NAVBAR CONTAINER  */}
-      <Grid
-        container
-        direction="column"
-      >
+      <Grid container direction="column">
         {/* HEADER */}
         <Header className={classes.header} />
 
         {/* PAGE CONTENT */}
         <Grid
           container
-          direction='column'
+          direction="column"
           justifyContent="flex-start"
           alignItems="stretch"
         >
           {/* Page title */}
           <Grid item>
-            <Typography
-              variant="h3"
-              className={classes.pageTitleStyle}
-            >
+            <Typography variant="h3" className={classes.pageTitleStyle}>
               {pageTitle}
             </Typography>
           </Grid>
 
           {/* Content Proper */}
-          <Grid item
-            className={classes.contentContainer}
-          >
-              {children}
+          <Grid item className={classes.contentContainer}>
+            {children}
           </Grid>
         </Grid>
       </Grid>
