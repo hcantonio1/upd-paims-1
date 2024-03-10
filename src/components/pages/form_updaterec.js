@@ -277,14 +277,6 @@ const UpdateRec = () => {
 
 
 
-
-
-
-
-
-
-
-
   const useStyles = makeStyles({
     root: {
       padding: 20,
@@ -594,6 +586,25 @@ const UpdateRec = () => {
 };
 
 
+// You'll learn about this in the next task, just copy it for now
+export const Head = () => <title>Update Database</title>;
+
+// Step 3: Export your component
+export default UpdateRec;
+
+//personal notes
+//current problems with adding record:
+//lengthy process if doing it one by one per property
+//current problems with updating record:
+//
+
+
+
+
+
+
+
+
 
 {/* <main>
         <Link to="/app/submitform/">Return to Submit Form Page</Link>
@@ -658,16 +669,3 @@ const UpdateRec = () => {
         </form>
       </main> */}
 
-
-
-// You'll learn about this in the next task, just copy it for now
-export const Head = () => <title>Update Database</title>;
-
-// Step 3: Export your component
-export default UpdateRec;
-
-//personal notes
-//current problems with adding record:
-//lengthy process if doing it one by one per property
-//current problems with updating record:
-//
