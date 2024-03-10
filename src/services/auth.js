@@ -28,12 +28,7 @@ export const handleLogin = ({ username, password }) => {
       );
     })
     .then(async () => {
-      await setUserRole();
-      setUser({
-        username: `paims`,
-        role: sessionStorage.getItem("userRole"),
-        email: email,
-      });
+      await setUserData();
       navigate(`/app/home`);
     })
     .catch((error) => {
@@ -44,8 +39,8 @@ export const handleLogin = ({ username, password }) => {
 
 export const isLoggedIn = () => {
   // return !!auth.currentUser;
-  const user = getUser();
-  return !!user.username;
+  const paimsUser = getUser();
+  return !!paimsUser.email;
 };
 
 export const logout = (callback) => {
@@ -54,27 +49,22 @@ export const logout = (callback) => {
 };
 
 // roles
-const setUserData = async () => {};
-
-export const setUserRole = async () => {
-  const user = auth.currentUser;
-  const docSnap = await getDoc(doc(db, "user", user.uid));
+const setUserData = async () => {
+  const currentUser = auth.currentUser;
+  const email = auth.currentUser.email;
+  const docSnap = await getDoc(doc(db, "user", currentUser.uid));
   const role = docSnap.data().Role;
-  sessionStorage.setItem("userRole", role);
+  setUser({
+    user: currentUser,
+    email: email,
+    role: role,
+  });
 };
 
-export const getUserRole = async () => {
-  const user = auth.currentUser;
-  const docSnap = await getDoc(doc(db, "user", user.uid));
-  return docSnap.data().Role;
-};
-
-// onAuthStateChanged(auth, async (user) => {
-//   console.log(user);
-//   await setUserRole();
-//   setUser({
-//     username: `paims`,
-//     role: sessionStorage.getItem("userRole"),
-//     email: user.email,
-//   });
-// });
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // set/reset user data?
+  } else {
+    // set timeout to clear user data
+  }
+});
