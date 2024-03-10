@@ -18,7 +18,7 @@ import { Typography, Divider, Box, Button, Stack } from "@mui/material";
 const UpdateRec = () => {
   const [updateProperty, setUpdateProperty] = useState({
     StatusID: "",
-    PropertySupervisorID: "",
+    TrusteeID: "",
     LocationID: "",
     PropertyID: "",
   });
@@ -128,7 +128,7 @@ const UpdateRec = () => {
           ...prevData,
           LocationID: propData.LocationID,
           StatusID: propData.StatusID,
-          PropertySupervisorID: propData.PropertySupervisorID,
+          TrusteeID: propData.TrusteeID,
         }));
       }
       if (!propSnap.exists()) {
@@ -136,7 +136,7 @@ const UpdateRec = () => {
           ...prevData,
           LocationID: "",
           StatusID: "",
-          PropertySupervisorID: "",
+          TrusteeID: "",
         }));
       }
     } catch (error) {
@@ -174,7 +174,7 @@ const UpdateRec = () => {
         PropertyID: updateProperty.PropertyID,
         LocationID: updateProperty.LocationID,
         StatusID: updateProperty.StatusID,
-        PropertySupervisorID: updateProperty.PropertySupervisorID,
+        TrusteeID: updateProperty.TrusteeID,
       });
       alert("Successfully updated property!");
       window.location.reload();
@@ -324,7 +324,7 @@ const UpdateRec = () => {
                 </Typography>
                 <Divider></Divider>
 
-                {/* FIELDS: PropertyID, PropertySupervisor */}
+                {/* FIELDS: PropertyID, Trustee */}
                 <Stack
                   padding={1}
                   spacing={10}
@@ -356,7 +356,7 @@ const UpdateRec = () => {
                   </Stack>
                   <Stack item>
                     <label
-                      htmlFor="PropertySupervisorID"
+                      htmlFor="TrusteeID"
                       style={{
                         display: "inline-block",
                         width: "250px",
@@ -366,8 +366,8 @@ const UpdateRec = () => {
                       Property Supervisor ID{" "}
                     </label>
                     <select
-                      name="PropertySupervisorID"
-                      value={updateProperty.PropertySupervisorID}
+                      name="TrusteeID"
+                      value={updateProperty.TrusteeID}
                       onChange={handleUpdatePropChange}
                       style={{ width: "300px", display: "inline-block" }}
                       required
@@ -375,7 +375,7 @@ const UpdateRec = () => {
                       <option value="">Select Property Supervisor</option>
                       {users.map((user, index) => (
                         <option
-                          key={`propertysupervisor_${index}`}
+                          key={`Trustee_${index}`}
                           value={user.UserID}
                         >
                           {getFullName(user)}
@@ -795,11 +795,11 @@ export default UpdateRec;
               ))}
             </select>
             <br />
-            <label htmlFor="PropertySupervisorID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor ID:   </label>
-            <select name="PropertySupervisorID" value={updateProperty.PropertySupervisorID} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} required >
+            <label htmlFor="TrusteeID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor ID:   </label>
+            <select name="TrusteeID" value={updateProperty.TrusteeID} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} required >
               <option value="">Select Property Supervisor</option>
               {users.map((user, index) => (
-                <option key={`propertysupervisor_${index}`} value={user.UserID}>{getFullName(user)}</option>
+                <option key={`Trustee_${index}`} value={user.UserID}>{getFullName(user)}</option>
               ))}
             </select>
             <br />

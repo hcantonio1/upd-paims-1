@@ -28,7 +28,7 @@ const InsertRecord = () => {
     LocationID: "",
     PropertyID: "",
     PropertyName: "",
-    PropertySupervisorID: "",
+    TrusteeID: "",
     StatusID: "",
     SupplierID: "",
     PurchaseDate: "",
@@ -147,7 +147,7 @@ const InsertRecord = () => {
         LocationID: inputData.LocationID,
         PropertyID: inputData.PropertyID,
         PropertyName: inputData.PropertyName,
-        PropertySupervisorID: inputData.PropertySupervisorID,
+        TrusteeID: inputData.TrusteeID,
         StatusID: inputData.StatusID,
         SupplierID: inputData.SupplierID,
         PurchaseOrderID: inputData.PurchaseOrderID,
@@ -264,7 +264,7 @@ const InsertRecord = () => {
           CategoryID: "",
           LocationID: "",
           PropertyName: "",
-          PropertySupervisorID: "",
+          TrusteeID: "",
           StatusID: "",
           PropertyID: "",
         }));
@@ -363,7 +363,7 @@ const InsertRecord = () => {
                 </Typography>
                 <Divider></Divider>
 
-                {/* FIELDS: PropertyID, PropertyName, PropertySupervisor */}
+                {/* FIELDS: PropertyID, PropertyName, Trustee */}
                 <Stack
                   padding={1}
                   spacing={2}
@@ -415,14 +415,14 @@ const InsertRecord = () => {
                   </Stack>
                   <Stack item>
                     <label
-                      htmlFor="PropertySupervisorID"
+                      htmlFor="TrusteeID"
                       style={{ display: "inline-block", verticalAlign: "top" }}
                     >
                       Property Supervisor<span style={{ color: "red" }}>*</span>{" "}
                     </label>
                     <select
-                      name="PropertySupervisorID"
-                      value={inputData.PropertySupervisorID}
+                      name="TrusteeID"
+                      value={inputData.TrusteeID}
                       onChange={handleInputChange}
                       style={{ width: "250px", display: "inline-block" }}
                       required
@@ -430,7 +430,7 @@ const InsertRecord = () => {
                       <option value="">Select Property Supervisor</option>
                       {users.map((user, index) => (
                         <option
-                          key={`propertysupervisor_${index}`}
+                          key={`Trustee_${index}`}
                           value={user.UserID}
                         >
                           {getFullName(user)}
@@ -1039,11 +1039,11 @@ export default InsertRecord;
 //                 ))}
 //               </select>
 //               <br />
-//               <label htmlFor="PropertySupervisorID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor<span style={{ color: 'red' }}>*</span>:   </label>
-//               <select name="PropertySupervisorID" value={inputData.PropertySupervisorID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required >
+//               <label htmlFor="TrusteeID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor<span style={{ color: 'red' }}>*</span>:   </label>
+//               <select name="TrusteeID" value={inputData.TrusteeID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required >
 //                 <option value="">Select Property Supervisor</option>
 //                 {users.map((user, index) => (
-//                   <option key={`propertysupervisor_${index}`} value={user.UserID}>{getFullName(user)}</option>
+//                   <option key={`Trustee_${index}`} value={user.UserID}>{getFullName(user)}</option>
 //                 ))}
 //               </select>
 //               <label htmlFor="LocationID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location<span style={{ color: 'red' }}>*</span>:   </label>

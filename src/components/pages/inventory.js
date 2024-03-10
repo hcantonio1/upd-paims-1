@@ -85,8 +85,8 @@ const InventoryPage = () => {
     { key: "CategoryID", label: "Category ID", filterable: true },
     { key: "StatusID", label: "Status", filterable: true },
     {
-      key: "PropertySupervisorID",
-      label: "Property Supervisor ID",
+      key: "TrusteeID",
+      label: "Trustee ID",
       filterable: true,
     },
     { key: "LocationID", label: "Location ID", filterable: true },
