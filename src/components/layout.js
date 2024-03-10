@@ -13,7 +13,7 @@ const navbarWidth = 200
 const useStyles = makeStyles({
   root: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     height: '100%'
   },
   page: {
@@ -37,10 +37,14 @@ const useStyles = makeStyles({
   },
   pageTitleStyle: {
     color: '#014421',
-    // padding: 10
+    padding: 10,
+    marginTop: 10,
+    fontWeight: 'bold'
   },
   contentContainer: {
-    // margin: 10,
+    margin: 10,
+    marginTop: 0,
+    backgroundColor: '#ffffff',
   }
 })
 
@@ -77,8 +81,11 @@ const Layout = ({ pageTitle, children }) => {
 
   // LAYOUT PROPER
   return (
-    <Box className={classes.root}>
-
+    // main container 
+    <Box
+      display='flex'
+      flexDirection='row'
+    >
       {/* NAVIGATION BAR CODE */}
       <Box>
         <Drawer
@@ -105,16 +112,15 @@ const Layout = ({ pageTitle, children }) => {
         </Drawer>
       </Box>
 
+      {/* NON NAVBAR CONTAINER  */}
       <Grid
         container
         direction="column"
       >
         {/* HEADER */}
-        <Box>
-          <Header className={classes.header} />
-        </Box>
+        <Header className={classes.header} />
 
-        {/* Page Content */}
+        {/* PAGE CONTENT */}
         <Grid
           container
           direction='column'
@@ -126,20 +132,18 @@ const Layout = ({ pageTitle, children }) => {
             <Typography
               variant="h3"
               className={classes.pageTitleStyle}
-            > {pageTitle} </Typography>
+            >
+              {pageTitle}
+            </Typography>
           </Grid>
 
           {/* Content Proper */}
           <Grid item
-          className={classes.contentContainer}
+            className={classes.contentContainer}
           >
-            <Box sx={{backgroundColor: '#ffffff'}}>
-              <div>{children}</div>
-            </Box>
+              {children}
           </Grid>
-
         </Grid>
-
       </Grid>
     </Box>
   );
