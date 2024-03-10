@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { navigate } from "gatsby";
-import { isLoggedIn } from "../services/auth";
+import { isLoggedIn, getUser } from "../services/auth";
 
 const PrivateRoute = ({ component: Component, location, ...rest }) => {
+  const [userRole, setUserRole] = useState(getUser().role);
+
   if (["/app", "/app/"].includes(location.pathname)) {
     navigate("/app/home");
   }
@@ -11,16 +13,16 @@ const PrivateRoute = ({ component: Component, location, ...rest }) => {
     return null;
   }
 
-  // const specialRoles = ["Supervisor", "Admin", "Dev"];
-  // const specialPaths = ["/app/manageusers"];
-  // if (
-  //   specialRoles.includes(userRole) &&
-  //   specialPaths.includes(location.pathname)
-  // ) {
-  //   navigate("/app/home");
-  //   alert(`Access denied. ${location.pathname}`);
-  //   return null;
-  // }
+  const specialRoles = ["Supervisor", "Admin", "Dev"];
+  const specialPaths = ["/app/manageaccounts/"];
+  if (
+    !specialRoles.includes(userRole) &&
+    specialPaths.includes(location.pathname)
+  ) {
+    navigate("/app/home");
+    alert(`Access denied. ${location.pathname}`);
+    return null;
+  }
 
   return <Component {...rest} />;
 };

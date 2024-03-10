@@ -7,7 +7,7 @@ import { handleLogin, isLoggedIn } from "../../services/auth";
 import * as styles from "../../styles/login.module.css";
 
 const Login = () => {
-  const [userCred, setUserCred] = useState({ username: "", password: "" });
+  const [userCred, setUserCred] = useState({ email: "", password: "" });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -39,8 +39,8 @@ const Login = () => {
           >
             <input
               type="text"
-              placeholder="Username"
-              name="username"
+              placeholder="email"
+              name="email"
               onChange={handleUpdate}
             />
             <input
