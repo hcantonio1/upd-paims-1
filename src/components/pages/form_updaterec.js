@@ -351,11 +351,11 @@ const UpdateRec = () => {
               justifyContent="flex-start"
               >
                 <Stack item>
-                  <label htmlFor="PropertyID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>:   </label>
+                  <label htmlFor="PropertyID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>   </label>
                   <input type="text" name="PropertyID" value={updateProperty.PropertyID} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
                 </Stack>
                 <Stack item>
-                  <label htmlFor="PropertySupervisorID" style={{ display: 'inline-block', width: '250px', verticalAlign: 'top' }}>Property Supervisor ID:   </label>
+                  <label htmlFor="PropertySupervisorID" style={{ display: 'inline-block', width: '250px', verticalAlign: 'top' }}>Property Supervisor ID   </label>
                   <select name="PropertySupervisorID" value={updateProperty.PropertySupervisorID} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} required >
                     <option value="">Select Property Supervisor</option>
                     {users.map((user, index) => (
@@ -376,7 +376,7 @@ const UpdateRec = () => {
               justifyContent="flex-start"
               >
                 <Stack item>
-                  <label htmlFor="Status" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status:   </label>
+                  <label htmlFor="Status" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status   </label>
                   <select name="StatusID" value={updateProperty.StatusID} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} >
                   <option value ="">Select Status</option>
                     {statuses.map((status, index) => (
@@ -385,7 +385,7 @@ const UpdateRec = () => {
                   </select>
                 </Stack>
                 <Stack item>
-                  <label htmlFor="LocationID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location:   </label>
+                  <label htmlFor="LocationID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location   </label>
                   <select name="LocationID" value={updateProperty.LocationID} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} required >
                     <option value ="">Select Location</option>
                     {locations.map((location, index) => (
@@ -476,19 +476,19 @@ const UpdateRec = () => {
               justifyContent="space-between"
               >
                 <Stack item>
-                  <label htmlFor="UnitNumber" style={{ display: 'inline-block', width: '120px', verticalAlign: 'top' }}>Unit Number:   </label>
+                  <label htmlFor="UnitNumber" style={{ display: 'inline-block', width: '120px', verticalAlign: 'top' }}>Unit Number   </label>
                   <input type="text" name="UnitNumber" value={updateSupplier.UnitNumber} onChange={handleUpdateSupChange} style={{ width: '110px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only."/>
                 </Stack>
                 <Stack item>
-                  <label htmlFor="StreetName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Street Name:   </label>
+                  <label htmlFor="StreetName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Street Name   </label>
                   <input type="text" name="StreetName" value={updateSupplier.StreetName} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} />
                 </Stack>
                 <Stack item>
-                  <label htmlFor="City" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>City:   </label>
+                  <label htmlFor="City" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>City   </label>
                   <input type="text" name="City1" value={updateSupplier.City} onChange={handleUpdateSupChange} style={{ width: '290px', display: 'inline-block' }} />
                 </Stack>
                 <Stack item>
-                  <label htmlFor="State" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>State:   </label>
+                  <label htmlFor="State" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>State   </label>
                   <input type="text" name="State1" value={updateSupplier.State} onChange={handleUpdateSupChange} style={{ width: '140px', display: 'inline-block' }} />
                 </Stack>
               </Stack>
