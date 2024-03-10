@@ -76,7 +76,7 @@ const HomePage = () => {
             <Typography
               variant='h6'
             >
-              Admin (DCS)
+              {getUser().email}
             </Typography>
           </Box>
         </Box>
