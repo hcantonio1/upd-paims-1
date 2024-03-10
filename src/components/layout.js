@@ -4,7 +4,8 @@ import Header from "./header"
 import * as styles from "../styles/layout.module.css"
 import { makeStyles, Drawer, Typography, ListItem, List, ListItemIcon, ListItemText, AppBar, Toolbar, Box, Grid, GridSpacing } from "@material-ui/core";
 import { HomeRounded, Folder, AddCircleOutline } from '@material-ui/icons';
-
+// import { useNavigate } from "react-router-dom";
+import { navigate } from "gatsby";
 
 const navbarWidth = 200
 
@@ -39,7 +40,7 @@ const useStyles = makeStyles({
     padding: 10
   },
   contentContainer: {
-    margin: 20
+    margin: 10,
   }
 })
 
@@ -91,6 +92,7 @@ const Layout = ({ pageTitle, children }) => {
               <ListItem
                 button
                 key={item.text}
+                onClick={() => navigate(item.path)}
               >
                 <ListItemIcon>
                   {item.icon}
