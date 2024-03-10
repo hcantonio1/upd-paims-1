@@ -10,6 +10,7 @@ import {
   GridSpacing,
 } from "@material-ui/core";
 
+
 const navbarWidth = 200;
 
 // CLASSES AND STYLES FOR DESIGNING
@@ -47,6 +48,7 @@ const useStyles = makeStyles({
 
 const Layout = ({ pageTitle, children }) => {
   const classes = useStyles(); // FOR STYLING
+
 
   // LAYOUT PROPER
   return (
