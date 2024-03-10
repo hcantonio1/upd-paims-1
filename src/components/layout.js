@@ -2,7 +2,7 @@ import * as React from "react";
 import Navbar from "../components/navbar";
 import Header from "./header"
 import * as styles from "../styles/layout.module.css"
-import { makeStyles, Drawer, Typography, ListItem, List, ListItemIcon, ListItemText, AppBar, Toolbar, Box, Grid, GridSpacing } from "@material-ui/core";
+import { makeStyles, Drawer, Typography, ListItem, List, ListItemIcon, ListItemText, Box, Grid, GridSpacing } from "@material-ui/core";
 import { HomeRounded, Folder, AddCircleOutline } from '@material-ui/icons';
 // import { useNavigate } from "react-router-dom";
 import { navigate } from "gatsby";
@@ -37,10 +37,10 @@ const useStyles = makeStyles({
   },
   pageTitleStyle: {
     color: '#014421',
-    padding: 10
+    // padding: 10
   },
   contentContainer: {
-    margin: 10,
+    // margin: 10,
   }
 })
 
