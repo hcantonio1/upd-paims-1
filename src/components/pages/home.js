@@ -10,136 +10,101 @@ const useStyles = makeStyles({
   },
 
   userInfo: {
-    backgroundColor: '#e5e5e5',
-    padding: 10
+    backgroundColor: "#e5e5e5",
+    padding: 10,
   },
 
   changeLogTextContainer: {
-    backgroundColor: '#e5e5e5',
+    backgroundColor: "#e5e5e5",
     padding: 20,
   },
 
   changeLogText: {
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
 
   userText: {
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
 
   changeLog: {
-    borderStyle: 'solid',
-    borderColor: '#e5e5e5',
+    borderStyle: "solid",
+    borderColor: "#e5e5e5",
   },
 
   recentChangesText: {
-    fontStyle: 'italic'
+    fontStyle: "italic",
   },
 
   roleText: {
-    fontWeight: 'bold'
-  }
-})
+    fontWeight: "bold",
+  },
+});
 
 const HomePage = () => {
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <Layout pageTitle="DASHBOARD">
       {/* home content container  */}
       <Box
-        display='flex'
-        flexDirection='column'
+        display="flex"
+        flexDirection="column"
         className={classes.root}
         sx={{
-          rowGap: 40
+          rowGap: 40,
         }}
       >
         {/* user information container  */}
-        <Box
-          display='flex'
-          flexDirection='column'
-        >
+        <Box display="flex" flexDirection="column">
+          <Box>
+            <Typography variant="h6" className={classes.userText}>
+              Hello, {getUser().firstname}!
+            </Typography>
+          </Box>
           {/* username container  */}
-          <Box
-            display='flex'
-            flexDirection='row'
-            className={classes.userInfo}
-          >
+          <Box display="flex" flexDirection="row" className={classes.userInfo}>
             {/* user icon  */}
-            <Box>
-
-            </Box>
+            <Box></Box>
 
             {/* username  */}
             <Box>
-              <Typography
-                variant='h6'
-                className={classes.userText}
-              >
+              <Typography variant="h6" className={classes.userText}>
                 User:
               </Typography>
             </Box>
 
             <Box>
-              <Typography
-                variant='h6'
-              >
-                {getUser().email}
-              </Typography>
+              <Typography variant="h6">{getUser().email}</Typography>
             </Box>
           </Box>
 
           {/* role container  */}
-          <Box
-            display='flex'
-            flexDirection='row'
-            className={classes.userInfo}
-          >
+          <Box display="flex" flexDirection="row" className={classes.userInfo}>
             <Box>
-              <Typography
-                variant='h6'
-                className={classes.roleText}
-              >
+              <Typography variant="h6" className={classes.roleText}>
                 Role:
               </Typography>
             </Box>
 
             <Box>
-              <Typography
-                variant='h6'
-              >
-                {getUser().role}
-              </Typography>
+              <Typography variant="h6">{getUser().role}</Typography>
             </Box>
           </Box>
         </Box>
 
         {/* changelog container  */}
-        <Box
-          display='flex'
-          flexDirection='column'
-        >
+        <Box display="flex" flexDirection="column">
           {/* changelog text  */}
-          <Box
-            className={classes.changeLogTextContainer}
-          >
-            <Typography
-              variant='h6'
-              className={classes.changeLogText}
-            >
+          <Box className={classes.changeLogTextContainer}>
+            <Typography variant="h6" className={classes.changeLogText}>
               Changelog
             </Typography>
           </Box>
 
           {/* recent changes container  */}
-          <Box
-            className={classes.changeLog}
-          >
-            <Typography
-              align='center'
-              className={classes.recentChangesText}
-            >
+          <Box className={classes.changeLog}>
+            <Typography align="center" className={classes.recentChangesText}>
               No recent changes have been made.
             </Typography>
           </Box>

@@ -51,11 +51,16 @@ const setUserData = async () => {
   const currentUser = auth.currentUser;
   const email = auth.currentUser.email;
   const docSnap = await getDoc(doc(db, "user", currentUser.uid));
-  const role = docSnap.data().Role;
+  const data = docSnap.data();
+
   setUser({
     user: currentUser,
     email: email,
-    role: role,
+    role: data.Role,
+    firstname: data.FirstName,
+    lastname: data.LastName,
+    dept: data.Department,
+    username: data.Username,
   });
 };
 

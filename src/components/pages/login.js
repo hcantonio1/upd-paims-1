@@ -39,7 +39,7 @@ const Login = () => {
           >
             <input
               type="text"
-              placeholder="email"
+              placeholder="Email"
               name="email"
               onChange={handleUpdate}
             />
