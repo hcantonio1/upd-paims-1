@@ -380,6 +380,7 @@ const InsertRecord = () => {
                 <option key={`propertysupervisor_${index}`} value={user.UserID}>{getFullName(user)}</option>
               ))}
             </select>
+            <br />
             <label htmlFor="LocationID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location<span style={{ color: 'red' }}>*</span>:   </label>
             <select name="LocationID" value={inputData.LocationID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }} required >
               <option value ="">Select Location</option>
