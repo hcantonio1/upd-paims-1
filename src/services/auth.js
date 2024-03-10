@@ -17,9 +17,8 @@ export const getUser = () =>
 const setUser = (user) =>
   sessionStorage.setItem("paimsUser", JSON.stringify(user));
 
-export const handleLogin = ({ username, password }) => {
+export const handleLogin = ({ email, password }) => {
   sessionStorage.clear();
-  const email = username;
   signInWithEmailAndPassword(auth, email, password)
     .then((response) => {
       sessionStorage.setItem(
