@@ -6,12 +6,8 @@ import { useState, useEffect } from "react";
 import { db, storage } from "../../services/firebase-config";
 import { doc, setDoc, Timestamp, getDoc, collection, getDocs } from "firebase/firestore"; 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
-import { Typography } from '@mui/material';
-import Divider from '@mui/material/Divider';
-import Grid from '@mui/material/Grid';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
+import { makeStyles } from "@material-ui/core";
+import { Typography, Divider, Box, Button, Stack } from '@mui/material';
 
 
 const InsertRecord = () => {
@@ -311,133 +307,442 @@ const InsertRecord = () => {
   
 
 
+  const useStyles = makeStyles({
+    root: {
+      padding: 20,
+      margin: 5
+    },
+   
+    addRecordTextContainer: {
+      backgroundColor: '#e5e5e5',
+      padding: 10,
+    },
+  
+    addRecordText: {
+      fontWeight: 'bold'
+    },
+  
+    addRecordFields: {
+      borderStyle: 'solid',
+      borderColor: '#e5e5e5',
+      padding: 10,
+      mr: 150
+    },
+  
+  })
 
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  }));
+
+  const classes = useStyles()
+
 
   return (
-    <Layout>
-      <main>
-        <Link to="/app/submitform/">Submit Form</Link>
-        <h2>Create a record in purchase_order, property, and item_document</h2>
-        <p>Insert into supplier if it does not exist</p>
-        <p>
-          item_category untouched and item_location untouched since under the
-          assumption the tables have complete data already and no need to update
-          with new locations or categories.
-        </p>
-        <form onSubmit={handleInsert}>
-          <div>
-            <p>Insert Record Details</p>
-            <label htmlFor="SupplierID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="SupplierID" value={inputData.SupplierID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
-            <br />
-            <label htmlFor="SupplierName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Name:   </label>
-            <input type="text" name="SupplierName" value={inputData.SupplierName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} readOnly={supLocked} />
-            <br />
-            <label htmlFor="SupplierContact" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Contact:   </label>
-            <input type="text" name="SupplierContact" value={inputData.SupplierContact} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." readOnly={supLocked} />
-            <br />
-            <label htmlFor="UnitNumber" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Unit Number:   </label>
-            <input type="text" name="UnitNumber" value={inputData.UnitNumber} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." readOnly={supLocked} />
-            <br />
-            <label htmlFor="StreetName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Street Name:   </label>
-            <input type="text" name="StreetName" value={inputData.StreetName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} readOnly={supLocked} />
-            <br />
-            <label htmlFor="City" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>City:   </label>
-            <input type="text" name="City" value={inputData.City} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} readOnly={supLocked} />
-            <br />
-            <label htmlFor="State" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>State:   </label>
-            <input type="text" name="State" value={inputData.State} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} readOnly={supLocked} />
-            <br />
-            <label htmlFor="DocumentID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Document Name<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="DocumentID" value={inputData.DocumentID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
-            <br />
-            <label htmlFor="DocumentType" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Document Type<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required readOnly={docLocked}/>
-            <br />
-            <label htmlFor="DateIssued" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Date Issued<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="date" name="DateIssued" value={inputData.DateIssued} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required readOnly={docLocked}/>
-            <br />
-            <label htmlFor="IssuedBy" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Issued By<span style={{ color: 'red' }}>*</span>:   </label>
-            <select name="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required disabled={docLocked}>
-              <option value="">Select Issued By</option>
-              {users.map((user, index) => (
-                <option key={user.Username} value={user.Username}>{getFullName(user)}</option>
-              ))}
-            </select>
-            <br />
-            <label htmlFor="ReceivedBy" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Received By<span style={{ color: 'red' }}>*</span>:   </label>
-            <select name="ReceivedBy" value={inputData.ReceivedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required disabled={docLocked}>
-              <option value="">Select Received By</option>
-              {users.map((user, index) => (
-                <option key={user.Username} value={user.Username}>{getFullName(user)}</option>
-              ))}
-            </select>
-            <br />
-            <label htmlFor="Link" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>File<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="file" name="Link" onChange={handleFileChange} style={{ width: '300px', display: 'inline-block' }} required disabled={docLocked}/>
-            <br />
-            <label htmlFor="PropertyID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="PropertyID" value={inputData.PropertyID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
-            <br />
-            <label htmlFor="PropertyName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Name<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="PropertyName" value={inputData.PropertyName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
-            <br />
-            <label htmlFor="StatusID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status<span style={{ color: 'red' }}>*</span>:   </label>
-            <select name="StatusID" value={inputData.StatusID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }} >
-            <option value ="">Select Status</option>
-              {statuses.map((status, index) => (
-                <option key={`status${index}`} value={status.StatusID}>{status.StatusName}</option>
-              ))}
-            </select>
-            <br />
-            <label htmlFor="PropertySupervisorID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor<span style={{ color: 'red' }}>*</span>:   </label>
-            <select name="PropertySupervisorID" value={inputData.PropertySupervisorID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required >
-              <option value="">Select Property Supervisor</option>
-              {users.map((user, index) => (
-                <option key={`propertysupervisor_${index}`} value={user.UserID}>{getFullName(user)}</option>
-              ))}
-            </select>
-            <label htmlFor="LocationID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location<span style={{ color: 'red' }}>*</span>:   </label>
-            <select name="LocationID" value={inputData.LocationID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }} required >
-              <option value ="">Select Location</option>
-              {locations.map((location, index) => (
-                <option key={`location_${index}`} value={location.LocationID}>{getFullLoc(location)}</option>
-              ))}
-            </select>
-            <br />
-            <label htmlFor="CategoryID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Category<span style={{ color: 'red' }}>*</span>:   </label>
-            <select name="CategoryID" value={inputData.CategoryID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }} required >
-              <option value ="">Select Category</option>
-              {categories.map((category, index) => (
-                <option key={`category_${index}`} value={category.CategoryID}>{category.CategoryName}</option>
-              ))}
-            </select>
-            <br />
-            <label htmlFor="PurchaseOrderID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Purchase Order ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="PurchaseOrderID" value={inputData.PurchaseOrderID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required />
-            <br />
-            <label htmlFor="PurchaseDate" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Purchase Date<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="date" name="PurchaseDate" value={inputData.PurchaseDate} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required readOnly={orderLocked}/>
-            <br />
-            <label htmlFor="TotalCost" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Total Cost<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="TotalCost" value={inputData.TotalCost} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="^\d*\.?\d+$" title="Please enter a positive number." required readOnly={orderLocked}/>
-          </div>
-          <button type="submit">Submit</button>
-        </form>
+    <Layout pageTitle="CREATE A RECORD">
+      <Box
+        display='flex'
+        flexDirection='column'
+        className={classes.root}
+      >
+        <main>
+          <Box
+            sx={{ mb: 3 }}
+          >
+            <Button href="/app/submitform/" variant="outlined" size="small" color="success"> 
+              Back to Forms
+            </Button>
+          </Box>
+          
+          <Box
+          display='flex'
+          flexDirection='column'
+          >
+          <Box
+            className={classes.addRecordTextContainer}
+          >
+            <Typography
+              variant='h9'
+              className={classes.addRecordText}
+            >
+              Insert a New Record into the Database
+            </Typography>
+          </Box>
+
+
+          <form onSubmit={handleInsert}>
+          <Box
+            sx={{ pt: 3, pb: 3}}
+            className={classes.addRecordFields}
+          >
+            <Typography
+              variant='h9'
+              fontWeight={"bold"}
+            >
+              Item Details
+            </Typography>
+            <Divider></Divider>
+
+
+
+            {/* FIELDS: PropertyID, PropertyName, PropertySupervisor */}
+            <Stack 
+            padding={1}
+            spacing={2}
+            mt={2}
+            direction="row" 
+            justifyContent="space-between"
+            >
+              <Stack item>
+                <label htmlFor="PropertyID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>   </label>
+                <input type="text" name="PropertyID" value={inputData.PropertyID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
+              </Stack>
+              <Stack item>
+                <label htmlFor="PropertyName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Name<span style={{ color: 'red' }}>*</span>   </label>
+                <input type="text" name="PropertyName" value={inputData.PropertyName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>            
+              </Stack>
+              <Stack item>
+                <label htmlFor="PropertySupervisorID" style={{ display: 'inline-block', verticalAlign: 'top' }}>Property Supervisor<span style={{ color: 'red' }}>*</span>   </label>
+                <select name="PropertySupervisorID" value={inputData.PropertySupervisorID} onChange={handleInputChange} style={{ width: '250px', display: 'inline-block' }} required >
+                  <option value="">Select Property Supervisor</option>
+                  {users.map((user, index) => (
+                    <option key={`propertysupervisor_${index}`} value={user.UserID}>{getFullName(user)}</option>
+                  ))}
+                </select>
+              </Stack>
+            </Stack>
+
+
+
+            {/* FIELDS: Category, Status, Location */}
+            <Stack 
+            padding={1}
+            spacing={2}
+            // mt={1}
+            direction="row" 
+            justifyContent="space-between"
+            >
+              <Stack item>
+                <label htmlFor="CategoryID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Category<span style={{ color: 'red' }}>*</span>   </label>
+                <select name="CategoryID" value={inputData.CategoryID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required >
+                  <option value ="">Select Category</option>
+                  {categories.map((category, index) => (
+                    <option key={`category_${index}`} value={category.CategoryID}>{category.CategoryName}</option>
+                  ))}
+                </select>
+              </Stack>
+              <Stack item>
+                <label htmlFor="StatusID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status<span style={{ color: 'red' }}>*</span>   </label>
+                <select name="StatusID" value={inputData.StatusID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} >
+                <option value ="">Select Status</option>
+                  {statuses.map((status, index) => (
+                    <option key={`status${index}`} value={status.StatusID}>{status.StatusName}</option>
+                  ))}
+                </select>
+              </Stack>
+              <Stack item>
+                <label htmlFor="LocationID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location<span style={{ color: 'red' }}>*</span>   </label>
+                <select name="LocationID" value={inputData.LocationID} onChange={handleInputChange} style={{ width: '250px', display: 'inline-block' }} required >
+                  <option value ="">Select Location</option>
+                  {locations.map((location, index) => (
+                    <option key={`location_${index}`} value={location.LocationID}>{getFullLoc(location)}</option>
+                  ))}
+                </select>
+              </Stack>
+            </Stack>
+
+
+
+            {/* FIELDS: PurchaseID, PurchaseDate, Cost */}
+            <Stack 
+            padding={1}
+            spacing={2}
+            mb={3}
+            direction="row" 
+            justifyContent="space-between"
+            >
+              <Stack item>
+                <label htmlFor="PurchaseOrderID" style={{ display: 'inline-block', width: '200px', verticalAlign: 'top' }}>Purchase Order ID<span style={{ color: 'red' }}>*</span>   </label>
+                <input type="text" name="PurchaseOrderID" value={inputData.PurchaseOrderID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required />
+              </Stack>
+              <Stack item>
+                <label htmlFor="TotalCost" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Total Cost<span style={{ color: 'red' }}>*</span>   </label>
+                <input type="text" name="TotalCost" value={inputData.TotalCost} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="^\d*\.?\d+$" title="Please enter a positive number." required readOnly={orderLocked}/>
+              </Stack>
+              <Stack item>
+                <label htmlFor="PurchaseDate" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Purchase Date<span style={{ color: 'red' }}>*</span>   </label>
+                <input type="date" name="PurchaseDate" value={inputData.PurchaseDate} onChange={handleInputChange} style={{ width: '250px', display: 'inline-block' }} required readOnly={orderLocked}/>
+              </Stack>
+
+            </Stack>
+
+            <Typography
+              variant='h9'
+              fontWeight={"bold"}
+            >
+              Document Details
+            </Typography>
+            <Divider></Divider>
+
+
+            
+            {/* FIELDS: DocuType, DocuName, File*/}
+            <Stack 
+            padding={1}
+            spacing={2}
+            mt={2}
+            direction="row" 
+            justifyContent="space-between"
+            >
+              <Stack item>
+                <label htmlFor="DocumentType" style={{ display: 'inline-block', width: '200px', verticalAlign: 'top' }}>Document Type<span style={{ color: 'red' }}>*</span>   </label>
+                <input type="text" name="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required readOnly={docLocked}/>
+              </Stack>
+              <Stack item>
+                <label htmlFor="DocumentID" style={{ display: 'inline-block', width: '200px', verticalAlign: 'top' }}>Document Name<span style={{ color: 'red' }}>*</span>   </label>
+                <input type="text" name="DocumentID" value={inputData.DocumentID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+              </Stack>
+              <Stack item>
+                <label htmlFor="Link" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>File<span style={{ color: 'red' }}>*</span>   </label>
+                <input type="file" name="Link" onChange={handleFileChange} style={{ width: '250px', display: 'inline-block' }} required disabled={docLocked}/>
+              </Stack>
+            </Stack>
+            
+
+
+            {/* FIELDS: Issued, Receive, Date */}
+            <Stack 
+            padding={1}
+            spacing={2}
+            mb={3}
+            direction="row" 
+            justifyContent="space-between"
+            >
+              <Stack item>
+                <label htmlFor="IssuedBy" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Issued By<span style={{ color: 'red' }}>*</span>   </label>
+                <select name="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required disabled={docLocked}>
+                  <option value="">Select Issued By</option>
+                  {users.map((user, index) => (
+                    <option key={user.Username} value={user.Username}>{getFullName(user)}</option>
+                  ))}
+                </select>
+              </Stack>
+              <Stack item>
+                <label htmlFor="ReceivedBy" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Received By<span style={{ color: 'red' }}>*</span>   </label>
+                <select name="ReceivedBy" value={inputData.ReceivedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required disabled={docLocked}>
+                  <option value="">Select Received By</option>
+                  {users.map((user, index) => (
+                    <option key={user.Username} value={user.Username}>{getFullName(user)}</option>
+                  ))}
+                </select>
+              </Stack>
+              <Stack item>
+                <label htmlFor="DateIssued" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Date Issued<span style={{ color: 'red' }}>*</span>   </label>
+                <input type="date" name="DateIssued" value={inputData.DateIssued} onChange={handleInputChange} style={{ width: '250px', display: 'inline-block' }} required readOnly={docLocked}/>
+              </Stack>
+            </Stack>
+
+
+            <Typography
+              variant='h9'
+              fontWeight={"bold"}
+            >
+              Supplier Details
+            </Typography>
+            <Divider></Divider>
+
+
+            {/* FIELDS: SupplierID, SupplierName */}
+            <Stack 
+            padding={1}
+            spacing={2}
+            mt={2}
+            direction="row" 
+            justifyContent="space-between"
+            >
+              <Stack item>
+                <label htmlFor="SupplierID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier ID<span style={{ color: 'red' }}>*</span>   </label>
+                <input type="text" name="SupplierID" value={inputData.SupplierID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
+              </Stack>
+              <Stack item>
+                <label htmlFor="SupplierName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Name   </label>
+                <input type="text" name="SupplierName" value={inputData.SupplierName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} readOnly={supLocked} />
+              </Stack>
+              <Stack item>
+                <label htmlFor="SupplierContact" style={{ display: 'inline-block', width: '200px', verticalAlign: 'top' }}>Supplier Contact   </label>
+                <input type="text" name="SupplierContact" value={inputData.SupplierContact} onChange={handleInputChange} style={{ width: '250px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." readOnly={supLocked} />
+              </Stack>
+            </Stack>
+
+
+
+            {/* FIELDS: Unit, Street, City, State */}
+            <Stack 
+            padding={1}
+            spacing={2}
+            mb={1}
+            direction="row" 
+            justifyContent="space-between"
+            >
+              <Stack item>
+                <label htmlFor="UnitNumber" style={{ display: 'inline-block', width: '120px', verticalAlign: 'top' }}>Unit Number</label>
+                <input type="text" name="UnitNumber" value={inputData.UnitNumber} onChange={handleInputChange} style={{ width: '110px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." readOnly={supLocked} />
+              </Stack>
+              <Stack item>
+                <label htmlFor="StreetName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Street Name   </label>
+                <input type="text" name="StreetName" value={inputData.StreetName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} readOnly={supLocked} />
+              </Stack>
+              <Stack item>
+                <label htmlFor="City" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>City   </label>
+                <input type="text" name="City" value={inputData.City} onChange={handleInputChange} style={{ width: '290px', display: 'inline-block' }} readOnly={supLocked} />
+              </Stack>
+              <Stack item>
+                <label htmlFor="State" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>State   </label>
+                <input type="text" name="State" value={inputData.State} onChange={handleInputChange} style={{ width: '140px', display: 'inline-block' }} readOnly={supLocked} />
+              </Stack>
+            </Stack>
+
+            <Stack 
+            padding={1}
+            direction="row" 
+            alignItems="flex-start" 
+            justifyContent="flex-end"
+            >
+              <Stack item>
+                <Button type="submit" variant="contained" size="small" color="success" >Submit</Button>
+              </Stack>
+            </Stack>
+          </Box>
+          </form>
+        </Box>
       </main>
-    </Layout>
+      </Box>
+  </Layout>
   );
 };
+
 
 // You'll learn about this in the next task, just copy it for now
 export const Head = () => <title>Insert Record</title>;
 
 // Step 3: Export your component
 export default InsertRecord;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//           <form onSubmit={handleInsert}>
+//             <div>
+//               <p>Insert Record Details</p>
+//               <label htmlFor="SupplierID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier ID<span style={{ color: 'red' }}>*</span>:   </label>
+//               <input type="text" name="SupplierID" value={inputData.SupplierID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
+//               <br />
+//               <label htmlFor="SupplierName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Name:   </label>
+//               <input type="text" name="SupplierName" value={inputData.SupplierName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} readOnly={supLocked} />
+//               <br />
+//               <label htmlFor="SupplierContact" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Contact:   </label>
+//               <input type="text" name="SupplierContact" value={inputData.SupplierContact} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." readOnly={supLocked} />
+//               <br />
+//               <label htmlFor="UnitNumber" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Unit Number:   </label>
+//               <input type="text" name="UnitNumber" value={inputData.UnitNumber} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." readOnly={supLocked} />
+//               <br />
+//               <label htmlFor="StreetName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Street Name:   </label>
+//               <input type="text" name="StreetName" value={inputData.StreetName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} readOnly={supLocked} />
+//               <br />
+//               <label htmlFor="City" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>City:   </label>
+//               <input type="text" name="City" value={inputData.City} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} readOnly={supLocked} />
+//               <br />
+//               <label htmlFor="State" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>State:   </label>
+//               <input type="text" name="State" value={inputData.State} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} readOnly={supLocked} />
+//               <br />
+//               <label htmlFor="DocumentID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Document Name<span style={{ color: 'red' }}>*</span>:   </label>
+//               <input type="text" name="DocumentID" value={inputData.DocumentID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+//               <br />
+//               <label htmlFor="DocumentType" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Document Type<span style={{ color: 'red' }}>*</span>:   </label>
+//               <input type="text" name="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required readOnly={docLocked}/>
+//               <br />
+//               <label htmlFor="DateIssued" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Date Issued<span style={{ color: 'red' }}>*</span>:   </label>
+//               <input type="date" name="DateIssued" value={inputData.DateIssued} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required readOnly={docLocked}/>
+//               <br />
+//               <label htmlFor="IssuedBy" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Issued By<span style={{ color: 'red' }}>*</span>:   </label>
+//               <select name="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required disabled={docLocked}>
+//                 <option value="">Select Issued By</option>
+//                 {users.map((user, index) => (
+//                   <option key={user.Username} value={user.Username}>{getFullName(user)}</option>
+//                 ))}
+//               </select>
+//               <br />
+//               <label htmlFor="ReceivedBy" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Received By<span style={{ color: 'red' }}>*</span>:   </label>
+//               <select name="ReceivedBy" value={inputData.ReceivedBy} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required disabled={docLocked}>
+//                 <option value="">Select Received By</option>
+//                 {users.map((user, index) => (
+//                   <option key={user.Username} value={user.Username}>{getFullName(user)}</option>
+//                 ))}
+//               </select>
+//               <br />
+//               <label htmlFor="Link" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>File<span style={{ color: 'red' }}>*</span>:   </label>
+//               <input type="file" name="Link" onChange={handleFileChange} style={{ width: '300px', display: 'inline-block' }} required disabled={docLocked}/>
+//               <br />
+//               <label htmlFor="PropertyID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>:   </label>
+//               <input type="text" name="PropertyID" value={inputData.PropertyID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
+//               <br />
+//               <label htmlFor="PropertyName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Name<span style={{ color: 'red' }}>*</span>:   </label>
+//               <input type="text" name="PropertyName" value={inputData.PropertyName} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required/>
+//               <br />
+//               <label htmlFor="StatusID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status<span style={{ color: 'red' }}>*</span>:   </label>
+//               <select name="StatusID" value={inputData.StatusID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }} >
+//               <option value ="">Select Status</option>
+//                 {statuses.map((status, index) => (
+//                   <option key={`status${index}`} value={status.StatusID}>{status.StatusName}</option>
+//                 ))}
+//               </select>
+//               <br />
+//               <label htmlFor="PropertySupervisorID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor<span style={{ color: 'red' }}>*</span>:   </label>
+//               <select name="PropertySupervisorID" value={inputData.PropertySupervisorID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required >
+//                 <option value="">Select Property Supervisor</option>
+//                 {users.map((user, index) => (
+//                   <option key={`propertysupervisor_${index}`} value={user.UserID}>{getFullName(user)}</option>
+//                 ))}
+//               </select>
+//               <label htmlFor="LocationID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location<span style={{ color: 'red' }}>*</span>:   </label>
+//               <select name="LocationID" value={inputData.LocationID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }} required >
+//                 <option value ="">Select Location</option>
+//                 {locations.map((location, index) => (
+//                   <option key={`location_${index}`} value={location.LocationID}>{getFullLoc(location)}</option>
+//                 ))}
+//               </select>
+//               <br />
+//               <label htmlFor="CategoryID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Category<span style={{ color: 'red' }}>*</span>:   </label>
+//               <select name="CategoryID" value={inputData.CategoryID} onChange={handleInputChange} style={{ width: '310px', display: 'inline-block' }} required >
+//                 <option value ="">Select Category</option>
+//                 {categories.map((category, index) => (
+//                   <option key={`category_${index}`} value={category.CategoryID}>{category.CategoryName}</option>
+//                 ))}
+//               </select>
+//               <br />
+//               <label htmlFor="PurchaseOrderID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Purchase Order ID<span style={{ color: 'red' }}>*</span>:   </label>
+//               <input type="text" name="PurchaseOrderID" value={inputData.PurchaseOrderID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required />
+//               <br />
+//               <label htmlFor="PurchaseDate" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Purchase Date<span style={{ color: 'red' }}>*</span>:   </label>
+//               <input type="date" name="PurchaseDate" value={inputData.PurchaseDate} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required readOnly={orderLocked}/>
+//               <br />
+//               <label htmlFor="TotalCost" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Total Cost<span style={{ color: 'red' }}>*</span>:   </label>
+//               <input type="text" name="TotalCost" value={inputData.TotalCost} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} pattern="^\d*\.?\d+$" title="Please enter a positive number." required readOnly={orderLocked}/>
+//             </div>
+//             <button type="submit">Submit</button>
+//           </form>
+//         </main>
+//       </Box>
+//     </Layout>
+//   );
+// };
