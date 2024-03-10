@@ -3,8 +3,8 @@ import * as React from "react";
 import { Link } from "gatsby";
 import Layout from "../layout";
 import { useState } from "react";
-import { db, storage } from "../../services/firebase-config";
-import { doc, updateDoc, getDoc} from "firebase/firestore"; 
+import { db, storage } from "../../../firebase-config";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 
 const ArchiveRec = () => {
   const [archiveData, setArchiveData] = useState({
@@ -12,7 +12,7 @@ const ArchiveRec = () => {
   });
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [textInput, setTextInput] = useState('');
+  const [textInput, setTextInput] = useState("");
 
   const handleTextChange = (event) => {
     setTextInput(event.target.value);
@@ -29,15 +29,15 @@ const ArchiveRec = () => {
           setButtonDisabled(false);
         } else {
           setButtonDisabled(true);
-        };
-        setArchiveData(prevData => ({
+        }
+        setArchiveData((prevData) => ({
           ...prevData,
           IsArchived: arcData.IsArchived,
         }));
       }
       if (!arcSnap.exists()) {
         setButtonDisabled(false);
-        setArchiveData(prevData => ({
+        setArchiveData((prevData) => ({
           ...prevData,
           IsArchived: "",
         }));
@@ -45,7 +45,7 @@ const ArchiveRec = () => {
     } catch (error) {
       console.error("Error fetching archived:", error);
     }
-  }
+  };
 
   const handleArchive = async (e) => {
     e.preventDefault();
@@ -69,7 +69,7 @@ const ArchiveRec = () => {
       [e.target.name]: e.target.value,
     });
 
-    if (e.target.name === 'PropertyID') {
+    if (e.target.name === "PropertyID") {
       fetchArchiveData(e.target.value);
     }
   };
@@ -79,17 +79,56 @@ const ArchiveRec = () => {
       <main>
         <Link to="/app/submitform/">Return to Submit Form Page</Link>
         <h2>Archive a record</h2>
-        <p>Will only pretty much just change archive status in property table. If record is already archived, will say so in console.</p>
+        <p>
+          Will only pretty much just change archive status in property table. If
+          record is already archived, will say so in console.
+        </p>
         <form onSubmit={handleArchive}>
           <div>
             <p>Archive a record</p>
-            <label htmlFor="PropertyID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="PropertyID" value={archiveData.PropertyID} onChange={handleArchiveChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
+            <label
+              htmlFor="PropertyID"
+              style={{
+                display: "inline-block",
+                width: "150px",
+                verticalAlign: "top",
+              }}
+            >
+              Property ID<span style={{ color: "red" }}>*</span>:{" "}
+            </label>
+            <input
+              type="text"
+              name="PropertyID"
+              value={archiveData.PropertyID}
+              onChange={handleArchiveChange}
+              style={{ width: "300px", display: "inline-block" }}
+              pattern="[0-9]*"
+              title="Numbers only."
+              required
+            />
             <br />
-            <label htmlFor="isArchived" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Current Archive Status<span style={{ color: 'red' }}></span>:   </label>
-            <input type="text" name="isArchived" value={archiveData.IsArchived} onChange={handleArchiveChange} style={{ width: '300px', display: 'inline-block' }} readOnly={true}/>
+            <label
+              htmlFor="isArchived"
+              style={{
+                display: "inline-block",
+                width: "150px",
+                verticalAlign: "top",
+              }}
+            >
+              Current Archive Status<span style={{ color: "red" }}></span>:{" "}
+            </label>
+            <input
+              type="text"
+              name="isArchived"
+              value={archiveData.IsArchived}
+              onChange={handleArchiveChange}
+              style={{ width: "300px", display: "inline-block" }}
+              readOnly={true}
+            />
           </div>
-          <button type="submit" disabled={buttonDisabled}>Submit</button>
+          <button type="submit" disabled={buttonDisabled}>
+            Submit
+          </button>
         </form>
       </main>
     </Layout>

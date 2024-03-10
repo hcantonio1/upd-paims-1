@@ -1,5 +1,5 @@
 import { navigate } from "gatsby";
-import { auth, db } from "./firebase-config";
+import { auth, db } from "../../firebase-config";
 import {
   signInWithEmailAndPassword,
   onAuthStateChanged,

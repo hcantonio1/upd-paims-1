@@ -3,10 +3,17 @@ import * as React from "react";
 import { Link } from "gatsby";
 import Layout from "../layout";
 import { useState, useEffect } from "react";
-import { db, storage } from "../../services/firebase-config";
-import { doc, updateDoc, Timestamp, getDoc, collection, getDocs } from "firebase/firestore"; 
+import { db, storage } from "../../../firebase-config";
+import {
+  doc,
+  updateDoc,
+  Timestamp,
+  getDoc,
+  collection,
+  getDocs,
+} from "firebase/firestore";
 import { makeStyles } from "@material-ui/core";
-import { Typography, Divider, Box, Button, Stack } from '@mui/material';
+import { Typography, Divider, Box, Button, Stack } from "@mui/material";
 
 const UpdateRec = () => {
   const [updateProperty, setUpdateProperty] = useState({
@@ -17,13 +24,13 @@ const UpdateRec = () => {
   });
 
   const [updateSupplier, setUpdateSupplier] = useState({
-    SupplierContact: '',
-    UnitNumber: '',
-    StreetName: '',
-    City: '',
-    State: '',
-    SupplierID: '',
-    SupplierName: '',
+    SupplierContact: "",
+    UnitNumber: "",
+    StreetName: "",
+    City: "",
+    State: "",
+    SupplierID: "",
+    SupplierName: "",
   });
 
   const [users, setUsers] = useState([]);
@@ -33,9 +40,9 @@ const UpdateRec = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const userCollection = collection(db, 'user');
+        const userCollection = collection(db, "user");
         const snapshot = await getDocs(userCollection);
-        const users = snapshot.docs.map(doc => doc.data());
+        const users = snapshot.docs.map((doc) => doc.data());
         setUsers(users);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -44,9 +51,9 @@ const UpdateRec = () => {
 
     const fetchLocations = async () => {
       try {
-        const locationCollection = collection(db, 'item_location');
+        const locationCollection = collection(db, "item_location");
         const snapshot = await getDocs(locationCollection);
-        const locations = snapshot.docs.map(doc => doc.data());
+        const locations = snapshot.docs.map((doc) => doc.data());
         setLocations(locations);
       } catch (error) {
         console.error("Error fetching locations:", error);
@@ -55,9 +62,9 @@ const UpdateRec = () => {
 
     const fetchStatuses = async () => {
       try {
-        const statusCollection = collection(db, 'status');
+        const statusCollection = collection(db, "status");
         const snapshot = await getDocs(statusCollection);
-        const statuses = snapshot.docs.map(doc => doc.data());
+        const statuses = snapshot.docs.map((doc) => doc.data());
         setStatuses(statuses);
       } catch (error) {
         console.error("Error fetching statuses:", error);
@@ -71,11 +78,11 @@ const UpdateRec = () => {
 
   const getFullName = (user) => {
     return `${user.FirstName} ${user.LastName}`;
-  };  
+  };
 
   const getFullLoc = (location) => {
     return `${location.Building} ${location.RoomNumber}`;
-  };  
+  };
 
   const fetchSupplierData = async (supplierId) => {
     try {
@@ -84,7 +91,7 @@ const UpdateRec = () => {
 
       if (supSnap.exists()) {
         const supData = supSnap.data();
-        setUpdateSupplier(prevData => ({
+        setUpdateSupplier((prevData) => ({
           ...prevData,
           City: supData.City,
           State: supData.State,
@@ -95,7 +102,7 @@ const UpdateRec = () => {
         }));
       }
       if (!supSnap.exists()) {
-        setUpdateSupplier(prevData => ({
+        setUpdateSupplier((prevData) => ({
           ...prevData,
           City: "",
           State: "",
@@ -117,7 +124,7 @@ const UpdateRec = () => {
 
       if (propSnap.exists()) {
         const propData = propSnap.data();
-        setUpdateProperty(prevData => ({
+        setUpdateProperty((prevData) => ({
           ...prevData,
           LocationID: propData.LocationID,
           StatusID: propData.StatusID,
@@ -125,7 +132,7 @@ const UpdateRec = () => {
         }));
       }
       if (!propSnap.exists()) {
-        setUpdateProperty(prevData => ({
+        setUpdateProperty((prevData) => ({
           ...prevData,
           LocationID: "",
           StatusID: "",
@@ -176,14 +183,14 @@ const UpdateRec = () => {
       alert("Failed to update property.");
     }
   };
-  
+
   const handleUpdatePropChange = async (e) => {
     setUpdateProperty({
       ...updateProperty,
       [e.target.name]: e.target.value,
     });
 
-    if (e.target.name === 'PropertyID') {
+    if (e.target.name === "PropertyID") {
       fetchPropertyData(e.target.value);
     }
   };
@@ -194,13 +201,10 @@ const UpdateRec = () => {
       [e.target.name]: e.target.value,
     });
 
-    if (e.target.name === 'SupplierID') {
+    if (e.target.name === "SupplierID") {
       fetchSupplierData(e.target.value);
     }
   };
-
-
-
 
   // ARCHIVE RECORD FUNCTIONS
   const [archiveData, setArchiveData] = useState({
@@ -208,7 +212,7 @@ const UpdateRec = () => {
   });
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [textInput, setTextInput] = useState('');
+  const [textInput, setTextInput] = useState("");
 
   const handleTextChange = (event) => {
     setTextInput(event.target.value);
@@ -225,15 +229,15 @@ const UpdateRec = () => {
           setButtonDisabled(false);
         } else {
           setButtonDisabled(true);
-        };
-        setArchiveData(prevData => ({
+        }
+        setArchiveData((prevData) => ({
           ...prevData,
           IsArchived: arcData.IsArchived,
         }));
       }
       if (!arcSnap.exists()) {
         setButtonDisabled(false);
-        setArchiveData(prevData => ({
+        setArchiveData((prevData) => ({
           ...prevData,
           IsArchived: "",
         }));
@@ -241,7 +245,7 @@ const UpdateRec = () => {
     } catch (error) {
       console.error("Error fetching archived:", error);
     }
-  }
+  };
 
   const handleArchive = async (e) => {
     e.preventDefault();
@@ -265,326 +269,502 @@ const UpdateRec = () => {
       [e.target.name]: e.target.value,
     });
 
-    if (e.target.name === 'PropertyID') {
+    if (e.target.name === "PropertyID") {
       fetchArchiveData(e.target.value);
     }
   };
 
-
-
-
-
-
-
-
   const useStyles = makeStyles({
     root: {
       padding: 20,
-      margin: 5
+      margin: 5,
     },
-   
-    updateRecordTextContainer: {
-      backgroundColor: '#e5e5e5',
-      padding: 10,
-    },
-   
-    updateRecordFields: {
-      borderStyle: 'solid',
-      borderColor: '#e5e5e5',
-      padding: 10,
-      mr: 150
-    },
-  
-  })
 
-  const classes = useStyles()
+    updateRecordTextContainer: {
+      backgroundColor: "#e5e5e5",
+      padding: 10,
+    },
+
+    updateRecordFields: {
+      borderStyle: "solid",
+      borderColor: "#e5e5e5",
+      padding: 10,
+      mr: 150,
+    },
+  });
+
+  const classes = useStyles();
 
   return (
     <Layout pageTitle="UPDATE / ARCHIVE">
-      <Box
-        display='flex'
-        flexDirection='column'
-        className={classes.root}
-      >
+      <Box display="flex" flexDirection="column" className={classes.root}>
         <main>
           <Box sx={{ mb: 3 }}>
-            <Button href="/app/submitform/" variant="outlined" size="small" color="success"> 
+            <Button
+              href="/app/submitform/"
+              variant="outlined"
+              size="small"
+              color="success"
+            >
               Back to Forms
             </Button>
           </Box>
-          
-          <Box
-            display='flex'
-            flexDirection='column'
-          >
+
+          <Box display="flex" flexDirection="column">
             <Box className={classes.updateRecordTextContainer}>
-              <Typography
-                variant='h9'
-                fontWeight={"bold"}
-              >
+              <Typography variant="h9" fontWeight={"bold"}>
                 Update an Existing Record in the Database
               </Typography>
             </Box>
 
-
-            
             <form onSubmit={handleUpdateProperty}>
-            <Box
-              sx={{ pt: 3, pb: 2}}
-              className={classes.updateRecordFields}
-            >
-              
-              <Typography
-                variant='h9'
-                fontWeight={"bold"}
-              >
-                Update Item Details
-              </Typography>
-              <Divider></Divider>
+              <Box sx={{ pt: 3, pb: 2 }} className={classes.updateRecordFields}>
+                <Typography variant="h9" fontWeight={"bold"}>
+                  Update Item Details
+                </Typography>
+                <Divider></Divider>
 
-              {/* FIELDS: PropertyID, PropertySupervisor */}
-              <Stack 
-              padding={1}
-              spacing={10}
-              mt={2}
-              direction="row" 
-              justifyContent="flex-start"
-              >
-                <Stack item>
-                  <label htmlFor="PropertyID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>   </label>
-                  <input type="text" name="PropertyID" value={updateProperty.PropertyID} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
+                {/* FIELDS: PropertyID, PropertySupervisor */}
+                <Stack
+                  padding={1}
+                  spacing={10}
+                  mt={2}
+                  direction="row"
+                  justifyContent="flex-start"
+                >
+                  <Stack item>
+                    <label
+                      htmlFor="PropertyID"
+                      style={{
+                        display: "inline-block",
+                        width: "150px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Property ID<span style={{ color: "red" }}>*</span>{" "}
+                    </label>
+                    <input
+                      type="text"
+                      name="PropertyID"
+                      value={updateProperty.PropertyID}
+                      onChange={handleUpdatePropChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      pattern="[0-9]*"
+                      title="Numbers only."
+                      required
+                    />
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="PropertySupervisorID"
+                      style={{
+                        display: "inline-block",
+                        width: "250px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Property Supervisor ID{" "}
+                    </label>
+                    <select
+                      name="PropertySupervisorID"
+                      value={updateProperty.PropertySupervisorID}
+                      onChange={handleUpdatePropChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      required
+                    >
+                      <option value="">Select Property Supervisor</option>
+                      {users.map((user, index) => (
+                        <option
+                          key={`propertysupervisor_${index}`}
+                          value={user.UserID}
+                        >
+                          {getFullName(user)}
+                        </option>
+                      ))}
+                    </select>
+                  </Stack>
                 </Stack>
-                <Stack item>
-                  <label htmlFor="PropertySupervisorID" style={{ display: 'inline-block', width: '250px', verticalAlign: 'top' }}>Property Supervisor ID   </label>
-                  <select name="PropertySupervisorID" value={updateProperty.PropertySupervisorID} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} required >
-                    <option value="">Select Property Supervisor</option>
-                    {users.map((user, index) => (
-                      <option key={`propertysupervisor_${index}`} value={user.UserID}>{getFullName(user)}</option>
-                    ))}
-                  </select>
+
+                {/* FIELDS: Status, Location */}
+                <Stack
+                  padding={1}
+                  spacing={10}
+                  mb={1}
+                  direction="row"
+                  justifyContent="flex-start"
+                >
+                  <Stack item>
+                    <label
+                      htmlFor="Status"
+                      style={{
+                        display: "inline-block",
+                        width: "150px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Status{" "}
+                    </label>
+                    <select
+                      name="StatusID"
+                      value={updateProperty.StatusID}
+                      onChange={handleUpdatePropChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                    >
+                      <option value="">Select Status</option>
+                      {statuses.map((status, index) => (
+                        <option key={`status${index}`} value={status.StatusID}>
+                          {status.StatusName}
+                        </option>
+                      ))}
+                    </select>
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="LocationID"
+                      style={{
+                        display: "inline-block",
+                        width: "150px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Location{" "}
+                    </label>
+                    <select
+                      name="LocationID"
+                      value={updateProperty.LocationID}
+                      onChange={handleUpdatePropChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      required
+                    >
+                      <option value="">Select Location</option>
+                      {locations.map((location, index) => (
+                        <option
+                          key={`location_${index}`}
+                          value={location.LocationID}
+                        >
+                          {getFullLoc(location)}
+                        </option>
+                      ))}
+                    </select>
+                  </Stack>
                 </Stack>
-              </Stack>
 
-
-
-              {/* FIELDS: Status, Location */}
-              <Stack 
-              padding={1}
-              spacing={10}
-              mb={1}
-              direction="row" 
-              justifyContent="flex-start"
-              >
-                <Stack item>
-                  <label htmlFor="Status" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status   </label>
-                  <select name="StatusID" value={updateProperty.StatusID} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} >
-                  <option value ="">Select Status</option>
-                    {statuses.map((status, index) => (
-                      <option key={`status${index}`} value={status.StatusID}>{status.StatusName}</option>
-                    ))}
-                  </select>
+                <Stack
+                  padding={1}
+                  direction="row"
+                  alignItems="flex-start"
+                  justifyContent="flex-end"
+                >
+                  <Stack item>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      size="small"
+                      color="success"
+                    >
+                      Submit
+                    </Button>
+                  </Stack>
                 </Stack>
-                <Stack item>
-                  <label htmlFor="LocationID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location   </label>
-                  <select name="LocationID" value={updateProperty.LocationID} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} required >
-                    <option value ="">Select Location</option>
-                    {locations.map((location, index) => (
-                      <option key={`location_${index}`} value={location.LocationID}>{getFullLoc(location)}</option>
-                    ))}
-                  </select>
-                </Stack>
-              </Stack>
-
-              <Stack 
-                padding={1}
-                direction="row" 
-                alignItems="flex-start" 
-                justifyContent="flex-end"
-              >
-                <Stack item>
-                  <Button type="submit" variant="contained" size="small" color="success" >Submit</Button>
-                </Stack>
-              </Stack>
-
-            </Box>
+              </Box>
             </form>
           </Box>
 
-
-          
           <br />
           <br />
-          <Box
-            display='flex'
-            flexDirection='column'
-          >
+          <Box display="flex" flexDirection="column">
             <Box className={classes.updateRecordTextContainer}>
-              <Typography
-                variant='h9'
-                fontWeight={"bold"}
-              >
+              <Typography variant="h9" fontWeight={"bold"}>
                 Update a Supplier in the Database
               </Typography>
             </Box>
 
-            
             <form onSubmit={handleUpdateSupplier}>
-            <Box
-              sx={{ pt: 3, pb: 3}}
-              className={classes.updateRecordFields}
-            >
-              
-              <Typography
-                variant='h9'
-                fontWeight={"bold"}
-              >
-                Update Supplier Details
-              </Typography>
-              <Divider></Divider>
+              <Box sx={{ pt: 3, pb: 3 }} className={classes.updateRecordFields}>
+                <Typography variant="h9" fontWeight={"bold"}>
+                  Update Supplier Details
+                </Typography>
+                <Divider></Divider>
 
+                {/* FIELDS: SupplierID, SupplierName */}
+                <Stack
+                  padding={1}
+                  spacing={2}
+                  mt={2}
+                  direction="row"
+                  justifyContent="space-between"
+                >
+                  <Stack item>
+                    <label
+                      htmlFor="SupplierID"
+                      style={{
+                        display: "inline-block",
+                        width: "150px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Supplier ID<span style={{ color: "red" }}>*</span>{" "}
+                    </label>
+                    <input
+                      type="text"
+                      name="SupplierID"
+                      value={updateSupplier.SupplierID}
+                      onChange={handleUpdateSupChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      pattern="[0-9]*"
+                      title="Numbers only."
+                      required
+                    />
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="SupplierName"
+                      style={{
+                        display: "inline-block",
+                        width: "150px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Supplier Name{" "}
+                    </label>
+                    <input
+                      type="text"
+                      name="SupplierName"
+                      value={updateSupplier.SupplierName}
+                      onChange={handleUpdateSupChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      pattern="[0-9]*"
+                      title="Numbers only."
+                      required
+                    />
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="SupplierContact"
+                      style={{
+                        display: "inline-block",
+                        width: "150px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Supplier Contact{" "}
+                    </label>
+                    <input
+                      type="text"
+                      name="SupplierContact"
+                      value={updateSupplier.SupplierContact}
+                      onChange={handleUpdateSupChange}
+                      style={{ width: "250px", display: "inline-block" }}
+                      pattern="[0-9]*"
+                      title="Numbers only."
+                    />
+                  </Stack>
+                </Stack>
 
-              {/* FIELDS: SupplierID, SupplierName */}
-              <Stack 
-              padding={1}
-              spacing={2}
-              mt={2}
-              direction="row" 
-              justifyContent="space-between"
-              >
-                <Stack item>
-                  <label htmlFor="SupplierID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier ID<span style={{ color: 'red' }}>*</span>   </label>
-                  <input type="text" name="SupplierID" value={updateSupplier.SupplierID} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
+                {/* FIELDS: Unit, Street, City, State */}
+                <Stack
+                  padding={1}
+                  spacing={2}
+                  mb={1}
+                  direction="row"
+                  justifyContent="space-between"
+                >
+                  <Stack item>
+                    <label
+                      htmlFor="UnitNumber"
+                      style={{
+                        display: "inline-block",
+                        width: "120px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Unit Number{" "}
+                    </label>
+                    <input
+                      type="text"
+                      name="UnitNumber"
+                      value={updateSupplier.UnitNumber}
+                      onChange={handleUpdateSupChange}
+                      style={{ width: "110px", display: "inline-block" }}
+                      pattern="[0-9]*"
+                      title="Numbers only."
+                    />
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="StreetName"
+                      style={{
+                        display: "inline-block",
+                        width: "150px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Street Name{" "}
+                    </label>
+                    <input
+                      type="text"
+                      name="StreetName"
+                      value={updateSupplier.StreetName}
+                      onChange={handleUpdateSupChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                    />
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="City"
+                      style={{
+                        display: "inline-block",
+                        width: "150px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      City{" "}
+                    </label>
+                    <input
+                      type="text"
+                      name="City1"
+                      value={updateSupplier.City}
+                      onChange={handleUpdateSupChange}
+                      style={{ width: "290px", display: "inline-block" }}
+                    />
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="State"
+                      style={{
+                        display: "inline-block",
+                        width: "150px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      State{" "}
+                    </label>
+                    <input
+                      type="text"
+                      name="State1"
+                      value={updateSupplier.State}
+                      onChange={handleUpdateSupChange}
+                      style={{ width: "140px", display: "inline-block" }}
+                    />
+                  </Stack>
                 </Stack>
-                <Stack item>
-                  <label htmlFor="SupplierName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Name   </label>
-                  <input type="text" name="SupplierName" value={updateSupplier.SupplierName} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
-                </Stack>
-                <Stack item>
-                  <label htmlFor="SupplierContact" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Contact   </label>
-                  <input type="text" name="SupplierContact" value={updateSupplier.SupplierContact} onChange={handleUpdateSupChange} style={{ width: '250px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only."/>
-                </Stack>
-              </Stack>
 
-
-
-              {/* FIELDS: Unit, Street, City, State */}
-              <Stack 
-              padding={1}
-              spacing={2}
-              mb={1}
-              direction="row" 
-              justifyContent="space-between"
-              >
-                <Stack item>
-                  <label htmlFor="UnitNumber" style={{ display: 'inline-block', width: '120px', verticalAlign: 'top' }}>Unit Number   </label>
-                  <input type="text" name="UnitNumber" value={updateSupplier.UnitNumber} onChange={handleUpdateSupChange} style={{ width: '110px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only."/>
+                <Stack
+                  padding={1}
+                  direction="row"
+                  alignItems="flex-start"
+                  justifyContent="flex-end"
+                >
+                  <Stack item>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      size="small"
+                      color="success"
+                    >
+                      Submit
+                    </Button>
+                  </Stack>
                 </Stack>
-                <Stack item>
-                  <label htmlFor="StreetName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Street Name   </label>
-                  <input type="text" name="StreetName" value={updateSupplier.StreetName} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} />
-                </Stack>
-                <Stack item>
-                  <label htmlFor="City" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>City   </label>
-                  <input type="text" name="City1" value={updateSupplier.City} onChange={handleUpdateSupChange} style={{ width: '290px', display: 'inline-block' }} />
-                </Stack>
-                <Stack item>
-                  <label htmlFor="State" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>State   </label>
-                  <input type="text" name="State1" value={updateSupplier.State} onChange={handleUpdateSupChange} style={{ width: '140px', display: 'inline-block' }} />
-                </Stack>
-              </Stack>
-
-              <Stack 
-                padding={1}
-                direction="row" 
-                alignItems="flex-start" 
-                justifyContent="flex-end"
-              >
-                <Stack item>
-                  <Button type="submit" variant="contained" size="small" color="success" >Submit</Button>
-                </Stack>
-              </Stack>
-
-            </Box>
+              </Box>
             </form>
           </Box>
 
-
-
-
-
-
-          
           <br />
           <br />
-          <Box
-            display='flex'
-            flexDirection='column'
-          >
+          <Box display="flex" flexDirection="column">
             <Box className={classes.updateRecordTextContainer}>
-              <Typography
-                variant='h9'
-                fontWeight={"bold"}
-              >
+              <Typography variant="h9" fontWeight={"bold"}>
                 Archive a Record in the Database
               </Typography>
             </Box>
 
-            
             <form onSubmit={handleArchive}>
-            <Box
-              sx={{ pt: 3, pb: 3}}
-              className={classes.updateRecordFields}
-            >
-              
-              <Typography
-                variant='h9'
-                fontWeight={"bold"}
-              >
-                Record Details
-              </Typography>
-              <Divider></Divider>
+              <Box sx={{ pt: 3, pb: 3 }} className={classes.updateRecordFields}>
+                <Typography variant="h9" fontWeight={"bold"}>
+                  Record Details
+                </Typography>
+                <Divider></Divider>
 
-
-              {/* FIELDS: PropertyID, ArchiveStatus */}
-              <Stack 
-              padding={1}
-              spacing={10}
-              mt={2}
-              direction="row" 
-              justifyContent="flex-start"
-              >
-                <Stack item>
-                  <label htmlFor="PropertyID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>   </label>
-                  <input type="text" name="PropertyID" value={archiveData.PropertyID} onChange={handleArchiveChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
+                {/* FIELDS: PropertyID, ArchiveStatus */}
+                <Stack
+                  padding={1}
+                  spacing={10}
+                  mt={2}
+                  direction="row"
+                  justifyContent="flex-start"
+                >
+                  <Stack item>
+                    <label
+                      htmlFor="PropertyID"
+                      style={{
+                        display: "inline-block",
+                        width: "150px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Property ID<span style={{ color: "red" }}>*</span>{" "}
+                    </label>
+                    <input
+                      type="text"
+                      name="PropertyID"
+                      value={archiveData.PropertyID}
+                      onChange={handleArchiveChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      pattern="[0-9]*"
+                      title="Numbers only."
+                      required
+                    />
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="isArchived"
+                      style={{
+                        display: "inline-block",
+                        width: "250px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Current Archive Status
+                      <span style={{ color: "red" }}></span>{" "}
+                    </label>
+                    <input
+                      type="text"
+                      name="isArchived"
+                      value={archiveData.IsArchived}
+                      onChange={handleArchiveChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      readOnly={true}
+                    />
+                  </Stack>
                 </Stack>
-                <Stack item>
-                  <label htmlFor="isArchived" style={{ display: 'inline-block', width: '250px', verticalAlign: 'top' }}>Current Archive Status<span style={{ color: 'red' }}></span>  </label>
-                  <input type="text" name="isArchived" value={archiveData.IsArchived} onChange={handleArchiveChange} style={{ width: '300px', display: 'inline-block' }} readOnly={true}/>
-                </Stack>
-              </Stack>
 
-              <Stack 
-                padding={1}
-                direction="row" 
-                alignItems="flex-start" 
-                justifyContent="flex-end"
-              >
-                <Stack item>
-                  <Button type="submit" disabled={buttonDisabled} variant="contained" size="small" color="success" >Submit</Button>
+                <Stack
+                  padding={1}
+                  direction="row"
+                  alignItems="flex-start"
+                  justifyContent="flex-end"
+                >
+                  <Stack item>
+                    <Button
+                      type="submit"
+                      disabled={buttonDisabled}
+                      variant="contained"
+                      size="small"
+                      color="success"
+                    >
+                      Submit
+                    </Button>
+                  </Stack>
                 </Stack>
-              </Stack>
-
-            </Box>
+              </Box>
             </form>
           </Box>
-
-
         </main>
       </Box>
     </Layout>
   );
 };
-
 
 // You'll learn about this in the next task, just copy it for now
 export const Head = () => <title>Update Database</title>;
@@ -598,15 +778,8 @@ export default UpdateRec;
 //current problems with updating record:
 //
 
-
-
-
-
-
-
-
-
-{/* <main>
+{
+  /* <main>
         <Link to="/app/submitform/">Return to Submit Form Page</Link>
         <form onSubmit={handleUpdateProperty}>
           <div>
@@ -667,5 +840,5 @@ export default UpdateRec;
           </div>
           <button type="submit">Submit</button>
         </form>
-      </main> */}
-
+      </main> */
+}

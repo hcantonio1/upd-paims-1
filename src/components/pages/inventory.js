@@ -9,7 +9,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { db } from "../../services/firebase-config.js";
+import { db } from "../../../firebase-config.js";
 
 const propertiesCollection = collection(db, "property");
 
