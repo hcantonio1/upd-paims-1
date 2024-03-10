@@ -4,6 +4,13 @@ import { Link } from "gatsby";
 import Layout from "../layout";
 import { useState } from "react";
 import axios from "axios";
+import { Typography } from '@mui/material';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+
 
 const SubmitPage = () => {
   const [inputData, setInputData] = useState({
@@ -189,17 +196,25 @@ const SubmitPage = () => {
     });
   };
 
+
+
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  }));
+
   return (
-    <Layout pageTitle="CREATE A RECORD">
+    <Layout>
       <main>
-        <Link to="/app/submitform/">Submit Form</Link>
-        <h2>Create a record in purchase_order, property, and item_document</h2>
-        <p>Insert into supplier if it does not exist</p>
-        <p>
-          item_category untouched and item_location untouched since under the
-          assumption the tables have complete data already and no need to update
-          with new locations or categories.
-        </p>
+        <center><h1 style={{ color: "#014421" }}> Create a record </h1></center>
+        <Link to="/app/submitform/">Back to Submit Form Page</Link>
+
+        <Divider></Divider>
+      
+        <h2>Add a New Supplier</h2>
         <form onSubmit={handleInsert}>
           <div>
             <p>Supplier</p>
