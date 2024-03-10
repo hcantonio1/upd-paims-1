@@ -1,11 +1,11 @@
 .header {
-  display: flex;
+  /* display: flex; */
   background-color: #7b1113;
   color: #fff;
-  font-family: Univers, sans-serif;
-  font-size: large;
-  align-items: center;
-  flex-wrap: wrap;
+  /* font-family: Univers, sans-serif; */
+  /* font-size: large; */
+  /* align-items: center; */
+  /* flex-wrap: wrap; */
 }
 
 .logo {
@@ -27,14 +27,14 @@
   width: 100%;
   height: 20px;
   background-color: #014421;
-  align-self: flex-end;
+  /* align-self: flex-end; */
 }
 
 .yellow_rectangle {
   width: 100%;
   height: 5px;
   background-color: #dea80f;
-  align-self: flex-end;
+  /* align-self: flex-end; */
 }
 
 .logoutbutton {
@@ -51,4 +51,9 @@
   box-shadow: none;
   width: 100px;  
   height: 40px;
+}
+
+*{
+  margin: 0;
+  padding: 0;
 }

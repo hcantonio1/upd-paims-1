@@ -3,7 +3,7 @@ import { StaticImage } from "gatsby-plugin-image";
 import { Link, navigate } from "gatsby";
 import { getUser, isLoggedIn, logout } from "../services/auth";
 import * as styles from "../styles/header.module.css";
-import { Typography, Box, AppBar, Toolbar, makeStyles } from "@material-ui/core"
+import { Typography, Box, AppBar, Toolbar, makeStyles, Grid } from "@material-ui/core"
 
 const useStyles = makeStyles({
   appbar: {
@@ -18,31 +18,60 @@ const Header = () => {
   };
 
   return (
-    // <AppBar
-    //     position="static"
-    //   >
-    //     <Toolbar>
-    //       <Typography>
-    //         Header
-    //       </Typography>
-    //     </Toolbar>
-    //   </AppBar>
+
 
     <header className={styles.header}>
-      <StaticImage
-        className={styles.logo}
-        alt="Logo"
-        src="https://upload.wikimedia.org/wikipedia/en/5/5a/UP_Diliman_Engineering_Logo.png"
-      />
-      <Typography>
-        Properties, Accountabilites and&nbsp;Inventory Management System
-      </Typography>
-      <button className={styles.logoutbutton} onClick={handleLogout}>
-        {" "}
-        Log Out{" "}
-      </button>
-      <div className={styles.green_rectangle} />
-      <div className={styles.yellow_rectangle} />
+      {/* header container  */}
+      <Box
+        display='flex'
+        flexDirection='column'
+      >
+        {/* logo - log out button container  */}
+        <Box
+          display='flex'
+          flexDirection='row'
+          justifyContent='center'
+          alignItems='center'
+        >
+
+          {/* logo  */}
+          <StaticImage
+            className={styles.logo}
+            alt="Logo"
+            src="../images/coe_logo.png"
+          />
+
+          {/* webapp title  */}
+          <Box
+            flexGrow={10}
+          >
+            <Typography>
+              Properties Accountabilites and&nbsp;Inventory Management System
+            </Typography>
+          </Box>
+
+          {/* log out button  */}
+          <Box>
+            <button className={styles.logoutbutton} onClick={handleLogout}>
+              {" "}
+              Log Out{" "}
+            </button>
+          </Box>
+        </Box>
+
+        {/* container for colored bars */}
+        <Box
+          display='flex'
+          flexDirection='column'
+        >
+          {/* green bar  */}
+          <Box className={styles.green_rectangle}/>
+
+
+          {/* yellow bar  */}
+          <Box className={styles.yellow_rectangle} />
+        </Box>
+      </Box>
     </header>
   );
 };
