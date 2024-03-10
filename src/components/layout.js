@@ -1,5 +1,5 @@
 import * as React from "react";
-import Navbar from "../components/navbar";
+import Navbar from "./navbar";
 import Header from "./header";
 // import * as styles from "../styles/layout.module.css";
 import {
@@ -9,7 +9,6 @@ import {
   Grid,
   GridSpacing,
 } from "@material-ui/core";
-// import { useNavigate } from "react-router-dom";
 
 const navbarWidth = 200;
 
@@ -26,12 +25,6 @@ const useStyles = makeStyles({
   },
   root: {
     display: "flex",
-  },
-  drawer: {
-    width: navbarWidth,
-  },
-  drawerPaper: {
-    width: navbarWidth,
   },
   active: {
     background: "#f4f4f4",

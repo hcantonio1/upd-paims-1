@@ -1,5 +1,5 @@
 import * as React from "react";
-import { navigate } from "gatsby";
+import { Link } from "gatsby";
 import {
   makeStyles,
   Drawer,
@@ -89,19 +89,6 @@ const Navbar = () => {
     // },
   ];
 
-  // return (
-  //   <nav>
-  //     <div className={styles.navcontainer}>
-  //       <Link to="/app/home">Home</Link>
-  //       <Link to="/app/inventory">Inventory</Link>
-  //       <Link to="/app/submitform">Submit Form</Link>
-  //       <Link to="/app/about">FAQ</Link>
-  //       {/* <Link to="/app/account">Account</Link> */}
-  //       {/* <Link to="/app/home">FAQ</Link> */}
-  //     </div>
-  //   </nav>
-  // );
-
   return (
     <nav>
       <Box>
@@ -113,22 +100,20 @@ const Navbar = () => {
         >
           <List>
             {menuItems.map((item) => (
-              <ListItem
-                button
-                key={item.text}
-                onClick={() => navigate(item.path)}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
-
-                <ListItemText primary={item.text} />
-              </ListItem>
+              <Link to={item.path} key={item.text}>
+                <ListItem>
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItem>
+              </Link>
             ))}
             <RestrictedComponent>
-              <ListItem button onClick={() => navigate("/app/manageaccounts/")}>
-                <ListItemIcon></ListItemIcon>
-
-                <ListItemText primary={"Manage Accounts"} />
-              </ListItem>
+              <Link to={"/app/manageaccounts/"}>
+                <ListItem>
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary={"Manage Accounts"} />
+                </ListItem>
+              </Link>
             </RestrictedComponent>
           </List>
         </Drawer>
