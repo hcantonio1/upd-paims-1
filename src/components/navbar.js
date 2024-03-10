@@ -9,7 +9,12 @@ import {
   ListItemText,
   Box,
 } from "@material-ui/core";
-import { HomeRounded, Folder, AddCircleOutline, AccountCircleRounded } from "@material-ui/icons";
+import {
+  HomeRounded,
+  Folder,
+  AddCircleOutline,
+  AccountCircleRounded,
+} from "@material-ui/icons";
 import RestrictedComponent from "./restrictedComponent";
 import { navigate } from "gatsby";
 
@@ -76,11 +81,12 @@ const Navbar = () => {
       icon: <AddCircleOutline />,
       path: "/app/submitform",
     },
-    {
-      text: 'Manage Accounts',
-      icon: <AccountCircleRounded />,
-      path: "/app/manageaccounts/"
-    }
+    // don't add
+    // {
+    //   text: "Manage Accounts",
+    //   icon: <AccountCircleRounded />,
+    //   path: "/app/manageaccounts/",
+    // },
 
     // to be added once mafinalize na yung faq page
     // {
@@ -100,19 +106,25 @@ const Navbar = () => {
           anchor="left"
         >
           <List>
-          {menuItems.map(item => (
+            {menuItems.map((item) => (
               <ListItem
                 button
                 key={item.text}
                 onClick={() => navigate(item.path)}
               >
-                <ListItemIcon>
-                  {item.icon}
-                </ListItemIcon>
+                <ListItemIcon>{item.icon}</ListItemIcon>
 
                 <ListItemText primary={item.text} />
               </ListItem>
             ))}
+            <RestrictedComponent>
+              <ListItem button onClick={() => navigate("/app/manageaccounts/")}>
+                <ListItemIcon>
+                  <AccountCircleRounded />
+                </ListItemIcon>
+                <ListItemText primary={"Manage Accounts"} />
+              </ListItem>
+            </RestrictedComponent>
           </List>
         </Drawer>
       </Box>
