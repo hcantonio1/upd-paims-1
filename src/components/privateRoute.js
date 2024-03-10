@@ -5,12 +5,13 @@ import { isLoggedIn, getUser } from "../services/auth";
 const PrivateRoute = ({ component: Component, location, ...rest }) => {
   const [userRole, setUserRole] = useState(getUser().role);
 
-  if (["/app", "/app/"].includes(location.pathname)) {
-    navigate("/app/home");
-  }
   if (!isLoggedIn() && location.pathname !== `/app/login`) {
     navigate("/app/login");
     return null;
+  }
+
+  if (["", "/", "/app/"].includes(location.pathname)) {
+    navigate("/app/home");
   }
 
   const specialRoles = ["Supervisor", "Admin", "Dev"];

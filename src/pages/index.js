@@ -3,7 +3,7 @@ import React from "react";
 import { Link, navigate } from "gatsby";
 
 export default function IndexPage() {
-  navigate("/app/login");
+  navigate("/app/home");
 
   // alternatively, create the login page here, at the index
   return <></>;
