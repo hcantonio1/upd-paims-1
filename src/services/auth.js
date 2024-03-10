@@ -37,7 +37,6 @@ export const handleLogin = ({ email, password }) => {
 };
 
 export const isLoggedIn = () => {
-  // return !!auth.currentUser;
   const paimsUser = getUser();
   return !!paimsUser.email;
 };
