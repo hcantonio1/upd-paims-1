@@ -98,7 +98,7 @@ const UpdateRec = () => {
           StreetName: supData.StreetName,
           SupplierContact: supData.SupplierContact,
           SupplierName: supData.SupplierName,
-          UnitNumber: supData.UnitNumber,
+          UnitNumber: parseInt(supData.UnitNumber),
         }));
       }
       if (!supSnap.exists()) {
@@ -126,9 +126,9 @@ const UpdateRec = () => {
         const propData = propSnap.data();
         setUpdateProperty((prevData) => ({
           ...prevData,
-          LocationID: propData.LocationID,
-          StatusID: propData.StatusID,
-          TrusteeID: propData.TrusteeID,
+          LocationID: parseInt(propData.LocationID),
+          StatusID: parseInt(propData.StatusID),
+          TrusteeID: parseInt(propData.TrusteeID),
         }));
       }
       if (!propSnap.exists()) {
@@ -155,7 +155,7 @@ const UpdateRec = () => {
         StreetName: updateSupplier.StreetName,
         SupplierContact: updateSupplier.SupplierContact.toString(),
         SupplierName: updateSupplier.SupplierName,
-        UnitNumber: updateSupplier.UnitNumber,
+        UnitNumber: parseInt(updateSupplier.UnitNumber),
       });
       alert("Successfully updated supplier!");
       window.location.reload();
@@ -171,10 +171,9 @@ const UpdateRec = () => {
     try {
       const propertyRef = doc(db, "property", updateProperty.PropertyID);
       await updateDoc(propertyRef, {
-        PropertyID: updateProperty.PropertyID,
-        LocationID: updateProperty.LocationID,
-        StatusID: updateProperty.StatusID,
-        TrusteeID: updateProperty.TrusteeID,
+        LocationID: parseInt(updateProperty.LocationID),
+        StatusID: parseInt(updateProperty.StatusID),
+        TrusteeID: parseInt(updateProperty.TrusteeID),
       });
       alert("Successfully updated property!");
       window.location.reload();
@@ -363,7 +362,7 @@ const UpdateRec = () => {
                         verticalAlign: "top",
                       }}
                     >
-                      Property Supervisor ID{" "}
+                      Trustee{" "}
                     </label>
                     <select
                       name="TrusteeID"
@@ -372,7 +371,7 @@ const UpdateRec = () => {
                       style={{ width: "300px", display: "inline-block" }}
                       required
                     >
-                      <option value="">Select Property Supervisor</option>
+                      <option value="">Select Trustee</option>
                       {users.map((user, index) => (
                         <option
                           key={`Trustee_${index}`}
@@ -533,8 +532,6 @@ const UpdateRec = () => {
                       value={updateSupplier.SupplierName}
                       onChange={handleUpdateSupChange}
                       style={{ width: "300px", display: "inline-block" }}
-                      pattern="[0-9]*"
-                      title="Numbers only."
                       required
                     />
                   </Stack>
@@ -795,9 +792,9 @@ export default UpdateRec;
               ))}
             </select>
             <br />
-            <label htmlFor="TrusteeID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor ID:   </label>
+            <label htmlFor="TrusteeID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Trustee ID:   </label>
             <select name="TrusteeID" value={updateProperty.TrusteeID} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} required >
-              <option value="">Select Property Supervisor</option>
+              <option value="">Select Trustee</option>
               {users.map((user, index) => (
                 <option key={`Trustee_${index}`} value={user.UserID}>{getFullName(user)}</option>
               ))}
