@@ -123,9 +123,9 @@ const InsertRecord = () => {
         State: inputData.State,
         StreetName: inputData.StreetName,
         SupplierContact: inputData.SupplierContact.toString(),
-        SupplierID: inputData.SupplierID,
+        SupplierID: parseInt(inputData.SupplierID),
         SupplierName: inputData.SupplierName,
-        UnitNumber: inputData.UnitNumber,
+        UnitNumber: parseInt(inputData.UnitNumber),
       });
       console.log("Uploading file to Firebase Storage");
       const fileRef = ref(storage, "DCS/" + inputData.Link.name);
@@ -141,22 +141,22 @@ const InsertRecord = () => {
         ReceivedBy: inputData.ReceivedBy,
       });
       await setDoc(doc(db, "property", inputData.PropertyID), {
-        CategoryID: inputData.CategoryID,
+        CategoryID: parseInt(inputData.CategoryID),
         DocumentID: inputData.DocumentID,
         isArchived: 0,
-        LocationID: inputData.LocationID,
-        PropertyID: inputData.PropertyID,
+        LocationID: parseInt(inputData.LocationID),
+        PropertyID: parseInt(inputData.PropertyID),
         PropertyName: inputData.PropertyName,
-        TrusteeID: inputData.TrusteeID,
-        StatusID: inputData.StatusID,
-        SupplierID: inputData.SupplierID,
-        PurchaseOrderID: inputData.PurchaseOrderID,
+        TrusteeID: parseInt(inputData.TrusteeID),
+        StatusID: parseInt(inputData.StatusID),
+        SupplierID: parseInt(inputData.SupplierID),
+        PurchaseOrderID: parseInt(inputData.PurchaseOrderID),
       });
       await setDoc(doc(db, "purchase_order", inputData.PurchaseOrderID), {
         PurchaseDate: Timestamp.fromDate(new Date(inputData.PurchaseDate)),
-        PurchaseOrderID: inputData.PurchaseOrderID,
-        SupplierID: inputData.SupplierID,
-        TotalCost: inputData.TotalCost,
+        PurchaseOrderID: parseInt(inputData.PurchaseOrderID),
+        SupplierID: parseInt(inputData.SupplierID),
+        TotalCost: parseInt(inputData.TotalCost),
       });
       alert("Successfully inserted!");
       window.location.reload();
@@ -201,7 +201,7 @@ const InsertRecord = () => {
           StreetName: supData.StreetName,
           SupplierContact: supData.SupplierContact,
           SupplierName: supData.SupplierName,
-          UnitNumber: supData.UnitNumber,
+          UnitNumber: parseInt(supData.UnitNumber),
         }));
       }
       if (!supSnap.exists()) {
@@ -234,8 +234,8 @@ const InsertRecord = () => {
           PurchaseDate: orderData.PurchaseDate.toDate()
             .toISOString()
             .split("T")[0],
-          SupplierID: orderData.SupplierID,
-          TotalCost: orderData.TotalCost,
+          SupplierID: parseInt(orderData.SupplierID),
+          TotalCost: parseInt(orderData.TotalCost),
         }));
       }
       if (!orderSnap.exists()) {
@@ -418,7 +418,7 @@ const InsertRecord = () => {
                       htmlFor="TrusteeID"
                       style={{ display: "inline-block", verticalAlign: "top" }}
                     >
-                      Property Supervisor<span style={{ color: "red" }}>*</span>{" "}
+                      Trustee<span style={{ color: "red" }}>*</span>{" "}
                     </label>
                     <select
                       name="TrusteeID"
@@ -427,7 +427,7 @@ const InsertRecord = () => {
                       style={{ width: "250px", display: "inline-block" }}
                       required
                     >
-                      <option value="">Select Property Supervisor</option>
+                      <option value="">Select Trustee</option>
                       {users.map((user, index) => (
                         <option
                           key={`Trustee_${index}`}
@@ -1039,9 +1039,9 @@ export default InsertRecord;
 //                 ))}
 //               </select>
 //               <br />
-//               <label htmlFor="TrusteeID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property Supervisor<span style={{ color: 'red' }}>*</span>:   </label>
+//               <label htmlFor="TrusteeID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Trustee<span style={{ color: 'red' }}>*</span>:   </label>
 //               <select name="TrusteeID" value={inputData.TrusteeID} onChange={handleInputChange} style={{ width: '300px', display: 'inline-block' }} required >
-//                 <option value="">Select Property Supervisor</option>
+//                 <option value="">Select Trustee</option>
 //                 {users.map((user, index) => (
 //                   <option key={`Trustee_${index}`} value={user.UserID}>{getFullName(user)}</option>
 //                 ))}
