@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import { navigate } from "gatsby";
 import { isLoggedIn, getUser } from "../services/auth";
 
-const RestrictedComponent = (props) => {
+const RestrictedComponent = ({ children, restrictedRoles }) => {
   const [userRole, setUserRole] = useState(getUser().role);
-  const specialRoles = ["Supervisor", "Admin", "Dev"];
-  if (!specialRoles.includes(userRole)) {
+  if (!restrictedRoles.includes(userRole)) {
     return null;
   }
 
-  return props.children;
+  return children;
 };
 
 export default RestrictedComponent;

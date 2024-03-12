@@ -68,25 +68,28 @@ const Navbar = () => {
       text: "Home",
       icon: <HomeRounded />,
       path: "/app/home",
+      restrictedRoles: [],
     },
 
     {
       text: "Inventory",
       icon: <Folder />,
       path: "/app/inventory",
+      restrictedRoles: [],
     },
 
     {
       text: "Submit Form",
       icon: <AddCircleOutline />,
       path: "/app/submitform",
+      restrictedRoles: [],
     },
-    // don't add
-    // {
-    //   text: "Manage Accounts",
-    //   icon: <AccountCircleRounded />,
-    //   path: "/app/manageaccounts/",
-    // },
+    {
+      text: "Manage Accounts",
+      icon: <AccountCircleRounded />,
+      path: "/app/manageaccounts/",
+      restrictedRoles: ["Trustee", "Encoder"],
+    },
 
     // to be added once mafinalize na yung faq page
     // {
@@ -106,25 +109,36 @@ const Navbar = () => {
           anchor="left"
         >
           <List>
-            {menuItems.map((item) => (
-              <ListItem
-                button
-                key={item.text}
-                onClick={() => navigate(item.path)}
-              >
-                <ListItemIcon>{item.icon}</ListItemIcon>
+            {menuItems.map((item) => {
+              const listItem = (
+                <ListItem
+                  button
+                  key={item.text}
+                  onClick={() => navigate(item.path)}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
 
-                <ListItemText primary={item.text} />
-              </ListItem>
-            ))}
-            <RestrictedComponent>
+                  <ListItemText primary={item.text} />
+                </ListItem>
+              );
+              console.log(item.restrictedRoles);
+              if (item.restrictedRoles.length === 0) {
+                return listItem;
+              }
+              return (
+                <RestrictedComponent restrictedRoles={item.restrictedRoles}>
+                  {listItem}
+                </RestrictedComponent>
+              );
+            })}
+            {/* <RestrictedComponent>
               <ListItem button onClick={() => navigate("/app/manageaccounts/")}>
                 <ListItemIcon>
                   <AccountCircleRounded />
                 </ListItemIcon>
                 <ListItemText primary={"Manage Accounts"} />
               </ListItem>
-            </RestrictedComponent>
+            </RestrictedComponent> */}
           </List>
         </Drawer>
       </Box>
