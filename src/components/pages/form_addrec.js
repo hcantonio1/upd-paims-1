@@ -259,15 +259,6 @@ const InsertRecord = () => {
 
       if (propSnap.exists()) {
         alert("A property with this ID already exists!");
-        setInputData((prevData) => ({
-          ...prevData,
-          CategoryID: "",
-          LocationID: "",
-          PropertyName: "",
-          TrusteeID: "",
-          StatusID: "",
-          PropertyID: "",
-        }));
       }
     } catch (error) {
       console.error("Error fetching property:", error);
