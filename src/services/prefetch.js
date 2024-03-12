@@ -1,7 +1,7 @@
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase-config";
 
-const commonCollections = [
+export const commonCollections = [
   {
     name: "item_category",
     columnNameOfID: "CategoryID",
@@ -34,7 +34,7 @@ const fetchCollData = async ({ name, columnNameOfID, valuesToFetch }) => {
         return data[column];
       });
       prefetched[name][key] = values[0];
-      if (name == "item_location") {
+      if (name === "item_location") {
         prefetched[name][key] = `${values[0]} ${values[1]}`;
       }
     });

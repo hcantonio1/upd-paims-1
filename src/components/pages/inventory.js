@@ -82,7 +82,7 @@ const InventoryPage = () => {
   const InventoryColumns = [
     { key: "PropertyID", label: "Property ID", filterable: true },
     { key: "PropertyName", label: "Name", filterable: true },
-    { key: "CategoryID", label: "Category ID", filterable: true },
+    { key: "CategoryName", label: "Category", filterable: true },
     { key: "StatusID", label: "Status", filterable: true },
     {
       key: "TrusteeID",
@@ -112,15 +112,32 @@ const InventoryPage = () => {
   useEffect(() => {
     onSnapshot(propertiesCollection, (snapshot) => {
       // populate with all data
-      const invData = [];
+      let invData = [];
       snapshot.docs.forEach((doc) => {
         invData.push(doc.data());
       });
-      console.log(invData);
+      // console.log(invData);
       setInventoryData(invData);
 
       // or populate with account-specific data
       // const q = query(propertiesCollection, where("PropertyTrustee", "==", "MyName"));
+
+      // const collnames = commonCollections.map((coll) => coll.name);
+
+      const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
+      console.log(prefetched);
+      invData = invData.map((row) => {
+        const collname = "item_category";
+        const columnNameOfID = "CategoryID";
+        const id = row[columnNameOfID];
+        // console.log(prefetched[collname]);
+        const category = prefetched[collname][id];
+        console.log(category);
+        row = { ...row, CategoryName: category };
+        return row;
+      });
+      console.log(invData);
+      setInventoryData(invData);
     });
   }, []);
 
