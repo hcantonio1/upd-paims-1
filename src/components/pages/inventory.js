@@ -10,6 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../../firebase-config.js";
+import { commonCollections } from "../../services/prefetch.js";
 
 const propertiesCollection = collection(db, "property");
 
@@ -83,13 +84,13 @@ const InventoryPage = () => {
     { key: "PropertyID", label: "Property ID", filterable: true },
     { key: "PropertyName", label: "Name", filterable: true },
     { key: "CategoryName", label: "Category", filterable: true },
-    { key: "StatusID", label: "Status", filterable: true },
+    { key: "StatusName", label: "Status", filterable: true },
     {
       key: "TrusteeID",
       label: "Trustee ID",
       filterable: true,
     },
-    { key: "LocationID", label: "Location ID", filterable: true },
+    { key: "LocationName", label: "Location", filterable: true },
     { key: "PurchaseOrderID", label: "Purchase Order", filterable: true },
     { key: "SupplierID", label: "Supplier", filterable: true },
     // { key: 'Address', label: 'Address', filterable: true  },
@@ -111,32 +112,23 @@ const InventoryPage = () => {
 
   useEffect(() => {
     onSnapshot(propertiesCollection, (snapshot) => {
-      // populate with all data
+      const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
+
       let invData = [];
       snapshot.docs.forEach((doc) => {
-        invData.push(doc.data());
+        let row = doc.data();
+        commonCollections.forEach(({ name, columnNameOfID }) => {
+          const id = row[columnNameOfID];
+          const newAttr = columnNameOfID.slice(0, -2) + "Name";
+          const replacementName = prefetched[name][id];
+          row = { ...row, [newAttr]: replacementName };
+        });
+        invData.push(row);
       });
-      // console.log(invData);
-      setInventoryData(invData);
 
-      // or populate with account-specific data
+      // or query a userRole-specific items (do in /src/services/prefetch.js)
       // const q = query(propertiesCollection, where("PropertyTrustee", "==", "MyName"));
 
-      // const collnames = commonCollections.map((coll) => coll.name);
-
-      const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
-      console.log(prefetched);
-      invData = invData.map((row) => {
-        const collname = "item_category";
-        const columnNameOfID = "CategoryID";
-        const id = row[columnNameOfID];
-        // console.log(prefetched[collname]);
-        const category = prefetched[collname][id];
-        console.log(category);
-        row = { ...row, CategoryName: category };
-        return row;
-      });
-      console.log(invData);
       setInventoryData(invData);
     });
   }, []);
