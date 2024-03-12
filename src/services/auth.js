@@ -6,6 +6,7 @@ import {
   // createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { getDoc, doc } from "firebase/firestore";
+import { fetchCommonData } from "./prefetch";
 
 export const isBrowser = () => typeof window !== "undefined";
 
@@ -28,6 +29,7 @@ export const handleLogin = ({ email, password }) => {
     })
     .then(async () => {
       await setUserData();
+      await fetchCommonData();
       navigate(`/app/home`);
     })
     .catch((error) => {
