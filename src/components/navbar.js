@@ -82,7 +82,7 @@ const Navbar = () => {
       text: "Submit Form",
       icon: <AddCircleOutline />,
       path: "/app/submitform",
-      restrictedRoles: [],
+      restrictedRoles: ["Trustee"],
     },
     {
       text: "Manage Accounts",
@@ -121,7 +121,6 @@ const Navbar = () => {
                   <ListItemText primary={item.text} />
                 </ListItem>
               );
-              console.log(item.restrictedRoles);
               if (item.restrictedRoles.length === 0) {
                 return listItem;
               }

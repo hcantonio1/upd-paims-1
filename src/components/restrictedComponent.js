@@ -4,7 +4,7 @@ import { isLoggedIn, getUser } from "../services/auth";
 
 const RestrictedComponent = ({ children, restrictedRoles }) => {
   const [userRole, setUserRole] = useState(getUser().role);
-  if (!restrictedRoles.includes(userRole)) {
+  if (restrictedRoles.includes(userRole)) {
     return null;
   }
 
