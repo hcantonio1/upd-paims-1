@@ -64,10 +64,10 @@ const setUserData = async () => {
   });
 };
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // set/reset user data?
-  } else {
-    // set timeout to clear user data
-  }
-});
+// onAuthStateChanged(auth, (user) => {
+//   if (user) {
+//     // set/reset user data?
+//   } else {
+//     // set timeout to clear user data
+//   }
+// });
