@@ -6,7 +6,6 @@ module.exports = {
     title: "UPD PAIMS",
     siteUrl: `https://www.yourdomain.tld`,
   },
-  graphqlTypegen: true,
   plugins: [
     "gatsby-plugin-image",
     "gatsby-plugin-sharp",
