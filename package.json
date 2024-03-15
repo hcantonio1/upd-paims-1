@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "upd-paims",
-  "author": "Harold Antonio",
+  "author": "Antonio, H., Cajandab, A., Lopez, E., Ogerio, A.",
   "keywords": [
     "gatsby"
   ],
@@ -23,21 +23,15 @@
     "@material-ui/icons": "^4.11.3",
     "@mdx-js/react": "^2.3.0",
     "@mui/material": "^5.15.11",
-    "express": "^4.18.2",
     "firebase": "^10.8.1",
     "gatsby": "^5.12.11",
     "gatsby-plugin-image": "^3.12.3",
     "gatsby-plugin-manifest": "^5.12.3",
-    "gatsby-plugin-mdx": "^5.12.3",
     "gatsby-plugin-sharp": "^5.12.3",
     "gatsby-plugin-sitemap": "^6.12.3",
-    "gatsby-source-filesystem": "^5.12.1",
-    "gatsby-source-mysql": "^2.2.3",
-    "mysql": "^2.18.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
-    "react-toastify": "^9.1.3",
     "sharp": "^0.33.0"
   }
 }
