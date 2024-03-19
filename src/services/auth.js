@@ -2,6 +2,7 @@ import { navigate } from "gatsby";
 import { auth, db } from "../../firebase-config";
 import {
   signInWithEmailAndPassword,
+  signOut,
   onAuthStateChanged,
   // createUserWithEmailAndPassword,
 } from "firebase/auth";
@@ -45,6 +46,7 @@ export const isLoggedIn = () => {
 
 export const logout = () => {
   setUser({});
+  signOut(auth);
   navigate(`/app/login`);
 };
 
