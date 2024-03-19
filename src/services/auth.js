@@ -43,9 +43,9 @@ export const isLoggedIn = () => {
   return !!paimsUser.email;
 };
 
-export const logout = (callback) => {
+export const logout = () => {
   setUser({});
-  callback();
+  navigate(`/app/login`);
 };
 
 // roles

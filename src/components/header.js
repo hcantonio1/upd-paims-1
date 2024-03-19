@@ -3,43 +3,45 @@ import { StaticImage } from "gatsby-plugin-image";
 import { Link, navigate } from "gatsby";
 import { getUser, isLoggedIn, logout } from "../services/auth";
 import * as styles from "../styles/header.module.css";
-import { Typography, Box, AppBar, Toolbar, makeStyles, Grid, Button } from "@material-ui/core"
+import {
+  Typography,
+  Box,
+  AppBar,
+  Toolbar,
+  makeStyles,
+  Grid,
+  Button,
+} from "@material-ui/core";
 
 const useStyles = makeStyles({
   logoutButton: {
     margin: 40,
     backgroundColor: "#014421",
     color: "#ffffff",
-    borderRadius: "25px"
-  }
-})
+    borderRadius: "25px",
+  },
+});
 
 const Header = () => {
   const handleLogout = (event) => {
     if (!isLoggedIn()) return false;
     event.preventDefault();
-    logout(() => navigate(`/app/login`));
+    logout();
   };
 
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
-
-
     <header className={styles.header}>
       {/* header container  */}
-      <Box
-        display='flex'
-        flexDirection='column'
-      >
+      <Box display="flex" flexDirection="column">
         {/* logo - log out button container  */}
         <Box
-          display='flex'
-          flexDirection='row'
-          justifyContent='center'
-          alignItems='center'
+          display="flex"
+          flexDirection="row"
+          justifyContent="center"
+          alignItems="center"
         >
-
           {/* logo  */}
           <StaticImage
             className={styles.logo}
@@ -48,12 +50,8 @@ const Header = () => {
           />
 
           {/* webapp title  */}
-          <Box
-            flexGrow={10}
-          >
-            <Typography
-              variant="h6"
-            >
+          <Box flexGrow={10}>
+            <Typography variant="h6">
               Properties Accountabilites and Inventory Management System
             </Typography>
           </Box>
@@ -61,9 +59,9 @@ const Header = () => {
           {/* log out button  */}
           <Box>
             <Button
-            onClick={handleLogout}
-            variant="contained"
-            className={classes.logoutButton}
+              onClick={handleLogout}
+              variant="contained"
+              className={classes.logoutButton}
             >
               {" "}
               Log Out{" "}
@@ -72,13 +70,9 @@ const Header = () => {
         </Box>
 
         {/* container for colored bars */}
-        <Box
-          display='flex'
-          flexDirection='column'
-        >
+        <Box display="flex" flexDirection="column">
           {/* green bar  */}
-          <Box className={styles.green_rectangle}/>
-
+          <Box className={styles.green_rectangle} />
 
           {/* yellow bar  */}
           <Box className={styles.yellow_rectangle} />
