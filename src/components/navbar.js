@@ -110,10 +110,11 @@ const Navbar = () => {
         >
           <List>
             {menuItems.map((item) => {
+              const itemkey = item.text;
               const listItem = (
                 <ListItem
                   button
-                  key={item.text}
+                  key={itemkey}
                   onClick={() => navigate(item.path)}
                 >
                   <ListItemIcon>{item.icon}</ListItemIcon>
@@ -125,19 +126,14 @@ const Navbar = () => {
                 return listItem;
               }
               return (
-                <RestrictedComponent restrictedRoles={item.restrictedRoles}>
+                <RestrictedComponent
+                  key={itemkey}
+                  restrictedRoles={item.restrictedRoles}
+                >
                   {listItem}
                 </RestrictedComponent>
               );
             })}
-            {/* <RestrictedComponent>
-              <ListItem button onClick={() => navigate("/app/manageaccounts/")}>
-                <ListItemIcon>
-                  <AccountCircleRounded />
-                </ListItemIcon>
-                <ListItemText primary={"Manage Accounts"} />
-              </ListItem>
-            </RestrictedComponent> */}
           </List>
         </Drawer>
       </Box>
