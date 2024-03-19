@@ -3,7 +3,7 @@ import { useState } from "react";
 import { StaticImage } from "gatsby-plugin-image";
 import { navigate } from "gatsby";
 import { handleLogin, isLoggedIn } from "../../services/auth";
-import { Box, TextField, Typography, makeStyles } from "@material-ui/core";
+import { Box, TextField, Typography, makeStyles, Button } from "@material-ui/core";
 
 import * as styles from "../../styles/login.module.css";
 const useStyles = makeStyles({
@@ -37,6 +37,28 @@ const useStyles = makeStyles({
   },
 
   textFieldContainer: {
+  },
+
+  emailField: {
+    width: 300,
+    marginLeft: 80,
+    marginBottom: 10,
+    border:"none",
+    appearance: "none",
+    background: "#f2f2f2",
+    padding: 20,
+    borderRadius: 60,
+    fontSize: 15
+  },
+
+  loginButton: {
+    backgroundColor: "#014421",
+    color: "#ffffff",
+    marginLeft: 80,
+    width: 340,
+    borderRadius: 60,
+    padding: 10,
+    marginTop: 30
   }
 })
 
@@ -132,37 +154,30 @@ const Login = () => {
               justifyContent="center"
             >
               {/* username field  */}
-              {/* <TextField
-                id="filled-basic"
-                variant="filled-basic"
-                label="Email"
-                onChange={handleUpdate}
-              /> */}
               <input
                 type="text"
-                placeholder="Email"
+                placeholder="Username"
                 name="email"
                 onChange={handleUpdate}
+                className={classes.emailField}
               />
 
               {/* password field  */}
-              {/* <TextField
-                type="password"
-                placeholder="Password"
-                name="password"
-                onChange={handleUpdate}
-              /> */}
               <input
                 type="password"
                 placeholder="Password"
                 name="password"
                 onChange={handleUpdate}
+                className={classes.emailField}
               />
 
               {/* login button  */}
-              <button type="submit" value="Log In">
-                Login
-              </button>
+              <Button type="submit" value="Log In"
+                className={classes.loginButton}
+                variant="contained"
+              >
+                Log In
+              </Button>
 
             </Box>
           </form>

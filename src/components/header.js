@@ -9,7 +9,8 @@ const useStyles = makeStyles({
   logoutButton: {
     margin: 40,
     backgroundColor: "#014421",
-    color: "#ffffff"
+    color: "#ffffff",
+    borderRadius: "25px"
   }
 })
 
