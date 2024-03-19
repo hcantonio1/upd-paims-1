@@ -39,12 +39,12 @@ const useStyles = makeStyles({
 
   roleText: {
     fontWeight: "bold",
-    padding: 5
+    padding: 5,
   },
 
   icons: {
     marginTop: 8,
-    marginLeft: 8
+    marginLeft: 8,
   },
 
   email: {
@@ -75,42 +75,24 @@ const HomePage = () => {
           </Typography>
 
           {/* username container  */}
-          <Box display="flex" flexDirection="row" className={classes.userInfo}
-          >
-            {/* user icon  */}
-            <AccountCircle
-              className={classes.icons}
-            />
-
-            {/* username  */}
-            <Box>
-              <Typography variant="h6" className={classes.userText}>
-                User:
-              </Typography>
-            </Box>
-
-            <Box>
-              <Typography variant="h6" className={classes.email}>{getUser().email}</Typography>
-            </Box>
-          </Box>
-        </Box>
-
-        {/* role container  */}
-        <Box display="flex" flexDirection="row" className={classes.userInfo}>
-          <Build 
-            className={classes.icons}
+          <UserDetailDisplay
+            IconComponent={AccountCircle}
+            entryLabel="User"
+            entryValue={getUser().email}
           />
-          <Box>
-            <Typography variant="h6" className={classes.roleText}>
-              Role:
-            </Typography>
-          </Box>
-
-          <Box>
-            <Typography variant="h6" className={classes.email}>{getUser().role}</Typography>
-          </Box>
         </Box>
 
+        <UserDetailDisplay
+          IconComponent={Build}
+          entryLabel="Department"
+          entryValue={getUser().dept}
+        />
+        {/* role container  */}
+        <UserDetailDisplay
+          IconComponent={Build}
+          entryLabel="Role"
+          entryValue={getUser().role}
+        />
         {/* changelog container  */}
         <Box display="flex" flexDirection="column">
           {/* changelog text  */}
@@ -133,3 +115,23 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+const UserDetailDisplay = ({ IconComponent, entryLabel, entryValue }) => {
+  const classes = useStyles();
+  return (
+    <Box display="flex" flexDirection="row" className={classes.userInfo}>
+      <IconComponent className={classes.icons} />
+      <Box>
+        <Typography variant="h6" className={classes.roleText}>
+          {entryLabel}:
+        </Typography>
+      </Box>
+
+      <Box>
+        <Typography variant="h6" className={classes.email}>
+          {entryValue}
+        </Typography>
+      </Box>
+    </Box>
+  );
+};
