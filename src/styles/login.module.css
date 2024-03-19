@@ -1,9 +1,10 @@
 .logo {
     max-width: 100px;
-    margin-top: 10px;
+    margin-top: 20px;
     margin-right: 25px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     margin-left: 25px;
+    padding: 15px;
 }
 .login-page {
     width: 360px;
@@ -92,10 +93,10 @@ color: #EF3B3A;
 }
 body {
 background: #76b852; /* fallback for old browsers */
-background: -webkit-linear-gradient(right, #e5e5e5, #e5e5e5);
-background: -moz-linear-gradient(right, #e5e5e5, #e5e5e5);
-background: -o-linear-gradient(right, #e5e5e5, #e5e5e5);
-background: linear-gradient(to left, #e5e5e5, #e5e5e5);
+background: -webkit-linear-gradient(right, #FFFFFF, #FFFFFF);
+background: -moz-linear-gradient(right, #FFFFFF, #FFFFFF);
+background: -o-linear-gradient(right, #FFFFFF, #FFFFFF);
+background: linear-gradient(to left, #FFFFFF, #FFFFFF);
 font-family: "Roboto", sans-serif;
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;      

@@ -3,6 +3,7 @@ import Layout from "../layout";
 // import * as styles from "../../styles/index.module.css";
 import { getUser } from "../../services/auth";
 import { Box, Typography, makeStyles } from "@material-ui/core";
+import { AccountCircle, Build } from "@material-ui/icons";
 
 const useStyles = makeStyles({
   root: {
@@ -11,7 +12,6 @@ const useStyles = makeStyles({
 
   userInfo: {
     backgroundColor: "#e5e5e5",
-    padding: 10,
   },
 
   changeLogTextContainer: {
@@ -25,6 +25,7 @@ const useStyles = makeStyles({
 
   userText: {
     fontWeight: "bold",
+    margin: 5,
   },
 
   changeLog: {
@@ -38,6 +39,17 @@ const useStyles = makeStyles({
 
   roleText: {
     fontWeight: "bold",
+    padding: 5
+  },
+
+  icons: {
+    marginTop: 8,
+    marginLeft: 8
+  },
+
+  email: {
+    marginTop: 5,
+    marginBottom: 5,
   },
 });
 
@@ -52,20 +64,23 @@ const HomePage = () => {
         flexDirection="column"
         className={classes.root}
         sx={{
-          rowGap: 40,
+          rowGap: 20,
         }}
       >
         {/* user information container  */}
         <Box display="flex" flexDirection="column">
-          <Box>
-            <Typography variant="h6" className={classes.userText}>
-              Hello, {getUser().firstname}!
-            </Typography>
-          </Box>
+          {/* hello user  */}
+          <Typography variant="h6" className={classes.userText}>
+            Hello, {getUser().firstname}!
+          </Typography>
+
           {/* username container  */}
-          <Box display="flex" flexDirection="row" className={classes.userInfo}>
+          <Box display="flex" flexDirection="row" className={classes.userInfo}
+          >
             {/* user icon  */}
-            <Box></Box>
+            <AccountCircle
+              className={classes.icons}
+            />
 
             {/* username  */}
             <Box>
@@ -75,21 +90,24 @@ const HomePage = () => {
             </Box>
 
             <Box>
-              <Typography variant="h6">{getUser().email}</Typography>
+              <Typography variant="h6" className={classes.email}>{getUser().email}</Typography>
             </Box>
           </Box>
+        </Box>
 
-          {/* role container  */}
-          <Box display="flex" flexDirection="row" className={classes.userInfo}>
-            <Box>
-              <Typography variant="h6" className={classes.roleText}>
-                Role:
-              </Typography>
-            </Box>
+        {/* role container  */}
+        <Box display="flex" flexDirection="row" className={classes.userInfo}>
+          <Build 
+            className={classes.icons}
+          />
+          <Box>
+            <Typography variant="h6" className={classes.roleText}>
+              Role:
+            </Typography>
+          </Box>
 
-            <Box>
-              <Typography variant="h6">{getUser().role}</Typography>
-            </Box>
+          <Box>
+            <Typography variant="h6" className={classes.email}>{getUser().role}</Typography>
           </Box>
         </Box>
 
@@ -110,20 +128,6 @@ const HomePage = () => {
           </Box>
         </Box>
       </Box>
-      {/* <main>
-        <div>
-          <h1>Hello User!</h1>
-          <p>Your profile:</p>
-          <ul>
-            <li>E-mail: {getUser().email}</li>
-            <li>Role: {getUser().role}</li>
-          </ul>
-        </div>
-        <div>
-          <p>Changelog (tentative):</p>
-        </div>
-        <div></div>
-      </main> */}
     </Layout>
   );
 };

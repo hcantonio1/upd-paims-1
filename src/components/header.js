@@ -3,19 +3,24 @@ import { StaticImage } from "gatsby-plugin-image";
 import { Link, navigate } from "gatsby";
 import { getUser, isLoggedIn, logout } from "../services/auth";
 import * as styles from "../styles/header.module.css";
-import { Typography, Box, AppBar, Toolbar, makeStyles, Grid } from "@material-ui/core"
+import { Typography, Box, AppBar, Toolbar, makeStyles, Grid, Button } from "@material-ui/core"
 
 const useStyles = makeStyles({
-  appbar: {
-
+  logoutButton: {
+    margin: 40,
+    backgroundColor: "#014421",
+    color: "#ffffff"
   }
 })
+
 const Header = () => {
   const handleLogout = (event) => {
     if (!isLoggedIn()) return false;
     event.preventDefault();
     logout(() => navigate(`/app/login`));
   };
+
+  const classes = useStyles()
 
   return (
 
@@ -45,17 +50,23 @@ const Header = () => {
           <Box
             flexGrow={10}
           >
-            <Typography>
-              Properties Accountabilites and&nbsp;Inventory Management System
+            <Typography
+              variant="h6"
+            >
+              Properties Accountabilites and Inventory Management System
             </Typography>
           </Box>
 
           {/* log out button  */}
           <Box>
-            <button className={styles.logoutbutton} onClick={handleLogout}>
+            <Button
+            onClick={handleLogout}
+            variant="contained"
+            className={classes.logoutButton}
+            >
               {" "}
               Log Out{" "}
-            </button>
+            </Button>
           </Box>
         </Box>
 

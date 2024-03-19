@@ -21,14 +21,14 @@ const useStyles = makeStyles({
 
   loginSecRoot: {
     backgroundColor: "#7b1113",
-    height: 700
+    height: 534
   },
 
   whiteBox: {
     backgroundColor: "#ffffff",
-    height: 400,
-    width: 700,
-    marginTop: 100,
+    height: 350,
+    width: 500,
+    marginTop: 90,
     borderRadius: '30px'
   },
 
@@ -79,8 +79,8 @@ const Login = () => {
           justifyContent="center"
         >
           {/* college of engineering text  */}
-          <Typography>University of the Philippines</Typography>
-          <Typography>College of Engineering</Typography>
+          <Typography variant="h6">University of the Philippines</Typography>
+          <Typography variant="h6">College of Engineering</Typography>
 
           {/* PAIMS text */}
           <Typography
