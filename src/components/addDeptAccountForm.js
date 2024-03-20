@@ -25,7 +25,7 @@ const AddDeptAccountForm = () => {
       ...formData,
       [e.target.id]: e.target.value,
     });
-    console.log(formData);
+    // console.log(formData);
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -48,7 +48,6 @@ const AddDeptAccountForm = () => {
         <TextField1 id="role" label="Role" onChange={handleInputChange} />
       </Box>
       <Box
-        component="container"
         display="flex"
         flexDirection="row"
         sx={{

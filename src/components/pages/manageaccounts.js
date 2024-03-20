@@ -51,6 +51,7 @@ const AccountsTable = () => {
         accData.push(doc.data());
       });
       setAccountsData(accData);
+      sessionStorage.setItem("accountsData", JSON.stringify(accData));
     });
   }, []);
 
