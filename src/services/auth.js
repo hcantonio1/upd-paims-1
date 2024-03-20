@@ -54,7 +54,7 @@ export const logout = (callback) => {
 const setUserData = async () => {
   const currentUser = auth.currentUser;
   const email = auth.currentUser.email;
-  const docSnap = await getDoc(doc(db, "user", currentUser.uid));
+  const docSnap = await getDoc(doc(db, "user", email));
   const data = docSnap.data();
 
   setUser({
