@@ -1,31 +1,51 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { Box, TextField } from "@mui/material";
+import { createDepartmentAccount } from "../services/admin_funcs";
+
+const paimsUser = JSON.parse(sessionStorage.getItem("paimsUser"));
 
 const AddDeptAccountForm = () => {
   const [collapsed, setCollapsed] = useState(true);
+  const [formData, setFormData] = useState({
+    dept: paimsUser.dept,
+    role: "",
+    email: "",
+    password: "",
+    firstname: "",
+    lastname: "",
+  });
 
   const buttonClick = (e) => {
     setCollapsed(!collapsed);
   };
 
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+    console.log(formData);
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!["Encoder", "Trustee"].includes(formData.role)) {
+      alert("Role must be either Encoder or Trustee");
+      return;
+    }
+    createDepartmentAccount(formData);
   };
 
   const form = (
     <form onSubmit={handleSubmit}>
       <Box
-        component="container"
         display="flex"
         flexDirection="row"
         sx={{
           "& > :not(style)": { m: 1, width: "25ch" },
         }}
-        noValidate
-        autoComplete="off"
       >
-        <TextField id="role" label="Role" variant="standard" />
+        <TextField1 id="role" label="Role" onChange={handleInputChange} />
       </Box>
       <Box
         component="container"
@@ -37,10 +57,23 @@ const AddDeptAccountForm = () => {
         noValidate
         autoComplete="off"
       >
-        <TextField id="email" label="Email" variant="standard" />
-        <TextField id="password" label="Password" variant="standard" />
-        <TextField id="firstname" label="First Name" variant="standard" />
-        <TextField id="lastname" label="Last Name" variant="standard" />
+        <TextField1 id="email" label="Email" onChange={handleInputChange} />
+        <TextField1
+          id="password"
+          label="Password"
+          type="password"
+          onChange={handleInputChange}
+        />
+        <TextField1
+          id="firstname"
+          label="First Name"
+          onChange={handleInputChange}
+        />
+        <TextField1
+          id="lastname"
+          label="Last Name"
+          onChange={handleInputChange}
+        />
       </Box>
       <Button type="submit" variant="contained" size="small" color="success">
         Submit
@@ -59,3 +92,7 @@ const AddDeptAccountForm = () => {
 };
 
 export default AddDeptAccountForm;
+
+const TextField1 = (props) => {
+  return <TextField {...props} variant="standard" required />;
+};
