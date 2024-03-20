@@ -19,6 +19,7 @@ export const createDepartmentAccount = async ({
 }) => {
   const accountsData = JSON.parse(sessionStorage.getItem("accountsData"));
   const paimsUser = JSON.parse(sessionStorage.getItem("paimsUser"));
+  const dept = paimsUser.dept;
 
   // get the registered emails
   const registeredEmails = accountsData.map((acc) => acc.Email);
