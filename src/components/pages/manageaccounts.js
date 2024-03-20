@@ -9,8 +9,8 @@ import FilterBy from "../filter.js";
 const ManageAccounts = () => {
   return (
     <Layout pageTitle="Manage Accounts">
-      <TutorialText />
       <AccountsTable />
+      <TutorialText />
     </Layout>
   );
 };
@@ -25,19 +25,14 @@ const AccountsTable = () => {
     { key: "Username", label: "Username", filterable: true },
     { key: "Department", label: "Department", filterable: true },
     { key: "Role", label: "Role", filterable: true },
-    {
-      key: "FirstName",
-      label: "First Name",
-      filterable: true,
-    },
     { key: "LastName", label: "Last Name", filterable: true },
+    { key: "FirstName", label: "First Name", filterable: true },
   ];
 
-  const [accountsData, setAccountsData] = useState([]);
   const filterableColumns = displayColumns.filter(
     (column) => column.filterable
   );
-  const [inventoryData, setInventoryData] = useState([]);
+  const [accountsData, setAccountsData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchResultsEmpty, setSearchResultsEmpty] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("");
@@ -114,6 +109,7 @@ const AccountsTable = () => {
 
   return (
     <div>
+      <h1>Department Accounts</h1>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <SearchBar onSearch={handleSearch} />
         <FilterBy
