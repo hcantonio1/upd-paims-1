@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { Box, TextField } from "@mui/material";
 import { createDepartmentAccount } from "../services/admin_funcs";
 
-const paimsUser = JSON.parse(sessionStorage.getItem("paimsUser"));
-
 const AddDeptAccountForm = () => {
   const [collapsed, setCollapsed] = useState(true);
   const [formData, setFormData] = useState({
-    dept: paimsUser.dept,
     role: "",
     email: "",
     password: "",
@@ -25,7 +22,6 @@ const AddDeptAccountForm = () => {
       ...formData,
       [e.target.id]: e.target.value,
     });
-    // console.log(formData);
   };
   const handleSubmit = (e) => {
     e.preventDefault();
