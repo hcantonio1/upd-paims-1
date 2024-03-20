@@ -5,10 +5,13 @@ import { db } from "../../../firebase-config.js";
 import { onSnapshot, collection } from "firebase/firestore";
 import SearchBar from "../searchbar.js";
 import FilterBy from "../filter.js";
+import AddDeptAccountForm from "../addDeptAccountForm.js";
 
 const ManageAccounts = () => {
   return (
     <Layout pageTitle="Manage Accounts">
+      <h1>Department Accounts</h1>
+      <AddDeptAccountForm />
       <AccountsTable />
       <TutorialText />
     </Layout>
@@ -109,7 +112,6 @@ const AccountsTable = () => {
 
   return (
     <div>
-      <h1>Department Accounts</h1>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <SearchBar onSearch={handleSearch} />
         <FilterBy
