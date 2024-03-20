@@ -44,10 +44,10 @@ export const isLoggedIn = () => {
   return !!paimsUser.email;
 };
 
-export const logout = () => {
+export const logout = (callback) => {
   setUser({});
   signOut(auth);
-  navigate(`/app/login`);
+  callback();
 };
 
 // roles

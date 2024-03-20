@@ -26,7 +26,9 @@ const Header = () => {
   const handleLogout = (event) => {
     if (!isLoggedIn()) return false;
     event.preventDefault();
-    logout();
+    logout(() => {
+      navigate(`/app/login`);
+    });
   };
 
   const classes = useStyles();
