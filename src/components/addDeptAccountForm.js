@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "@mui/material";
+import { Button, Paper } from "@mui/material";
 import { Box, TextField } from "@mui/material";
 import { createDepartmentAccount } from "../services/admin_funcs";
 
@@ -33,47 +33,49 @@ const AddDeptAccountForm = () => {
   };
 
   const form = (
-    <form onSubmit={handleSubmit}>
-      <Box
-        display="flex"
-        flexDirection="row"
-        sx={{
-          "& > :not(style)": { m: 1, width: "25ch" },
-        }}
-      >
-        <TextField1 id="role" label="Role" onChange={handleInputChange} />
-      </Box>
-      <Box
-        display="flex"
-        flexDirection="row"
-        sx={{
-          "& > :not(style)": { m: 1, width: "25ch" },
-        }}
-        noValidate
-        autoComplete="off"
-      >
-        <TextField1 id="email" label="Email" onChange={handleInputChange} />
-        <TextField1
-          id="password"
-          label="Password"
-          type="password"
-          onChange={handleInputChange}
-        />
-        <TextField1
-          id="firstname"
-          label="First Name"
-          onChange={handleInputChange}
-        />
-        <TextField1
-          id="lastname"
-          label="Last Name"
-          onChange={handleInputChange}
-        />
-      </Box>
-      <Button type="submit" variant="contained" size="small" color="success">
-        Submit
-      </Button>
-    </form>
+    <Paper sx={{ backgroundColor: "#e5e5e5" }}>
+      <form onSubmit={handleSubmit}>
+        <Box
+          display="flex"
+          flexDirection="row"
+          sx={{
+            "& > :not(style)": { mx: 1, width: "25ch" },
+          }}
+        >
+          <TextField1 id="role" label="Role" onChange={handleInputChange} />
+        </Box>
+        <Box
+          display="flex"
+          flexDirection="row"
+          sx={{
+            "& > :not(style)": { m: 1, width: "25ch" },
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField1 id="email" label="Email" onChange={handleInputChange} />
+          <TextField1
+            id="password"
+            label="Password"
+            type="password"
+            onChange={handleInputChange}
+          />
+          <TextField1
+            id="firstname"
+            label="First Name"
+            onChange={handleInputChange}
+          />
+          <TextField1
+            id="lastname"
+            label="Last Name"
+            onChange={handleInputChange}
+          />
+        </Box>
+        <Button type="submit" variant="contained" size="small" color="success">
+          Submit
+        </Button>
+      </form>
+    </Paper>
   );
 
   return (
