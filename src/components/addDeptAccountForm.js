@@ -20,6 +20,8 @@ const AddDeptAccountForm = () => {
     firstname: "",
     lastname: "",
   });
+  const [passwordsMatch, setPasswordsMatch] = useState(false);
+  const [confirmPassBlurred, setConfirmPassBlurred] = useState(false);
 
   const buttonClick = (e) => {
     setCollapsed(!collapsed);
@@ -41,7 +43,19 @@ const AddDeptAccountForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (formData.password !== formData["confirm-password"]) {
+      alert("Passwords don't match.");
+      return;
+    }
     createDepartmentAccount(formData);
+  };
+
+  const onConfirmPasswordBlur = (e) => {
+    const pass1 = formData.password;
+    const pass2 = formData["confirm-password"];
+    const matches = pass1 === pass2;
+    setConfirmPassBlurred(true);
+    setPasswordsMatch(matches);
   };
 
   const form = (
@@ -116,6 +130,22 @@ const AddDeptAccountForm = () => {
               label="Confirm Password"
               type="password"
               onChange={handleInputChange}
+              onBlur={onConfirmPasswordBlur}
+              error={!passwordsMatch && confirmPassBlurred}
+              helperText={
+                confirmPassBlurred
+                  ? passwordsMatch
+                    ? "Passwords match"
+                    : "Passwords must match"
+                  : ""
+              }
+              color={
+                confirmPassBlurred
+                  ? passwordsMatch
+                    ? "success"
+                    : "error"
+                  : "primary"
+              }
             />
           </Box>
           <Button
