@@ -31,6 +31,14 @@ const AddDeptAccountForm = () => {
       [e.target.id]: e.target.value,
     });
   };
+
+  const handleSelectRole = (e) => {
+    setFormData({
+      ...formData,
+      role: e.target.value,
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!["Encoder", "Trustee"].includes(formData.role)) {
@@ -42,80 +50,88 @@ const AddDeptAccountForm = () => {
 
   const form = (
     <Paper sx={{ p: 2, backgroundColor: "#e5e5e5" }}>
-      <h2>Create Account</h2>
       <form onSubmit={handleSubmit}>
-        <FormControl sx={{ width: 1 / 4 }}>
-          <InputLabel id="role">Role</InputLabel>
-          <Select
-            labelId="role"
-            id="role"
-            value={formData.role}
-            label="Role"
-            onChange={handleInputChange}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <h2>Create Account</h2>
+          <FormControl sx={{ width: 1 / 2 }}>
+            <InputLabel id="select-role">Role</InputLabel>
+            <Select
+              labelId="select-role"
+              id="role"
+              value={formData.role}
+              label="Role"
+              onChange={handleSelectRole}
+            >
+              <MenuItem value="Encoder">Encoder</MenuItem>
+              <MenuItem value="Trustee">Trustee</MenuItem>
+            </Select>
+          </FormControl>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              width: 1 / 2,
+              gap: 2,
+            }}
+            noValidate
+            autoComplete="off"
           >
-            <MenuItem value="Encoder">Encoder</MenuItem>
-            <MenuItem value="Trustee">Trustee</MenuItem>
-          </Select>
-        </FormControl>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            width: 1 / 2,
-            gap: 2,
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <TextField1
+            <TextField1
+              sx={{ width: 1 / 2 }}
+              id="firstname"
+              label="First Name"
+              onChange={handleInputChange}
+            />
+            <TextField1
+              sx={{ width: 1 / 2 }}
+              id="lastname"
+              label="Last Name"
+              onChange={handleInputChange}
+            />
+          </Box>
+          <Box width="50%">
+            <TextField1
+              sx={{ width: 1 }}
+              id="email"
+              label="Email"
+              onChange={handleInputChange}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              width: 1 / 2,
+              gap: 2,
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <TextField1
+              sx={{ width: 1 / 2 }}
+              id="password"
+              label="Password"
+              type="password"
+              onChange={handleInputChange}
+            />
+            <TextField1
+              sx={{ width: 1 / 2 }}
+              id="confirm-password"
+              label="Confirm Password"
+              type="password"
+              onChange={handleInputChange}
+            />
+          </Box>
+          <Button
             sx={{ width: 1 / 2 }}
-            id="firstname"
-            label="First Name"
-            onChange={handleInputChange}
-          />
-          <TextField1
-            sx={{ width: 1 / 2 }}
-            id="lastname"
-            label="Last Name"
-            onChange={handleInputChange}
-          />
+            type="submit"
+            variant="contained"
+            size="small"
+            color="success"
+          >
+            Register {formData.role}
+          </Button>
         </Box>
-        <Box width="50%">
-          <TextField1
-            sx={{ width: 1 }}
-            id="email"
-            label="Email"
-            onChange={handleInputChange}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            width: 1 / 2,
-            gap: 2,
-          }}
-          noValidate
-          autoComplete="off"
-        >
-          <TextField1
-            sx={{ width: 1 / 2 }}
-            id="password"
-            label="Password"
-            type="password"
-            onChange={handleInputChange}
-          />
-          <TextField1
-            sx={{ width: 1 / 2 }}
-            id="confirm-password"
-            label="Confirm Password"
-            type="password"
-            onChange={handleInputChange}
-          />
-        </Box>
-        <Button type="submit" variant="contained" size="small" color="success">
-          Register {formData.Role}
-        </Button>
       </form>
     </Paper>
   );
