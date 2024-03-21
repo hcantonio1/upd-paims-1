@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Button, Paper } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+} from "@mui/material";
 import { Box, TextField } from "@mui/material";
 import { createDepartmentAccount } from "../services/admin_funcs";
 
@@ -9,6 +16,7 @@ const AddDeptAccountForm = () => {
     role: "",
     email: "",
     password: "",
+    "confirm-password": "",
     firstname: "",
     lastname: "",
   });
@@ -33,54 +41,88 @@ const AddDeptAccountForm = () => {
   };
 
   const form = (
-    <Paper sx={{ backgroundColor: "#e5e5e5" }}>
+    <Paper sx={{ p: 2, backgroundColor: "#e5e5e5" }}>
+      <h2>Create Account</h2>
       <form onSubmit={handleSubmit}>
+        <FormControl sx={{ width: 1 / 4 }}>
+          <InputLabel id="role">Role</InputLabel>
+          <Select
+            labelId="role"
+            id="role"
+            value={formData.role}
+            label="Role"
+            onChange={handleInputChange}
+          >
+            <MenuItem value="Encoder">Encoder</MenuItem>
+            <MenuItem value="Trustee">Trustee</MenuItem>
+          </Select>
+        </FormControl>
         <Box
-          display="flex"
-          flexDirection="row"
           sx={{
-            "& > :not(style)": { mx: 1, width: "25ch" },
-          }}
-        >
-          <TextField1 id="role" label="Role" onChange={handleInputChange} />
-        </Box>
-        <Box
-          display="flex"
-          flexDirection="row"
-          sx={{
-            "& > :not(style)": { m: 1, width: "25ch" },
+            display: "flex",
+            flexDirection: "row",
+            width: 1 / 2,
+            gap: 2,
           }}
           noValidate
           autoComplete="off"
         >
-          <TextField1 id="email" label="Email" onChange={handleInputChange} />
           <TextField1
+            sx={{ width: 1 / 2 }}
+            id="firstname"
+            label="First Name"
+            onChange={handleInputChange}
+          />
+          <TextField1
+            sx={{ width: 1 / 2 }}
+            id="lastname"
+            label="Last Name"
+            onChange={handleInputChange}
+          />
+        </Box>
+        <Box width="50%">
+          <TextField1
+            sx={{ width: 1 }}
+            id="email"
+            label="Email"
+            onChange={handleInputChange}
+          />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            width: 1 / 2,
+            gap: 2,
+          }}
+          noValidate
+          autoComplete="off"
+        >
+          <TextField1
+            sx={{ width: 1 / 2 }}
             id="password"
             label="Password"
             type="password"
             onChange={handleInputChange}
           />
           <TextField1
-            id="firstname"
-            label="First Name"
-            onChange={handleInputChange}
-          />
-          <TextField1
-            id="lastname"
-            label="Last Name"
+            sx={{ width: 1 / 2 }}
+            id="confirm-password"
+            label="Confirm Password"
+            type="password"
             onChange={handleInputChange}
           />
         </Box>
         <Button type="submit" variant="contained" size="small" color="success">
-          Submit
+          Register {formData.Role}
         </Button>
       </form>
     </Paper>
   );
 
   return (
-    <Box>
-      <Button variant="contained" onClick={buttonClick}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <Button variant="contained" onClick={buttonClick} sx={{ width: 1 / 4 }}>
         {collapsed ? "New Department Account" : "Hide Section"}
       </Button>
       {collapsed ? <></> : form}

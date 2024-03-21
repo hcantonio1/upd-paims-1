@@ -10,10 +10,8 @@ import AddDeptAccountForm from "../addDeptAccountForm.js";
 const ManageAccounts = () => {
   return (
     <Layout pageTitle="Manage Accounts">
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
-        <Box>
-          <h1>Department Accounts</h1>
-        </Box>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <h1>Department Accounts</h1>
         <AddDeptAccountForm />
         <AccountsTable />
       </Box>
