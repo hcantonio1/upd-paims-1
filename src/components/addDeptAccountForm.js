@@ -41,10 +41,6 @@ const AddDeptAccountForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!["Encoder", "Trustee"].includes(formData.role)) {
-      alert("Role must be either Encoder or Trustee");
-      return;
-    }
     createDepartmentAccount(formData);
   };
 
