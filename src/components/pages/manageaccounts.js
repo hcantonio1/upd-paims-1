@@ -10,10 +10,13 @@ import AddDeptAccountForm from "../addDeptAccountForm.js";
 const ManageAccounts = () => {
   return (
     <Layout pageTitle="Manage Accounts">
-      <h1>Department Accounts</h1>
-      <AddDeptAccountForm />
-      <AccountsTable />
-      <TutorialText />
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <Box>
+          <h1>Department Accounts</h1>
+        </Box>
+        <AddDeptAccountForm />
+        <AccountsTable />
+      </Box>
     </Layout>
   );
 };
@@ -112,7 +115,7 @@ const AccountsTable = () => {
   };
 
   return (
-    <div>
+    <Box>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <SearchBar onSearch={handleSearch} />
         <FilterBy
@@ -131,7 +134,7 @@ const AccountsTable = () => {
           />
         )}
       </div>
-    </div>
+    </Box>
   );
 };
 
@@ -200,32 +203,32 @@ function DataTable({ data, columns, onSort, sortedField }) {
   );
 }
 
-const TutorialText = () => {
-  // TO BE DELETED
-  return (
-    <>
-      <Box>
-        <h1>Inventory Supervisor</h1>
-        <h3>Supervisors, on top of having Encoder access,</h3>
-        <ul>
-          <li>should be able to create and delete Trustee accounts</li>
-          <li>should be able to create and delete Encoder accounts</li>
-        </ul>
-      </Box>
-      <Box>
-        <h1>System Administrator</h1>
-        <h3>The admin</h3>
-        <ul>
-          <li>
-            should be able to create and delete Departments and Inventory
-            Supervisors
-          </li>
-          <li>
-            only has read access, no write or delete, to the properties of the
-            college's departments
-          </li>
-        </ul>
-      </Box>
-    </>
-  );
-};
+// const TutorialText = () => {
+//   // TO BE DELETED
+//   return (
+//     <>
+//       <Box>
+//         <h1>Inventory Supervisor</h1>
+//         <h3>Supervisors, on top of having Encoder access,</h3>
+//         <ul>
+//           <li>should be able to create and delete Trustee accounts</li>
+//           <li>should be able to create and delete Encoder accounts</li>
+//         </ul>
+//       </Box>
+//       <Box>
+//         <h1>System Administrator</h1>
+//         <h3>The admin</h3>
+//         <ul>
+//           <li>
+//             should be able to create and delete Departments and Inventory
+//             Supervisors
+//           </li>
+//           <li>
+//             only has read access, no write or delete, to the properties of the
+//             college's departments
+//           </li>
+//         </ul>
+//       </Box>
+//     </>
+//   );
+// };

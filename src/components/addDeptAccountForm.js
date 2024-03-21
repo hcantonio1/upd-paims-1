@@ -79,12 +79,12 @@ const AddDeptAccountForm = () => {
   );
 
   return (
-    <>
+    <Box>
       <Button variant="contained" onClick={buttonClick}>
         {collapsed ? "New Department Account" : "Hide Section"}
       </Button>
       {collapsed ? <></> : form}
-    </>
+    </Box>
   );
 };
 
