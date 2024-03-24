@@ -3,7 +3,8 @@ import { useState } from "react";
 import { StaticImage } from "gatsby-plugin-image";
 import { navigate } from "gatsby";
 import { handleLogin, isLoggedIn } from "../../services/auth";
-import { Box, TextField, Typography, makeStyles, Button } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
+import { Box, Typography, Button, TextField } from "@mui/material";
 
 import * as styles from "../../styles/login.module.css";
 const useStyles = makeStyles({
@@ -43,7 +44,7 @@ const useStyles = makeStyles({
     width: 300,
     marginLeft: 80,
     marginBottom: 10,
-    border:"none",
+    border: "none",
     appearance: "none",
     background: "#f2f2f2",
     padding: 20,
@@ -101,22 +102,16 @@ const Login = () => {
           justifyContent="center"
         >
           {/* college of engineering text  */}
-          <Typography variant="h6">University of the Philippines</Typography>
-          <Typography variant="h6">College of Engineering</Typography>
+          <Typography variant="h6">University of the Philippines College of Engineering</Typography>
+          <Typography variant="h6"></Typography>
 
           {/* PAIMS text */}
           <Typography
             className={classes.titleText}
             variant="h6"
+            sx={{fontWeight: 'bold'}}
           >
-            Properties Accountabilities and
-          </Typography>
-
-          <Typography
-            className={classes.titleText}
-            variant="h6"
-          >
-            Inventory Management System
+            Properties Accountabilities and Inventory Management System
           </Typography>
         </Box>
       </Box>
@@ -133,6 +128,7 @@ const Login = () => {
         flexDirection="row"
         className={classes.loginSecRoot}
         justifyContent="center"
+        sx={{ height: 538 }}
       >
         {/* white box  */}
         <Box
@@ -173,8 +169,18 @@ const Login = () => {
 
               {/* login button  */}
               <Button type="submit" value="Log In"
-                className={classes.loginButton}
+                // className={classes.loginButton}
                 variant="contained"
+                sx={{
+                  backgroundColor: "#014421",
+                  color: "#ffffff",
+                  '&:hover': {
+                    backgroundColor: '#3A754E'
+                  },
+                  marginLeft: 10,
+                  width: 340,
+                  borderRadius: 60,
+                }}
               >
                 Log In
               </Button>
