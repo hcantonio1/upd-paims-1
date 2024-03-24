@@ -129,7 +129,9 @@ const InventoryPage = () => {
           const replacementName = prefetched[name][id];
           row = { ...row, [newAttr]: replacementName };
         });
-        invData.push(row);
+        if (row.isArchived !== 1) { // Filter out archived items here
+          invData.push(row);
+        }
       });
 
       // or query a userRole-specific items (do in /src/services/prefetch.js)
@@ -155,7 +157,7 @@ const InventoryPage = () => {
         }
         return false;
       });
-      return match;
+      return match && item.isArchived !== 1;
     });
     setFilteredData(filteredResults);
     setSearchResultsEmpty(filteredResults.length === 0);
