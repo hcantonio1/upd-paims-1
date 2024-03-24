@@ -140,9 +140,11 @@ const InsertRecord = () => {
         Link: fileUrl,
         ReceivedBy: inputData.ReceivedBy,
       });
+      var docObject = {};
+      docObject[inputData.TrusteeID] = inputData.DocumentID;
       await setDoc(doc(db, "property", inputData.PropertyID), {
         CategoryID: parseInt(inputData.CategoryID),
-        DocumentID: inputData.DocumentID,
+        DocumentID: docObject,
         isArchived: 0,
         LocationID: parseInt(inputData.LocationID),
         PropertyID: parseInt(inputData.PropertyID),
@@ -157,6 +159,36 @@ const InsertRecord = () => {
         PurchaseOrderID: parseInt(inputData.PurchaseOrderID),
         SupplierID: parseInt(inputData.SupplierID),
         TotalCost: parseInt(inputData.TotalCost),
+      });
+      alert("Successfully inserted!");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error inserting document:", error);
+      alert("Failed to insert record.");
+    }
+  };
+
+  const handleInsertDoc = async (e) => {
+    e.preventDefault();
+
+    if (inputData.IssuedBy === inputData.ReceivedBy) {
+      alert("IssuedBy and ReceivedBy cannot be the same user.");
+      return;
+    }
+
+    try {
+      console.log("Uploading file to Firebase Storage");
+      const fileRef = ref(storage, "DCS/" + inputData.Link.name);
+      await uploadBytes(fileRef, inputData.Link);
+      const fileUrl = await getDownloadURL(fileRef);
+      console.log("File uploaded successfully:", fileUrl);
+      await setDoc(doc(db, "item_document", inputData.DocumentID), {
+        DateIssued: Timestamp.fromDate(new Date(inputData.DateIssued)),
+        DocumentID: inputData.DocumentID,
+        DocumentType: inputData.DocumentType,
+        IssuedBy: inputData.IssuedBy,
+        Link: fileUrl,
+        ReceivedBy: inputData.ReceivedBy,
       });
       alert("Successfully inserted!");
       window.location.reload();
@@ -761,6 +793,25 @@ const InsertRecord = () => {
                   </Stack>
                 </Stack>
 
+                <Stack
+                    padding={1}
+                    direction="row"
+                    alignItems="flex-start"
+                    justifyContent="flex-end"
+                  >
+                  <Stack item>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      size="small"
+                      color="success"
+                      onClick = {handleInsertDoc}
+                    >
+                    Submit Document
+                    </Button>
+                  </Stack>
+                </Stack>
+
                 <Typography variant="h9" fontWeight={"bold"}>
                   Supplier Details
                 </Typography>
@@ -945,7 +996,7 @@ const InsertRecord = () => {
                       size="small"
                       color="success"
                     >
-                      Submit
+                      Submit All
                     </Button>
                   </Stack>
                 </Stack>

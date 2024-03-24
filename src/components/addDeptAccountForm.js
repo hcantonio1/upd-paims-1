@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   FormControl,
@@ -21,7 +21,13 @@ const AddDeptAccountForm = () => {
     lastname: "",
   });
   const [passwordsMatch, setPasswordsMatch] = useState(false);
-  const [confirmPassBlurred, setConfirmPassBlurred] = useState(false);
+  const [confirmPassChanged, setConfirmPassChanged] = useState(false);
+
+  useEffect(() => {
+    if (formData["confirm-password"]) {
+      verifyConfirmPassField();
+    }
+  }, [formData["confirm-password"]]);
 
   const buttonClick = (e) => {
     setCollapsed(!collapsed);
@@ -50,11 +56,11 @@ const AddDeptAccountForm = () => {
     createDepartmentAccount(formData);
   };
 
-  const onConfirmPasswordBlur = (e) => {
+  const verifyConfirmPassField = () => {
     const pass1 = formData.password;
     const pass2 = formData["confirm-password"];
     const matches = pass1 === pass2;
-    setConfirmPassBlurred(true);
+    setConfirmPassChanged(true);
     setPasswordsMatch(matches);
   };
 
@@ -130,17 +136,16 @@ const AddDeptAccountForm = () => {
               label="Confirm Password"
               type="password"
               onChange={handleInputChange}
-              onBlur={onConfirmPasswordBlur}
-              error={!passwordsMatch && confirmPassBlurred}
+              error={!passwordsMatch && confirmPassChanged}
               helperText={
-                confirmPassBlurred
+                confirmPassChanged
                   ? passwordsMatch
                     ? "Passwords match"
                     : "Passwords must match"
                   : ""
               }
               color={
-                confirmPassBlurred
+                confirmPassChanged
                   ? passwordsMatch
                     ? "success"
                     : "error"
