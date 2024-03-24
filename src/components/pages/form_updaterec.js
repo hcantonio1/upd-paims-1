@@ -21,6 +21,8 @@ const UpdateRec = () => {
     TrusteeID: "",
     LocationID: "",
     PropertyID: "",
+    DocumentID: {},
+    SpecDoc: "",
   });
 
   const [updateSupplier, setUpdateSupplier] = useState({
@@ -169,7 +171,10 @@ const UpdateRec = () => {
     e.preventDefault();
 
     try {
+      var docUpdate = {};
+      docUpdate[`DocumentID.${updateProperty.TrusteeID}`] = updateProperty.SpecDoc;
       const propertyRef = doc(db, "property", updateProperty.PropertyID);
+      updateDoc(propertyRef, docUpdate);
       await updateDoc(propertyRef, {
         LocationID: parseInt(updateProperty.LocationID),
         StatusID: parseInt(updateProperty.StatusID),
@@ -445,6 +450,35 @@ const UpdateRec = () => {
                         </option>
                       ))}
                     </select>
+                  </Stack>
+                </Stack>
+
+                { /* FIELDS: Document Name */}
+                <Stack
+                  padding={1}
+                  spacing={10}
+                  mt={1}
+                  direction="row"
+                  justifyContent="flex-start"
+                >
+                  <Stack item>
+                    <label
+                      htmlFor="SpecDoc"
+                      style={{
+                        display: "inline-block",
+                        width: "150px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      New Document Name
+                    </label>
+                    <input
+                      type="text"
+                      name="SpecDoc"
+                      value={updateProperty.SpecDoc}
+                      onChange={handleUpdatePropChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                    />
                   </Stack>
                 </Stack>
 
