@@ -68,7 +68,13 @@ function DataTable({ data, columns, onSort, sortedField }) {
             <tr key={index}>
               {columns.map((column) => (
                 <td key={column.key} style={tdStyle}>
-                  {item[column.key]}
+                  {/* check if the column key is DocumentID */}
+                  {column.key === "DocumentID" && typeof item[column.key] === "object" ? (
+                    // render the value using TrusteeID from the same row as the key for DocumentID object
+                    item[column.key][item["TrusteeID"]]
+                  ) : (
+                    item[column.key]
+                  )}
                 </td>
               ))}
             </tr>
