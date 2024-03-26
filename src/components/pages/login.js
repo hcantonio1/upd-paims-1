@@ -114,6 +114,12 @@ const Login = () => {
             Properties Accountabilities and Inventory Management System
           </Typography>
         </Box>
+
+        <StaticImage
+          className={styles.logo}
+          alt="LogoUPD"
+          src="../../images/upd_logo.png"
+        />
       </Box>
 
       {/* green bar  */}

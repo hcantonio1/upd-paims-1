@@ -6,10 +6,10 @@ import {
   makeStyles,
   Typography,
   Box,
-  Grid,
   GridSpacing,
   Button,
 } from "@material-ui/core";
+import { Grid } from "@mui/material";
 
 
 const navbarWidth = 200;
@@ -36,8 +36,7 @@ const useStyles = makeStyles({
   },
   pageTitleStyle: {
     color: "#014421",
-    padding: 10,
-    marginTop: 10,
+    margin: 15,
     fontWeight: "bold",
   },
   contentContainer: {
@@ -45,6 +44,9 @@ const useStyles = makeStyles({
     marginTop: 0,
     backgroundColor: "#ffffff",
   },
+  contentSegment: {
+    backgroundColor: "e5e5e5"
+  }
 });
 
 const Layout = ({ pageTitle, children }) => {
@@ -54,20 +56,20 @@ const Layout = ({ pageTitle, children }) => {
   // LAYOUT PROPER
   return (
     // main container
-    <Box display="flex" flexDirection="row">
-      <Navbar />
+    <Box display="flex" flexDirection="column">
 
-      {/* NON NAVBAR CONTAINER  */}
-      <Grid container direction="column">
-        {/* HEADER */}
-        <Header className={classes.header} />
+      {/* HEADER */}
+      <Header className={classes.header} />
 
+      <Box display="flex" flexDirection="row">
+        <Navbar />
         {/* PAGE CONTENT */}
         <Grid
           container
           direction="column"
           justifyContent="flex-start"
           alignItems="stretch"
+          sx={{ backgroundColor: "#e5e5e5" }}
         >
           {/* Page title */}
           <Grid item>
@@ -77,11 +79,13 @@ const Layout = ({ pageTitle, children }) => {
           </Grid>
 
           {/* Content Proper */}
-          <Grid item className={classes.contentContainer}>
-            {children}
+          <Grid item sx={{margin: 2, backgroundColor: "#ffffff", marginTop: 0}}>
+            <Box>
+              {children}
+            </Box>
           </Grid>
         </Grid>
-      </Grid>
+      </Box>
     </Box>
   );
 };

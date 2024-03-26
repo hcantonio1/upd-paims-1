@@ -8,6 +8,7 @@ import {
   ListItemIcon,
   ListItemText,
   Box,
+  Paper,
 } from "@material-ui/core";
 import {
   HomeRounded,
@@ -101,41 +102,34 @@ const Navbar = () => {
 
   return (
     <nav>
-      <Box>
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{ paper: classes.drawerPaper }}
-          anchor="left"
-        >
-          <List>
-            {menuItems.map((item) => {
-              const itemkey = item.text;
-              const listItem = (
-                <ListItem
-                  button
-                  key={itemkey}
-                  onClick={() => navigate(item.path)}
-                >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
+      <Box display="flex" flexDirection="column">
+        <List>
+          {menuItems.map((item) => {
+            const itemkey = item.text;
+            const listItem = (
+              <ListItem
+                button
+                key={itemkey}
+                onClick={() => navigate(item.path)}
+              >
+                <ListItemIcon>{item.icon}</ListItemIcon>
 
-                  <ListItemText primary={item.text} />
-                </ListItem>
-              );
-              if (item.restrictedRoles.length === 0) {
-                return listItem;
-              }
-              return (
-                <RestrictedComponent
-                  key={itemkey}
-                  restrictedRoles={item.restrictedRoles}
-                >
-                  {listItem}
-                </RestrictedComponent>
-              );
-            })}
-          </List>
-        </Drawer>
+                <ListItemText primary={item.text} />
+              </ListItem>
+            );
+            if (item.restrictedRoles.length === 0) {
+              return listItem;
+            }
+            return (
+              <RestrictedComponent
+                key={itemkey}
+                restrictedRoles={item.restrictedRoles}
+              >
+                {listItem}
+              </RestrictedComponent>
+            );
+          })}
+        </List>
       </Box>
     </nav>
   );
