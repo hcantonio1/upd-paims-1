@@ -102,7 +102,7 @@ const Login = () => {
           justifyContent="center"
         >
           {/* college of engineering text  */}
-          <Typography variant="h6">University of the Philippines College of Engineering</Typography>
+          <Typography variant="h6" sx={{textAlign: "center"}}>University of the Philippines College of Engineering</Typography>
           <Typography variant="h6"></Typography>
 
           {/* PAIMS text */}
