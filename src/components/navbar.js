@@ -141,33 +141,29 @@ const Navbar = () => {
                     <ListItemText primary={item.text} />
                     {isOpen ? <ExpandLess /> : <ExpandMore />}
                   </ListItem>
-                  < Collapse in={isOpen} timeout="auto" >
+                  {/* < Collapse in={isOpen} timeout="auto" > */}
+                  {isOpen && (
                     <List disablePadding>
-                      <ListItem
-                        button
-                        onClick={() => {
-                          navigate("/app/form_addrec/");
-                        }}
-                      >
-                        {/* <ListItemIcon>
-                        <StarBorder />
-                        </ListItemIcon>   */}
-                        <ListItemText primary="Insert Record" />
-                      </ListItem>
+                    <ListItem
+                      button
+                      onClick={() => {
+                        navigate("/app/form_addrec/");
+                      }}
+                    >
+                      <ListItemText primary="Insert Record" />
+                    </ListItem>
 
-                      <ListItem
-                        button
-                        onClick={() => {
-                          navigate("/app/form_updaterec/");
-                        }}
-                      >
-                        {/* <ListItemIcon>
-                        <StarBorder />
-                        </ListItemIcon>   */}
-                        <ListItemText primary="Update/Archive Record" />
-                      </ListItem>
-                    </List>
-                  </Collapse>
+                    <ListItem
+                      button
+                      onClick={() => {
+                        navigate("/app/form_updaterec/");
+                      }}
+                    >
+                      <ListItemText primary="Update/Archive Record" />
+                    </ListItem>
+                  </List>
+                  )}
+                  {/* </Collapse> */}
                 </>
               ) : (
                 // If item.text is not "Submit Form", render it as a normal navigation button
