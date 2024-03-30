@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "gatsby";
 import {
   makeStyles,
@@ -71,6 +71,19 @@ const Navbar = () => {
   const handleDropDown = () => {
     setOpen(!isOpen)
   }
+
+  useEffect(() => {
+    const dropDownState = localStorage.getItem('is_drop_down_open');
+    if (dropDownState !== undefined) {
+      setOpen(JSON.parse(dropDownState));
+    }
+  }, []);
+
+  useEffect(() => {
+    if(isOpen !== undefined){
+      localStorage.setItem('is_drop_down_open', JSON.stringify(isOpen))
+    }
+  }, [isOpen])
 
   // NAVIGATION BAR ITEMS
   const menuItems = [
