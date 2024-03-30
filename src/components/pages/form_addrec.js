@@ -632,6 +632,19 @@ const InsertRecord = () => {
                   </Stack>
                 </Stack>
 
+                <Box
+                  display="flex"
+                  justifyContent="flex-end"
+                >
+                  <Button
+                    variant="contained"
+                    sx={{ backgroundColor: '#014421' }}
+                  >
+                    Add Item
+                  </Button>
+                </Box>
+
+
                 <Typography variant="h9" fontWeight={"bold"}>
                   Document Details
                 </Typography>
@@ -794,20 +807,20 @@ const InsertRecord = () => {
                 </Stack>
 
                 <Stack
-                    padding={1}
-                    direction="row"
-                    alignItems="flex-start"
-                    justifyContent="flex-end"
-                  >
+                  padding={1}
+                  direction="row"
+                  alignItems="flex-start"
+                  justifyContent="flex-end"
+                >
                   <Stack item>
                     <Button
                       type="submit"
                       variant="contained"
                       size="small"
                       color="success"
-                      onClick = {handleInsertDoc}
+                      onClick={handleInsertDoc}
                     >
-                    Submit Document
+                      Submit Document
                     </Button>
                   </Stack>
                 </Stack>
