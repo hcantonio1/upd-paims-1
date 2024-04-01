@@ -64,27 +64,55 @@ const Layout = ({ pageTitle, children }) => {
       <Box display="flex" flexDirection="row">
         <Navbar />
         {/* PAGE CONTENT */}
-        <Grid
+        <Box
+          display="flex"
+          flexDirection="column"
+          sx={{
+            backgroundColor: "#e5e5e5",
+            height: 800,
+            width: "100%"
+          }}
+          // flexGrow
+        >
+          {/* Page title */}
+          <Typography variant="h3" className={classes.pageTitleStyle}>
+            {pageTitle}
+          </Typography>
+
+          <Box sx={{
+            backgroundColor: "#ffffff", 
+            marginTop: 0,
+            mr: 2,
+            ml: 2,
+            mb: 2,
+            height: "100%"
+          }}>
+            {children}
+          </Box>
+        </Box>
+        {/* <Grid
           container
           direction="column"
           justifyContent="flex-start"
           alignItems="stretch"
-          sx={{ backgroundColor: "#e5e5e5" }}
-        >
-          {/* Page title */}
-          <Grid item>
+          sx={{ backgroundColor: "#e5e5e5",
+          height: "100%",
+        }}
+        > */}
+        {/* Page title */}
+        {/* <Grid item>
             <Typography variant="h3" className={classes.pageTitleStyle}>
               {pageTitle}
             </Typography>
-          </Grid>
+          </Grid> */}
 
-          {/* Content Proper */}
-          <Grid item sx={{margin: 2, backgroundColor: "#ffffff", marginTop: 0}}>
+        {/* Content Proper */}
+        {/* <Grid item sx={{margin: 2, backgroundColor: "#ffffff", marginTop: 0}}>
             <Box>
               {children}
             </Box>
           </Grid>
-        </Grid>
+        </Grid> */}
       </Box>
     </Box>
   );
