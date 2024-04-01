@@ -7,7 +7,6 @@ import {
   List,
   ListItemIcon,
   ListItemText,
-  Box,
   Paper,
   Collapse,
 } from "@material-ui/core";
@@ -21,7 +20,7 @@ import {
 } from "@material-ui/icons";
 import RestrictedComponent from "./restrictedComponent";
 import { navigate } from "gatsby";
-import { collapseClasses } from "@mui/material";
+import { Box } from "@mui/material";
 
 const navbarWidth = 235;
 
@@ -43,7 +42,7 @@ const useStyles = makeStyles({
     width: navbarWidth,
   },
   drawerPaper: {
-    width: navbarWidth,
+    width: navbarWidth
   },
   active: {
     background: "#f4f4f4",
@@ -124,7 +123,11 @@ const Navbar = () => {
 
   return (
     <nav>
-      <Box display="flex" flexDirection="column" className={classes.drawerPaper}>
+      <Box display="flex" flexDirection="column" 
+      sx={{
+        width: navbarWidth,
+        height: "100%"
+      }}>
         <List>
           {menuItems.map((item) => {
             const itemkey = item.text;

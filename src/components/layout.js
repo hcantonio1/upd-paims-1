@@ -59,6 +59,8 @@ const Layout = ({ pageTitle, children }) => {
     <Box display="flex" flexDirection="column"
       sx={{
         height: '100vh',
+        // border: 'solid',
+        // borderColor: 'blue'
       }}
     >
 
@@ -68,6 +70,7 @@ const Layout = ({ pageTitle, children }) => {
       <Box display="flex" flexDirection="row"
         sx={{
           height: "100%",
+          // border: "solid"
         }}
       >
         <Navbar />
@@ -77,11 +80,9 @@ const Layout = ({ pageTitle, children }) => {
           flexDirection="column"
           sx={{
             backgroundColor: "#e5e5e5",
-            // height: 800,
-            width: "100%",
-            // minHeight: "100vh"
+            height: "100%",
+            width: "100%"
           }}
-          flexGrow={1}
         >
           {/* Page title */}
           <Typography variant="h3" className={classes.pageTitleStyle}>

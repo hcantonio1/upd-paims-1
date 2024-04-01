@@ -21,8 +21,7 @@ const useStyles = makeStyles({
   },
 
   loginSecRoot: {
-    backgroundColor: "#7b1113",
-    height: 534
+    backgroundColor: "#7b1113"
   },
 
   whiteBox: {
@@ -81,6 +80,10 @@ const Login = () => {
     <Box
       display="flex"
       flexDirection="column"
+      sx={{
+        height: "100vh",
+        // border: "solid"
+      }}
     >
       {/* title and logo section  */}
       <Box
@@ -134,7 +137,7 @@ const Login = () => {
         flexDirection="row"
         className={classes.loginSecRoot}
         justifyContent="center"
-        sx={{ height: 538 }}
+        sx={{ height: "100%" }}
       >
         {/* white box  */}
         <Box
