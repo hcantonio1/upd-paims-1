@@ -56,12 +56,20 @@ const Layout = ({ pageTitle, children }) => {
   // LAYOUT PROPER
   return (
     // main container
-    <Box display="flex" flexDirection="column">
+    <Box display="flex" flexDirection="column"
+      sx={{
+        height: '100vh',
+      }}
+    >
 
       {/* HEADER */}
       <Header className={classes.header} />
 
-      <Box display="flex" flexDirection="row">
+      <Box display="flex" flexDirection="row"
+        sx={{
+          height: "100%",
+        }}
+      >
         <Navbar />
         {/* PAGE CONTENT */}
         <Box
@@ -69,10 +77,11 @@ const Layout = ({ pageTitle, children }) => {
           flexDirection="column"
           sx={{
             backgroundColor: "#e5e5e5",
-            height: 800,
-            width: "100%"
+            // height: 800,
+            width: "100%",
+            // minHeight: "100vh"
           }}
-          // flexGrow
+          flexGrow={1}
         >
           {/* Page title */}
           <Typography variant="h3" className={classes.pageTitleStyle}>
@@ -80,7 +89,7 @@ const Layout = ({ pageTitle, children }) => {
           </Typography>
 
           <Box sx={{
-            backgroundColor: "#ffffff", 
+            backgroundColor: "#ffffff",
             marginTop: 0,
             mr: 2,
             ml: 2,
