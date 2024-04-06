@@ -42,6 +42,19 @@ const InsertRecord = () => {
     UnitNumber: "",
   });
 
+  const [itemDetailsCount, setItemDetailsCount] = useState([
+    1
+  ])
+
+  const handleAddItem = () => {
+    setItemDetailsCount([...itemDetailsCount, 1])
+  }
+
+  const handleRemoveItem = () => {
+    const newArray = itemDetailsCount.slice(0, -1);
+    setItemDetailsCount(newArray);
+  }
+
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [locations, setLocations] = useState([]);
@@ -384,266 +397,281 @@ const InsertRecord = () => {
                 <Typography variant="h9" fontWeight={"bold"}>
                   Item Details
                 </Typography>
-                <Divider></Divider>
+                <Divider />
 
-                {/* FIELDS: PropertyID, PropertyName, Trustee */}
-                <Stack
-                  padding={1}
-                  spacing={2}
-                  mt={2}
-                  direction="row"
-                  justifyContent="space-between"
-                >
-                  <Stack item>
-                    <label
-                      htmlFor="PropertyID"
-                      style={{
-                        display: "inline-block",
-                        width: "150px",
-                        verticalAlign: "top",
-                      }}
+                {itemDetailsCount.map(() => (
+                  <>
+                    <Stack
+                      // key={index}
+                      padding={1}
+                      spacing={2}
+                      mt={2}
+                      direction="row"
+                      justifyContent="space-between"
                     >
-                      Property ID<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
-                      name="PropertyID"
-                      value={inputData.PropertyID}
-                      onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                      pattern="[0-9]*"
-                      title="Numbers only."
-                      required
-                    />
-                  </Stack>
-                  <Stack item>
-                    <label
-                      htmlFor="PropertyName"
-                      style={{
-                        display: "inline-block",
-                        width: "150px",
-                        verticalAlign: "top",
-                      }}
-                    >
-                      Property Name<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
-                      name="PropertyName"
-                      value={inputData.PropertyName}
-                      onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                      required
-                    />
-                  </Stack>
-                  <Stack item>
-                    <label
-                      htmlFor="TrusteeID"
-                      style={{ display: "inline-block", verticalAlign: "top" }}
-                    >
-                      Trustee<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <select
-                      name="TrusteeID"
-                      value={inputData.TrusteeID}
-                      onChange={handleInputChange}
-                      style={{ width: "250px", display: "inline-block" }}
-                      required
-                    >
-                      <option value="">Select Trustee</option>
-                      {users.map((user, index) => (
-                        <option
-                          key={`Trustee_${index}`}
-                          value={user.UserID}
+                      {/* FIELDS: PropertyID, PropertyName, Trustee */}
+                      <Stack item>
+                        <label
+                          htmlFor="PropertyID"
+                          style={{
+                            display: "inline-block",
+                            width: "150px",
+                            verticalAlign: "top",
+                          }}
                         >
-                          {getFullName(user)}
-                        </option>
-                      ))}
-                    </select>
-                  </Stack>
-                </Stack>
+                          Property ID<span style={{ color: "red" }}>*</span>{" "}
+                        </label>
+                        <input
+                          type="text"
+                          name="PropertyID"
+                          value={inputData.PropertyID}
+                          onChange={handleInputChange}
+                          style={{ width: "300px", display: "inline-block" }}
+                          pattern="[0-9]*"
+                          title="Numbers only."
+                          required
+                        />
+                      </Stack>
 
-                {/* FIELDS: Category, Status, Location */}
-                <Stack
-                  padding={1}
-                  spacing={2}
-                  // mt={1}
-                  direction="row"
-                  justifyContent="space-between"
-                >
-                  <Stack item>
-                    <label
-                      htmlFor="CategoryID"
-                      style={{
-                        display: "inline-block",
-                        width: "150px",
-                        verticalAlign: "top",
-                      }}
-                    >
-                      Category<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <select
-                      name="CategoryID"
-                      value={inputData.CategoryID}
-                      onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                      required
-                    >
-                      <option value="">Select Category</option>
-                      {categories.map((category, index) => (
-                        <option
-                          key={`category_${index}`}
-                          value={category.CategoryID}
+                      <Stack item>
+                        <label
+                          htmlFor="PropertyName"
+                          style={{
+                            display: "inline-block",
+                            width: "150px",
+                            verticalAlign: "top",
+                          }}
                         >
-                          {category.CategoryName}
-                        </option>
-                      ))}
-                    </select>
-                  </Stack>
-                  <Stack item>
-                    <label
-                      htmlFor="StatusID"
-                      style={{
-                        display: "inline-block",
-                        width: "150px",
-                        verticalAlign: "top",
-                      }}
-                    >
-                      Status<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <select
-                      name="StatusID"
-                      value={inputData.StatusID}
-                      onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                    >
-                      <option value="">Select Status</option>
-                      {statuses.map((status, index) => (
-                        <option key={`status${index}`} value={status.StatusID}>
-                          {status.StatusName}
-                        </option>
-                      ))}
-                    </select>
-                  </Stack>
-                  <Stack item>
-                    <label
-                      htmlFor="LocationID"
-                      style={{
-                        display: "inline-block",
-                        width: "150px",
-                        verticalAlign: "top",
-                      }}
-                    >
-                      Location<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <select
-                      name="LocationID"
-                      value={inputData.LocationID}
-                      onChange={handleInputChange}
-                      style={{ width: "250px", display: "inline-block" }}
-                      required
-                    >
-                      <option value="">Select Location</option>
-                      {locations.map((location, index) => (
-                        <option
-                          key={`location_${index}`}
-                          value={location.LocationID}
+                          Property Name<span style={{ color: "red" }}>*</span>{" "}
+                        </label>
+                        <input
+                          type="text"
+                          name="PropertyName"
+                          value={inputData.PropertyName}
+                          onChange={handleInputChange}
+                          style={{ width: "300px", display: "inline-block" }}
+                          required
+                        />
+                      </Stack>
+                      <Stack item>
+                        <label
+                          htmlFor="TrusteeID"
+                          style={{ display: "inline-block", verticalAlign: "top" }}
                         >
-                          {getFullLoc(location)}
-                        </option>
-                      ))}
-                    </select>
-                  </Stack>
-                </Stack>
+                          Trustee<span style={{ color: "red" }}>*</span>{" "}
+                        </label>
+                        <select
+                          name="TrusteeID"
+                          value={inputData.TrusteeID}
+                          onChange={handleInputChange}
+                          style={{ width: "250px", display: "inline-block" }}
+                          required
+                        >
+                          <option value="">Select Trustee</option>
+                          {users.map((user, index) => (
+                            <option
+                              key={`Trustee_${index}`}
+                              value={user.UserID}
+                            >
+                              {getFullName(user)}
+                            </option>
+                          ))}
+                        </select>
+                      </Stack>
+                    </Stack>
 
-                {/* FIELDS: PurchaseID, PurchaseDate, Cost */}
-                <Stack
-                  padding={1}
-                  spacing={2}
-                  mb={3}
-                  direction="row"
-                  justifyContent="space-between"
-                >
-                  <Stack item>
-                    <label
-                      htmlFor="PurchaseOrderID"
-                      style={{
-                        display: "inline-block",
-                        width: "200px",
-                        verticalAlign: "top",
-                      }}
+                    {/* FIELDS: Category, Status, Location */}
+                    <Stack
+                      padding={1}
+                      spacing={2}
+                      // mt={1}
+                      direction="row"
+                      justifyContent="space-between"
                     >
-                      Purchase Order ID<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
-                      name="PurchaseOrderID"
-                      value={inputData.PurchaseOrderID}
-                      onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                      pattern="[0-9]*"
-                      title="Numbers only."
-                      required
-                    />
-                  </Stack>
-                  <Stack item>
-                    <label
-                      htmlFor="TotalCost"
-                      style={{
-                        display: "inline-block",
-                        width: "150px",
-                        verticalAlign: "top",
-                      }}
+                      <Stack item>
+                        <label
+                          htmlFor="CategoryID"
+                          style={{
+                            display: "inline-block",
+                            width: "150px",
+                            verticalAlign: "top",
+                          }}
+                        >
+                          Category<span style={{ color: "red" }}>*</span>{" "}
+                        </label>
+                        <select
+                          name="CategoryID"
+                          value={inputData.CategoryID}
+                          onChange={handleInputChange}
+                          style={{ width: "300px", display: "inline-block" }}
+                          required
+                        >
+                          <option value="">Select Category</option>
+                          {categories.map((category, index) => (
+                            <option
+                              key={`category_${index}`}
+                              value={category.CategoryID}
+                            >
+                              {category.CategoryName}
+                            </option>
+                          ))}
+                        </select>
+                      </Stack>
+                      <Stack item>
+                        <label
+                          htmlFor="StatusID"
+                          style={{
+                            display: "inline-block",
+                            width: "150px",
+                            verticalAlign: "top",
+                          }}
+                        >
+                          Status<span style={{ color: "red" }}>*</span>{" "}
+                        </label>
+                        <select
+                          name="StatusID"
+                          value={inputData.StatusID}
+                          onChange={handleInputChange}
+                          style={{ width: "300px", display: "inline-block" }}
+                        >
+                          <option value="">Select Status</option>
+                          {statuses.map((status, index) => (
+                            <option key={`status${index}`} value={status.StatusID}>
+                              {status.StatusName}
+                            </option>
+                          ))}
+                        </select>
+                      </Stack>
+                      <Stack item>
+                        <label
+                          htmlFor="LocationID"
+                          style={{
+                            display: "inline-block",
+                            width: "150px",
+                            verticalAlign: "top",
+                          }}
+                        >
+                          Location<span style={{ color: "red" }}>*</span>{" "}
+                        </label>
+                        <select
+                          name="LocationID"
+                          value={inputData.LocationID}
+                          onChange={handleInputChange}
+                          style={{ width: "250px", display: "inline-block" }}
+                          required
+                        >
+                          <option value="">Select Location</option>
+                          {locations.map((location, index) => (
+                            <option
+                              key={`location_${index}`}
+                              value={location.LocationID}
+                            >
+                              {getFullLoc(location)}
+                            </option>
+                          ))}
+                        </select>
+                      </Stack>
+                    </Stack>
+
+                    {/* FIELDS: PurchaseID, PurchaseDate, Cost */}
+                    <Stack
+                      padding={1}
+                      spacing={2}
+                      mb={3}
+                      direction="row"
+                      justifyContent="space-between"
                     >
-                      Total Cost<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
-                      name="TotalCost"
-                      value={inputData.TotalCost}
-                      onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                      pattern="^\d*\.?\d+$"
-                      title="Please enter a positive number."
-                      required
-                      readOnly={orderLocked}
-                    />
-                  </Stack>
-                  <Stack item>
-                    <label
-                      htmlFor="PurchaseDate"
-                      style={{
-                        display: "inline-block",
-                        width: "150px",
-                        verticalAlign: "top",
-                      }}
-                    >
-                      Purchase Date<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="date"
-                      name="PurchaseDate"
-                      value={inputData.PurchaseDate}
-                      onChange={handleInputChange}
-                      style={{ width: "250px", display: "inline-block" }}
-                      required
-                      readOnly={orderLocked}
-                    />
-                  </Stack>
-                </Stack>
+                      <Stack item>
+                        <label
+                          htmlFor="PurchaseOrderID"
+                          style={{
+                            display: "inline-block",
+                            width: "200px",
+                            verticalAlign: "top",
+                          }}
+                        >
+                          Purchase Order ID<span style={{ color: "red" }}>*</span>{" "}
+                        </label>
+                        <input
+                          type="text"
+                          name="PurchaseOrderID"
+                          value={inputData.PurchaseOrderID}
+                          onChange={handleInputChange}
+                          style={{ width: "300px", display: "inline-block" }}
+                          pattern="[0-9]*"
+                          title="Numbers only."
+                          required
+                        />
+                      </Stack>
+                      <Stack item>
+                        <label
+                          htmlFor="TotalCost"
+                          style={{
+                            display: "inline-block",
+                            width: "150px",
+                            verticalAlign: "top",
+                          }}
+                        >
+                          Total Cost<span style={{ color: "red" }}>*</span>{" "}
+                        </label>
+                        <input
+                          type="text"
+                          name="TotalCost"
+                          value={inputData.TotalCost}
+                          onChange={handleInputChange}
+                          style={{ width: "300px", display: "inline-block" }}
+                          pattern="^\d*\.?\d+$"
+                          title="Please enter a positive number."
+                          required
+                          readOnly={orderLocked}
+                        />
+                      </Stack>
+                      <Stack item>
+                        <label
+                          htmlFor="PurchaseDate"
+                          style={{
+                            display: "inline-block",
+                            width: "150px",
+                            verticalAlign: "top",
+                          }}
+                        >
+                          Purchase Date<span style={{ color: "red" }}>*</span>{" "}
+                        </label>
+                        <input
+                          type="date"
+                          name="PurchaseDate"
+                          value={inputData.PurchaseDate}
+                          onChange={handleInputChange}
+                          style={{ width: "250px", display: "inline-block" }}
+                          required
+                          readOnly={orderLocked}
+                        />
+                      </Stack>
+                    </Stack>
+                  </>
+                ))}
 
                 <Box
                   display="flex"
                   justifyContent="flex-end"
                 >
+                  {itemDetailsCount.length > 1 && (
+                    <Button
+                      variant="contained"
+                      sx={{ backgroundColor: '#014421', m: 1 }}
+                      onClick={handleRemoveItem}
+                    >
+                      Remove Item
+                    </Button>
+                  )}
                   <Button
                     variant="contained"
-                    sx={{ backgroundColor: '#014421' }}
+                    sx={{ backgroundColor: '#014421', m: 1 }}
+                    onClick={handleAddItem}
                   >
                     Add Item
                   </Button>
                 </Box>
-
 
                 <Typography variant="h9" fontWeight={"bold"}>
                   Document Details
