@@ -59,6 +59,7 @@ const InsertRecord = () => {
   const [categories, setCategories] = useState([]);
   const [locations, setLocations] = useState([]);
   const [statuses, setStatuses] = useState([]);
+  const [types, setTypes] = useState([]);
   const [supLocked, setSupLocked] = useState(false);
   const [docLocked, setDocLocked] = useState(false);
   const [orderLocked, setOrderLocked] = useState(false);
@@ -107,11 +108,22 @@ const InsertRecord = () => {
         console.error("Error fetching statuses:", error);
       }
     };
+    const fetchTypes = async () => {
+      try {
+        const typeCollection = collection(db, "doctype");
+        const snapshot = await getDocs(typeCollection);
+        const types = snapshot.docs.map((doc) => doc.data());
+        setTypes(types);
+      } catch (error) {
+        console.error("Error fetching types:", error);
+      }
+    };
 
     fetchUsers();
     fetchCategories();
     fetchLocations();
     fetchStatuses();
+    fetchTypes();
   }, []);
 
   const getFullName = (user) => {
@@ -153,11 +165,21 @@ const InsertRecord = () => {
         Link: fileUrl,
         ReceivedBy: inputData.ReceivedBy,
       });
-      var docObject = {};
-      docObject[inputData.TrusteeID] = inputData.DocumentID;
+      var parObject = {};
+      var icsObject = {};
+      var iirupObject = {};
+      if (inputData.DocumentType === "IIRUP") {
+        iirupObject[1] = inputData.DocumentID;
+      } else if (inputData.DocumentType === "PAR") {
+        parObject[1] = inputData.DocumentID;
+      } else {
+        icsObject[1] = inputData.DocumentID;
+      }
       await setDoc(doc(db, "property", inputData.PropertyID), {
         CategoryID: parseInt(inputData.CategoryID),
-        DocumentID: docObject,
+        parID: parObject,
+        iirupID: iirupObject,
+        icsID: icsObject,
         isArchived: 0,
         LocationID: parseInt(inputData.LocationID),
         PropertyID: parseInt(inputData.PropertyID),
@@ -166,6 +188,7 @@ const InsertRecord = () => {
         StatusID: parseInt(inputData.StatusID),
         SupplierID: parseInt(inputData.SupplierID),
         PurchaseOrderID: parseInt(inputData.PurchaseOrderID),
+        VerNum: 1,
       });
       await setDoc(doc(db, "purchase_order", inputData.PurchaseOrderID), {
         PurchaseDate: Timestamp.fromDate(new Date(inputData.PurchaseDate)),
@@ -688,27 +711,6 @@ const InsertRecord = () => {
                 >
                   <Stack item>
                     <label
-                      htmlFor="DocumentType"
-                      style={{
-                        display: "inline-block",
-                        width: "200px",
-                        verticalAlign: "top",
-                      }}
-                    >
-                      Document Type<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
-                      name="DocumentType"
-                      value={inputData.DocumentType}
-                      onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                      required
-                      readOnly={docLocked}
-                    />
-                  </Stack>
-                  <Stack item>
-                    <label
                       htmlFor="DocumentID"
                       style={{
                         display: "inline-block",
@@ -726,6 +728,31 @@ const InsertRecord = () => {
                       style={{ width: "300px", display: "inline-block" }}
                       required
                     />
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="DocumentType"
+                      style={{ display: "inline-block", width: "200px", verticalAlign: "top" }}
+                    >
+                      Document Type<span style={{ color: "red" }}>*</span>{" "}
+                    </label>
+                    <select
+                      name="DocumentType"
+                      value={inputData.DocumentType}
+                      onChange={handleInputChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      required
+                    >
+                      <option value="">Select Document Type</option>
+                      {types.map((type, index) => (
+                        <option
+                          key={`Type_${index}`}
+                          value={type.Type}
+                        >
+                          {type.Type}
+                        </option>
+                      ))}
+                    </select>
                   </Stack>
                   <Stack item>
                     <label
