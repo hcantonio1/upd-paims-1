@@ -11,6 +11,7 @@ import {
   getDoc,
   collection,
   getDocs,
+  setDoc,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { makeStyles } from "@material-ui/core";
@@ -31,6 +32,7 @@ const UpdateRec = () => {
     IssuedBy: "",
     Link: "",
     ReceivedBy: "",
+    CurFile: "",
   });
 
   const [updateSupplier, setUpdateSupplier] = useState({
@@ -146,12 +148,21 @@ const UpdateRec = () => {
 
       if (propSnap.exists()) {
         const propData = propSnap.data();
+        const objects = ['iirupID', 'parID', 'icsID'];
+        objects.ForEach((objectName) => {
+          const object = data[objectName];
+          if (VerNum in object) {
+            const FileNow = object[VerNum];
+            console.log("Current File found.");
+          }
+        })
         setUpdateProperty((prevData) => ({
           ...prevData,
           LocationID: parseInt(propData.LocationID),
           StatusID: parseInt(propData.StatusID),
           TrusteeID: parseInt(propData.TrusteeID),
           VerNum: propData.VerNum,
+          CurFile: FileNow,
         }));
       }
       if (!propSnap.exists()) {
@@ -161,6 +172,7 @@ const UpdateRec = () => {
           StatusID: "",
           TrusteeID: "",
           VerNum: "",
+          CurFile: "",
         }));
       }
     } catch (error) {
@@ -193,36 +205,63 @@ const UpdateRec = () => {
     e.preventDefault();
 
     try {
-      var iirupUpdate = {};
-      var parUpdate = {};
-      var icsUpdate = {};
-      var newVar = updateProperty.VerNum + 1;
-      var archiveStat = 0;
-      if (updateProperty.DocumentType === "IIRUP") {
-        iirupUpdate[`iirupID.${newVar}`] = updateProperty.SpecDoc;
-        archiveStat = 1;
-      } else if (updateProperty.DocumentType === "PAR") {
-        parUpdate[`parID.${newVar}`] = updateProperty.SpecDoc;
-      } else {
-        icsUpdate[`icsID.${newVar}`] = updateProperty.SpecDoc;
-      }
       const propertyRef = doc(db, "property", updateProperty.PropertyID);
-      updateDoc(propertyRef, icsUpdate);
-      updateDoc(propertyRef, parUpdate);
-      updateDoc(propertyRef, iirupUpdate);
       await updateDoc(propertyRef, {
         LocationID: parseInt(updateProperty.LocationID),
         StatusID: parseInt(updateProperty.StatusID),
-        TrusteeID: parseInt(updateProperty.TrusteeID),
-        isArchived: archiveStat,
-        VerNum: newVar,
       });
+      if (updateProperty.SpecDoc !== "") {
+        var iirupUpdate = {};
+        var parUpdate = {};
+        var icsUpdate = {};
+        var newVar = updateProperty.VarNum + 1;
+        var archiveStat = 0;
+        if (updateProperty.DocumentType === "IIRUP") {
+          iirupUpdate[`iirupID.${newVar}`] = updateProperty.SpecDoc;
+          archiveStat = 1;
+        } else if (updateProperty.DocumentType === "PAR") {
+          parUpdate[`parID.${newVar}`] = updateProperty.SpecDoc;
+        } else {
+          icsUpdate[`icsID.${newVar}`] = updateProperty.SpecDoc;
+        }
+        updateDoc(propertyRef, icsUpdate);
+        updateDoc(propertyRef, parUpdate);
+        updateDoc(propertyRef, iirupUpdate);
+        await updateDoc(propertyRef, {
+          isArchived: archiveStat,
+          TrusteeID: parseInt(updateProperty.TrusteeID),
+        });
+        const docRef = doc(db, "item_document", updateProperty.CurFile);
+        const docSnap = await getDoc(docRef);
+        const CurFileLink = docSnap.data().Link;
+        console.log("Uploading file to Firebase Storage");
+        const fileRef = ref(storage, "DCS/" + updateProperty.Link.name);
+        await uploadBytes(fileRef, updateProperty.Link);
+        const fileUrl = await getDownloadURL(fileRef);
+        console.log("File uploaded successfully:", fileUrl);
+        await setDoc(doc(db, "item_document", updateProperty.SpecDoc), {
+          DateIssued: Timestamp.fromDate(new Date(updateProperty.DateIssued)),
+          DocumentID: updateProperty.DocumentID,
+          DocumentType: updateProperty.DocumentType,
+          IssuedBy: updateProperty.IssuedBy,
+          Link: fileUrl,
+          ReceivedBy: updateProperty.ReceivedBy,
+        });
+      }
       alert("Successfully updated property!");
       window.location.reload();
     } catch (error) {
       console.error("Error updating property:", error);
       alert("Failed to update property.");
     }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setUpdateProperty({
+      ...updateProperty,
+      Link: file,
+    });
   };
 
   const handleUpdatePropChange = async (e) => {
@@ -548,7 +587,122 @@ const UpdateRec = () => {
                   </Stack>
                 </Stack>
 
-                
+                {/* FIELDS: DateIssued, New File */}
+                <Stack
+                  padding={1}
+                  spacing={10}
+                  mt={2}
+                  direction="row"
+                  justifyContent="flex-start"
+                >
+                  <Stack item>
+                    <label
+                      htmlFor="DateIssued"
+                      style={{
+                        display: "inline-block",
+                        width: "150px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Date Issued
+                    </label>
+                    <input
+                      type="date"
+                      name="DateIssued"
+                      value={updateProperty.DateIssued}
+                      onChange={handleUpdatePropChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      required
+                    />
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="New File"
+                      style={{
+                        display: "inline-block",
+                        width: "250px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      New File{" "}
+                    </label>
+                    <input
+                      type="file"
+                      name="Link"
+                      onChange={handleFileChange}
+                      style={{ width: "250px", display: "inline-block" }}
+                      required
+                    />
+                  </Stack>
+                </Stack>
+
+                { /* FIELDS: Issued By, Received By */}
+                <Stack
+                  padding={1}
+                  spacing={10}
+                  mt={1}
+                  direction="row"
+                  justifyContent="flex-start"
+                >
+                  <Stack item>
+                    <label
+                      htmlFor="IssuedBy"
+                      style={{
+                        display: "inline-block",
+                        width: "250px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Issued By{" "}
+                    </label>
+                    <select
+                      name="IssuedBy"
+                      value={updateProperty.IssuedBy}
+                      onChange={handleUpdatePropChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      required
+                    >
+                      <option value="">Select Issued By</option>
+                      {users.map((user, index) => (
+                        <option
+                          key={`Trustee_${index}`}
+                          value={user.UserID}
+                        >
+                          {getFullName(user)}
+                        </option>
+                      ))}
+                    </select>
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="ReceivedBy"
+                      style={{
+                        display: "inline-block",
+                        width: "250px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Received By{" "}
+                    </label>
+                    <select
+                      name="ReceivedBy"
+                      value={updateProperty.ReceivedBy}
+                      onChange={handleUpdatePropChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      required
+                    >
+                      <option value="">Select Received By</option>
+                      {users.map((user, index) => (
+                        <option
+                          key={`Trustee_${index}`}
+                          value={user.UserID}
+                        >
+                          {getFullName(user)}
+                        </option>
+                      ))}
+                    </select>
+                  </Stack>
+                </Stack>
 
                 <Stack
                   padding={1}
