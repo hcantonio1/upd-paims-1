@@ -143,11 +143,11 @@ const InsertRecord = () => {
     }
     
     if (inputData.DocumentType === "ICS" && inputData.TotalCost > 49999) {
-      alert("ICS cannot have total cost over PHP49999.");
+      alert("ICS cannot have total cost over PHP49,999.");
       return;
     }
     if (inputData.DocumentType === "PAR" && inputData.TotalCost < 50000) {
-      alert("PAR cannot have total cost below PHP50000.");
+      alert("PAR cannot have total cost below PHP50,000.");
       return;
     }
 

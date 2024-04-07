@@ -12,6 +12,7 @@ import {
   collection,
   getDocs,
 } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { makeStyles } from "@material-ui/core";
 import { Typography, Divider, Box, Button, Stack } from "@mui/material";
 
@@ -26,6 +27,10 @@ const UpdateRec = () => {
     icsID: {},
     SpecDoc: "",
     DocumentType: "",
+    DateIssued: "",
+    IssuedBy: "",
+    Link: "",
+    ReceivedBy: "",
   });
 
   const [updateSupplier, setUpdateSupplier] = useState({
@@ -542,6 +547,8 @@ const UpdateRec = () => {
                     </select>
                   </Stack>
                 </Stack>
+
+                
 
                 <Stack
                   padding={1}
