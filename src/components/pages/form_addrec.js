@@ -15,6 +15,7 @@ import {
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { makeStyles } from "@material-ui/core";
 import { Typography, Divider, Box, Button, Stack } from "@mui/material";
+import SelectTextField from "../selectTextField"
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
@@ -499,7 +500,7 @@ const InsertRecord = () => {
                         >
                           Trustee<span style={{ color: "red" }}>*</span>{" "}
                         </label>
-                        <select
+                        {/* <select
                           name={`TrusteeID_${index}`}
                           value={inputData[`TrusteeID_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
@@ -515,7 +516,14 @@ const InsertRecord = () => {
                               {getFullName(user)}
                             </option>
                           ))}
-                        </select>
+                        </select> */}
+                        <SelectTextField 
+                          label="Trustee"
+                          name={`TrusteeID_${index}`}
+                          value={inputData[`TrusteeID_${index}`]}
+                          onChange={(e) => handleInputChange(e, index)}
+                          options={users}
+                        />
                       </Stack>
                     </Stack>
 

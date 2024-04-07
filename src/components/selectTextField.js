@@ -6,18 +6,17 @@ const getFullName = (user) => {
   return `${user.FirstName} ${user.LastName}`;
 };
 
-function SelectTextField({ label, name, value, options, onChange }) {
+function SelectTextField({label, name, value, options, onChange }) {
   return (
     <TextField
       select
-      label={label}
       name={name}
       value={value}
       onChange={onChange}
       sx={{ width: 300 }}
       required
     >
-      {name === "TrusteeID" && (
+      {label === "Trustee" && (
         options.map((option, index) => (
           <MenuItem 
           key={`Trustee_${index}`} 
