@@ -14,8 +14,7 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { makeStyles } from "@material-ui/core";
-import { Typography, Divider, Box, Button, Stack, TextField, MenuItem } from "@mui/material";
-import SelectTextField from "../selectTextField";
+import { Typography, Divider, Box, Button, Stack } from "@mui/material";
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
@@ -460,8 +459,8 @@ const InsertRecord = () => {
                           }}
                         >
                           Property ID<span style={{ color: "red" }}>*</span>{" "}
-                        </label> */}
-                        {/* <input
+                        </label>
+                        <input
                           type="text"
                           name={`PropertyID_${index}`}
                           value={inputData[`PropertyID_${index}`]}
@@ -470,19 +469,6 @@ const InsertRecord = () => {
                           pattern="[0-9]*"
                           title="Numbers only."
                           required
-                        /> */}
-                        <TextField
-                          variant="outlined"
-                          label="Property ID"
-                          name="PropertyID"
-                          value={inputData.PropertyID}
-                          onChange={handleInputChange}
-                          pattern="[0-9]*"
-                          title="Numbers only."
-                          required
-                          sx={{
-                            width: 300,
-                          }}
                         />
                       </Stack>
 
@@ -496,8 +482,8 @@ const InsertRecord = () => {
                           }}
                         >
                           Property Name<span style={{ color: "red" }}>*</span>{" "}
-                        </label> */}
-                        <TextField
+                        </label>
+                        <input
                           type="text"
                           name={`PropertyName_${index}`}
                           value={inputData[`PropertyName_${index}`]}
@@ -529,13 +515,7 @@ const InsertRecord = () => {
                               {getFullName(user)}
                             </option>
                           ))}
-                        </select> */}
-                        <SelectTextField
-                          label="Trustee"
-                          name="TrusteeID"
-                          value={inputData.TrusteeID}
-                          onChange={handleInputChange}
-                          options={users} />
+                        </select>
                       </Stack>
                     </Stack>
 
@@ -574,25 +554,7 @@ const InsertRecord = () => {
                               {category.CategoryName}
                             </option>
                           ))}
-                        </select> */}
-                        <TextField
-                          select
-                          label="Category"
-                          name="CategoryID"
-                          value={inputData.CategoryID}
-                          onChange={handleInputChange}
-                          sx={{ width: 300 }}
-                          required
-                        >
-                          {categories.map((category, index) => (
-                            <MenuItem
-                              key={`category_${index}`}
-                              value={category.CategoryID}
-                            >
-                              {category.CategoryName}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                        </select>
                       </Stack>
                       <Stack item>
                         <label
@@ -617,24 +579,7 @@ const InsertRecord = () => {
                               {status.StatusName}
                             </option>
                           ))}
-                        </select> */}
-                        <TextField
-                          select
-                          label="Status"
-                          name="StatusID"
-                          value={inputData.StatusID}
-                          onChange={handleInputChange}
-                          sx={{ width: 300 }}
-                        >
-                          {statuses.map((status, index) => (
-                            <MenuItem
-                              key={`status${index}`}
-                              value={status.StatusID}
-                            >
-                              {status.StatusName}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+                        </select>
                       </Stack>
                       <Stack item>
                         <label
