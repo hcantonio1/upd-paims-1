@@ -141,6 +141,15 @@ const InsertRecord = () => {
       alert("IssuedBy and ReceivedBy cannot be the same user.");
       return;
     }
+    
+    if (inputData.DocumentType === "ICS" && inputData.TotalCost > 49999) {
+      alert("ICS cannot have total cost over PHP49999.");
+      return;
+    }
+    if (inputData.DocumentType === "PAR" && inputData.TotalCost < 50000) {
+      alert("PAR cannot have total cost below PHP50000.");
+      return;
+    }
 
     try {
       await Promise.all(itemDetailsCount.map(async (_, index) => {
@@ -182,8 +191,10 @@ const InsertRecord = () => {
         var parObject = {};
         var icsObject = {};
         var iirupObject = {};
+        var archiveStat = 0;
         if (inputData.DocumentType === "IIRUP") {
           iirupObject[1] = inputData.DocumentID;
+          archiveStat = 1;
         } else if (inputData.DocumentType === "PAR") {
           parObject[1] = inputData.DocumentID;
         } else {
@@ -194,7 +205,7 @@ const InsertRecord = () => {
           parID: parObject,
           iirupID: iirupObject,
           icsID: icsObject,
-          isArchived: 0,
+          isArchived: archiveStat,
           LocationID: parseInt(itemData.LocationID),
           PropertyID: parseInt(itemData.PropertyID),
           PropertyName: itemData.PropertyName,
