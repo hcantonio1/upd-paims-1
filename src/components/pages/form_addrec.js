@@ -14,7 +14,8 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { makeStyles } from "@material-ui/core";
-import { Typography, Divider, Box, Button, Stack } from "@mui/material";
+import { Typography, Divider, Box, Button, Stack, TextField, MenuItem } from "@mui/material";
+import SelectTextField from "../selectTextField";
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
@@ -411,7 +412,7 @@ const InsertRecord = () => {
                     >
                       {/* FIELDS: PropertyID, PropertyName, Trustee */}
                       <Stack item>
-                        <label
+                        {/* <label
                           htmlFor="PropertyID"
                           style={{
                             display: "inline-block",
@@ -420,8 +421,8 @@ const InsertRecord = () => {
                           }}
                         >
                           Property ID<span style={{ color: "red" }}>*</span>{" "}
-                        </label>
-                        <input
+                        </label> */}
+                        {/* <input
                           type="text"
                           name="PropertyID"
                           value={inputData.PropertyID}
@@ -430,11 +431,24 @@ const InsertRecord = () => {
                           pattern="[0-9]*"
                           title="Numbers only."
                           required
+                        /> */}
+                        <TextField
+                          variant="outlined"
+                          label="Property ID"
+                          name="PropertyID"
+                          value={inputData.PropertyID}
+                          onChange={handleInputChange}
+                          pattern="[0-9]*"
+                          title="Numbers only."
+                          required
+                          sx={{
+                            width: 300,
+                          }}
                         />
                       </Stack>
 
                       <Stack item>
-                        <label
+                        {/* <label
                           htmlFor="PropertyName"
                           style={{
                             display: "inline-block",
@@ -443,18 +457,20 @@ const InsertRecord = () => {
                           }}
                         >
                           Property Name<span style={{ color: "red" }}>*</span>{" "}
-                        </label>
-                        <input
+                        </label> */}
+                        <TextField
                           type="text"
+                          label="Property Name"
                           name="PropertyName"
                           value={inputData.PropertyName}
                           onChange={handleInputChange}
-                          style={{ width: "300px", display: "inline-block" }}
+                          sx={{ width: "300px" }}
+                          variant="outlined"
                           required
                         />
                       </Stack>
                       <Stack item>
-                        <label
+                        {/* <label
                           htmlFor="TrusteeID"
                           style={{ display: "inline-block", verticalAlign: "top" }}
                         >
@@ -476,7 +492,13 @@ const InsertRecord = () => {
                               {getFullName(user)}
                             </option>
                           ))}
-                        </select>
+                        </select> */}
+                        <SelectTextField
+                          label="Trustee"
+                          name="TrusteeID"
+                          value={inputData.TrusteeID}
+                          onChange={handleInputChange}
+                          options={users} />
                       </Stack>
                     </Stack>
 
@@ -489,7 +511,7 @@ const InsertRecord = () => {
                       justifyContent="space-between"
                     >
                       <Stack item>
-                        <label
+                        {/* <label
                           htmlFor="CategoryID"
                           style={{
                             display: "inline-block",
@@ -498,8 +520,8 @@ const InsertRecord = () => {
                           }}
                         >
                           Category<span style={{ color: "red" }}>*</span>{" "}
-                        </label>
-                        <select
+                        </label> */}
+                        {/* <select
                           name="CategoryID"
                           value={inputData.CategoryID}
                           onChange={handleInputChange}
@@ -515,10 +537,28 @@ const InsertRecord = () => {
                               {category.CategoryName}
                             </option>
                           ))}
-                        </select>
+                        </select> */}
+                        <TextField
+                          select
+                          label="Category"
+                          name="CategoryID"
+                          value={inputData.CategoryID}
+                          onChange={handleInputChange}
+                          sx={{ width: 300 }}
+                          required
+                        >
+                          {categories.map((category, index) => (
+                            <MenuItem
+                              key={`category_${index}`}
+                              value={category.CategoryID}
+                            >
+                              {category.CategoryName}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Stack>
                       <Stack item>
-                        <label
+                        {/* <label
                           htmlFor="StatusID"
                           style={{
                             display: "inline-block",
@@ -540,7 +580,24 @@ const InsertRecord = () => {
                               {status.StatusName}
                             </option>
                           ))}
-                        </select>
+                        </select> */}
+                        <TextField
+                          select
+                          label="Status"
+                          name="StatusID"
+                          value={inputData.StatusID}
+                          onChange={handleInputChange}
+                          sx={{ width: 300 }}
+                        >
+                          {statuses.map((status, index) => (
+                            <MenuItem
+                              key={`status${index}`}
+                              value={status.StatusID}
+                            >
+                              {status.StatusName}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Stack>
                       <Stack item>
                         <label
