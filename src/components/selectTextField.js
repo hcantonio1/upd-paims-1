@@ -2,11 +2,7 @@ import React from 'react';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 
-const getFullName = (user) => {
-  return `${user.FirstName} ${user.LastName}`;
-};
-
-function SelectTextField({ label, name, value, options, onChange }) {
+function SelectTextField({ label, name, value, options, onChange, getFunc }) {
   return (
     <TextField
       select
@@ -17,12 +13,42 @@ function SelectTextField({ label, name, value, options, onChange }) {
       sx={{ width: 300 }}
       required
     >
-      {name === "TrusteeID" && (
+      {label === "Select Trustee" && (
         options.map((option, index) => (
-          <MenuItem 
-          key={`Trustee_${index}`} 
-          value={option.UserID}>
-            {getFullName(option)}
+          <MenuItem
+            key={`Trustee_${index}`}
+            value={option.UserID}>
+            {getFunc(option)}
+          </MenuItem>
+        ))
+      )}
+
+      {label === "Select Category" && (
+        options.map((option, index) => (
+          <MenuItem
+            key={`category_${index}`}
+            value={option.CategoryID}>
+            {option.CategoryName}
+          </MenuItem>
+        ))
+      )}
+
+      {label === "Select Status" && (
+        options.map((option, index) => (
+          <MenuItem
+            key={`status${index}`}
+            value={option.StatusID}>
+            {option.StatusName}
+          </MenuItem>
+        ))
+      )}
+
+      {label === "Select Location" && (
+        options.map((option, index) => (
+          <MenuItem
+            key={`location_${index}`}
+            value={option.LocationID}>
+            {getFunc(option)}
           </MenuItem>
         ))
       )}
