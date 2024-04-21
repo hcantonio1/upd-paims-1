@@ -32,14 +32,14 @@ const ArchiveRec = () => {
         }
         setArchiveData((prevData) => ({
           ...prevData,
-          IsArchived: arcData.IsArchived,
+          isArchived: arcData.isArchived,
         }));
       }
       if (!arcSnap.exists()) {
         setButtonDisabled(false);
         setArchiveData((prevData) => ({
           ...prevData,
-          IsArchived: "",
+          isArchived: "",
         }));
       }
     } catch (error) {
@@ -53,7 +53,7 @@ const ArchiveRec = () => {
     try {
       const archiveRef = doc(db, "property", archiveData.PropertyID);
       await updateDoc(archiveRef, {
-        IsArchived: 1,
+        isArchived: 1,
       });
       alert("Successfully archived!");
       window.location.reload();
@@ -120,7 +120,7 @@ const ArchiveRec = () => {
             <input
               type="text"
               name="isArchived"
-              value={archiveData.IsArchived}
+              value={archiveData.isArchived}
               onChange={handleArchiveChange}
               style={{ width: "300px", display: "inline-block" }}
               readOnly={true}

@@ -14,7 +14,12 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { makeStyles } from "@material-ui/core";
-import { Typography, Divider, Box, Button, Stack } from "@mui/material";
+import { Typography, Divider, Box, Button, Stack, TextField } from "@mui/material";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import SelectTextField from "../selectTextField"
+
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
@@ -142,6 +147,15 @@ const InsertRecord = () => {
       return;
     }
 
+    if (inputData.DocumentType === "ICS" && inputData.TotalCost > 49999) {
+      alert("ICS cannot have total cost over PHP49,999.");
+      return;
+    }
+    if (inputData.DocumentType === "PAR" && inputData.TotalCost < 50000) {
+      alert("PAR cannot have total cost below PHP50,000.");
+      return;
+    }
+
     try {
       await Promise.all(itemDetailsCount.map(async (_, index) => {
         const itemData = {
@@ -182,8 +196,10 @@ const InsertRecord = () => {
         var parObject = {};
         var icsObject = {};
         var iirupObject = {};
+        var archiveStat = 0;
         if (inputData.DocumentType === "IIRUP") {
           iirupObject[1] = inputData.DocumentID;
+          archiveStat = 1;
         } else if (inputData.DocumentType === "PAR") {
           parObject[1] = inputData.DocumentID;
         } else {
@@ -194,7 +210,7 @@ const InsertRecord = () => {
           parID: parObject,
           iirupID: iirupObject,
           icsID: icsObject,
-          isArchived: 0,
+          isArchived: archiveStat,
           LocationID: parseInt(itemData.LocationID),
           PropertyID: parseInt(itemData.PropertyID),
           PropertyName: itemData.PropertyName,
@@ -413,16 +429,6 @@ const InsertRecord = () => {
     <Layout pageTitle="INSERT">
       <Box display="flex" flexDirection="column" className={classes.root}>
         <main>
-          <Box sx={{ mb: 3 }}>
-            <Button
-              href="/app/submitform/"
-              variant="outlined"
-              size="small"
-              color="success"
-            >
-              Back to Forms
-            </Button>
-          </Box>
 
           <Box display="flex" flexDirection="column">
             <Box className={classes.addRecordTextContainer}>
@@ -457,18 +463,18 @@ const InsertRecord = () => {
                             width: "150px",
                             verticalAlign: "top",
                           }}
-                        >
-                          Property ID<span style={{ color: "red" }}>*</span>{" "}
-                        </label>
-                        <input
-                          type="text"
+                        />
+
+                        <TextField
+                          label="Property ID"
+                          variant="outlined"
                           name={`PropertyID_${index}`}
                           value={inputData[`PropertyID_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          style={{ width: "300px", display: "inline-block" }}
+                          required
+                          sx={{ width: 300 }}
                           pattern="[0-9]*"
                           title="Numbers only."
-                          required
                         />
                       </Stack>
 
@@ -480,42 +486,30 @@ const InsertRecord = () => {
                             width: "150px",
                             verticalAlign: "top",
                           }}
-                        >
-                          Property Name<span style={{ color: "red" }}>*</span>{" "}
-                        </label>
-                        <input
-                          type="text"
+                        />
+                        <TextField
+                          label="Property Name"
+                          variant="outlined"
                           name={`PropertyName_${index}`}
                           value={inputData[`PropertyName_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          style={{ width: "300px", display: "inline-block" }}
                           required
+                          sx={{ width: 300 }}
                         />
                       </Stack>
                       <Stack item>
                         <label
                           htmlFor={`TrusteeID_${index}`}
                           style={{ display: "inline-block", verticalAlign: "top" }}
-                        >
-                          Trustee<span style={{ color: "red" }}>*</span>{" "}
-                        </label>
-                        <select
+                        />
+                        <SelectTextField
+                          label="Select Trustee"
                           name={`TrusteeID_${index}`}
                           value={inputData[`TrusteeID_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          style={{ width: "250px", display: "inline-block" }}
-                          required
-                        >
-                          <option value="">Select Trustee</option>
-                          {users.map((user, index) => (
-                            <option
-                              key={`Trustee_${index}`}
-                              value={user.UserID}
-                            >
-                              {getFullName(user)}
-                            </option>
-                          ))}
-                        </select>
+                          options={users}
+                          getFunc={getFullName}
+                        />
                       </Stack>
                     </Stack>
 
@@ -535,26 +529,15 @@ const InsertRecord = () => {
                             width: "150px",
                             verticalAlign: "top",
                           }}
-                        >
-                          Category<span style={{ color: "red" }}>*</span>{" "}
-                        </label>
-                        <select
+                        />
+
+                        <SelectTextField
+                          label="Select Category"
                           name={`CategoryID_${index}`}
                           value={inputData[`CategoryID_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          style={{ width: "300px", display: "inline-block" }}
-                          required
-                        >
-                          <option value="">Select Category</option>
-                          {categories.map((category, index) => (
-                            <option
-                              key={`category_${index}`}
-                              value={category.CategoryID}
-                            >
-                              {category.CategoryName}
-                            </option>
-                          ))}
-                        </select>
+                          options={categories}
+                        />
                       </Stack>
                       <Stack item>
                         <label
@@ -564,22 +547,15 @@ const InsertRecord = () => {
                             width: "150px",
                             verticalAlign: "top",
                           }}
-                        >
-                          Status<span style={{ color: "red" }}>*</span>{" "}
-                        </label>
-                        <select
+                        />
+
+                        <SelectTextField
+                          label="Select Status"
                           name={`StatusID_${index}`}
                           value={inputData[`StatusID_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          style={{ width: "300px", display: "inline-block" }}
-                        >
-                          <option value="">Select Status</option>
-                          {statuses.map((status, index) => (
-                            <option key={`status${index}`} value={status.StatusID}>
-                              {status.StatusName}
-                            </option>
-                          ))}
-                        </select>
+                          options={statuses}
+                        />
                       </Stack>
                       <Stack item>
                         <label
@@ -589,26 +565,16 @@ const InsertRecord = () => {
                             width: "150px",
                             verticalAlign: "top",
                           }}
-                        >
-                          Location<span style={{ color: "red" }}>*</span>{" "}
-                        </label>
-                        <select
+                        />
+
+                        <SelectTextField
+                          label="Select Location"
                           name={`LocationID_${index}`}
                           value={inputData[`LocationID_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          style={{ width: "250px", display: "inline-block" }}
-                          required
-                        >
-                          <option value="">Select Location</option>
-                          {locations.map((location, index) => (
-                            <option
-                              key={`location_${index}`}
-                              value={location.LocationID}
-                            >
-                              {getFullLoc(location)}
-                            </option>
-                          ))}
-                        </select>
+                          options={locations}
+                          getFunc={getFullLoc}
+                        />
                       </Stack>
                     </Stack>
 
@@ -628,18 +594,18 @@ const InsertRecord = () => {
                             width: "200px",
                             verticalAlign: "top",
                           }}
-                        >
-                          Purchase Order ID<span style={{ color: "red" }}>*</span>{" "}
-                        </label>
-                        <input
-                          type="text"
+                        />
+
+                        <TextField
+                          label="Purchase Order ID"
+                          variant="outlined"
                           name={`PurchaseOrderID_${index}`}
                           value={inputData[`PurchaseOrderID_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          style={{ width: "300px", display: "inline-block" }}
                           pattern="[0-9]*"
                           title="Numbers only."
                           required
+                          sx={{ width: 300 }}
                         />
                       </Stack>
                       <Stack item>
@@ -650,33 +616,31 @@ const InsertRecord = () => {
                             width: "150px",
                             verticalAlign: "top",
                           }}
-                        >
-                          Total Cost<span style={{ color: "red" }}>*</span>{" "}
-                        </label>
-                        <input
-                          type="text"
+                        />
+                        <TextField
+                          label="Total Cost"
+                          variant="outlined"
                           name={`TotalCost_${index}`}
                           value={inputData[`TotalCost_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          style={{ width: "300px", display: "inline-block" }}
                           pattern="^\d*\.?\d+$"
                           title="Please enter a positive number."
                           required
+                          sx={{ width: 300 }}
                           readOnly={orderLocked}
                         />
                       </Stack>
-                      <Stack item>
-                        <label
-                          htmlFor={`PurchaseDate_${index}`}
-                          style={{
-                            display: "inline-block",
-                            width: "150px",
-                            verticalAlign: "top",
-                          }}
-                        >
-                          Purchase Date<span style={{ color: "red" }}>*</span>{" "}
-                        </label>
-                        <input
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <Stack item>
+                          <label
+                            htmlFor={`PurchaseDate_${index}`}
+                            style={{
+                              display: "inline-block",
+                              width: "150px",
+                              verticalAlign: "top",
+                            }}
+                          />
+                          {/* <input
                           type="date"
                           name={`PurchaseDate_${index}`}
                           value={inputData[`PurchaseDate_${index}`]}
@@ -684,8 +648,16 @@ const InsertRecord = () => {
                           style={{ width: "250px", display: "inline-block" }}
                           required
                           readOnly={orderLocked}
-                        />
-                      </Stack>
+                        /> */}
+                          <DatePicker
+                            label="Purchase Date"
+                            name={`PurchaseDate_${index}`}
+                            value={inputData[`PurchaseDate_${index}`]}
+                            onChange={(e) => handleInputChange(e, index)}
+                            sx={{width: 300}}
+                          />
+                        </Stack>
+                      </LocalizationProvider>
                     </Stack>
                   </>
                 ))}

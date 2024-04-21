@@ -11,7 +11,9 @@ import {
   getDoc,
   collection,
   getDocs,
+  setDoc,
 } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { makeStyles } from "@material-ui/core";
 import { Typography, Divider, Box, Button, Stack } from "@mui/material";
 
@@ -21,8 +23,16 @@ const UpdateRec = () => {
     TrusteeID: "",
     LocationID: "",
     PropertyID: "",
-    DocumentID: {},
+    parID: {},
+    iirupID: {},
+    icsID: {},
     SpecDoc: "",
+    DocumentType: "",
+    DateIssued: "",
+    IssuedBy: "",
+    Link: "",
+    ReceivedBy: "",
+    CurFile: "",
   });
 
   const [updateSupplier, setUpdateSupplier] = useState({
@@ -38,6 +48,7 @@ const UpdateRec = () => {
   const [users, setUsers] = useState([]);
   const [locations, setLocations] = useState([]);
   const [statuses, setStatuses] = useState([]);
+  const [types, setTypes] = useState([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -72,10 +83,21 @@ const UpdateRec = () => {
         console.error("Error fetching statuses:", error);
       }
     };
+    const fetchTypes = async () => {
+      try {
+        const typeCollection = collection(db, "doctype");
+        const snapshot = await getDocs(typeCollection);
+        const types = snapshot.docs.map((doc) => doc.data());
+        setTypes(types);
+      } catch (error) {
+        console.error("Error fetching types:", error);
+      }
+    };
 
     fetchUsers();
     fetchLocations();
     fetchStatuses();
+    fetchTypes();
   }, []);
 
   const getFullName = (user) => {
@@ -126,11 +148,21 @@ const UpdateRec = () => {
 
       if (propSnap.exists()) {
         const propData = propSnap.data();
+        const objects = ['iirupID', 'parID', 'icsID'];
+        objects.ForEach((objectName) => {
+          const object = data[objectName];
+          if (VerNum in object) {
+            const FileNow = object[VerNum];
+            console.log("Current File found.");
+          }
+        })
         setUpdateProperty((prevData) => ({
           ...prevData,
           LocationID: parseInt(propData.LocationID),
           StatusID: parseInt(propData.StatusID),
           TrusteeID: parseInt(propData.TrusteeID),
+          VerNum: propData.VerNum,
+          CurFile: FileNow,
         }));
       }
       if (!propSnap.exists()) {
@@ -139,6 +171,8 @@ const UpdateRec = () => {
           LocationID: "",
           StatusID: "",
           TrusteeID: "",
+          VerNum: "",
+          CurFile: "",
         }));
       }
     } catch (error) {
@@ -171,21 +205,63 @@ const UpdateRec = () => {
     e.preventDefault();
 
     try {
-      var docUpdate = {};
-      docUpdate[`DocumentID.${updateProperty.TrusteeID}`] = updateProperty.SpecDoc;
       const propertyRef = doc(db, "property", updateProperty.PropertyID);
-      updateDoc(propertyRef, docUpdate);
       await updateDoc(propertyRef, {
         LocationID: parseInt(updateProperty.LocationID),
         StatusID: parseInt(updateProperty.StatusID),
-        TrusteeID: parseInt(updateProperty.TrusteeID),
       });
+      if (updateProperty.SpecDoc !== "") {
+        var iirupUpdate = {};
+        var parUpdate = {};
+        var icsUpdate = {};
+        var newVar = updateProperty.VarNum + 1;
+        var archiveStat = 0;
+        if (updateProperty.DocumentType === "IIRUP") {
+          iirupUpdate[`iirupID.${newVar}`] = updateProperty.SpecDoc;
+          archiveStat = 1;
+        } else if (updateProperty.DocumentType === "PAR") {
+          parUpdate[`parID.${newVar}`] = updateProperty.SpecDoc;
+        } else {
+          icsUpdate[`icsID.${newVar}`] = updateProperty.SpecDoc;
+        }
+        updateDoc(propertyRef, icsUpdate);
+        updateDoc(propertyRef, parUpdate);
+        updateDoc(propertyRef, iirupUpdate);
+        await updateDoc(propertyRef, {
+          isArchived: archiveStat,
+          TrusteeID: parseInt(updateProperty.TrusteeID),
+        });
+        const docRef = doc(db, "item_document", updateProperty.CurFile);
+        const docSnap = await getDoc(docRef);
+        const CurFileLink = docSnap.data().Link;
+        console.log("Uploading file to Firebase Storage");
+        const fileRef = ref(storage, "DCS/" + updateProperty.Link.name);
+        await uploadBytes(fileRef, updateProperty.Link);
+        const fileUrl = await getDownloadURL(fileRef);
+        console.log("File uploaded successfully:", fileUrl);
+        await setDoc(doc(db, "item_document", updateProperty.SpecDoc), {
+          DateIssued: Timestamp.fromDate(new Date(updateProperty.DateIssued)),
+          DocumentID: updateProperty.DocumentID,
+          DocumentType: updateProperty.DocumentType,
+          IssuedBy: updateProperty.IssuedBy,
+          Link: fileUrl,
+          ReceivedBy: updateProperty.ReceivedBy,
+        });
+      }
       alert("Successfully updated property!");
       window.location.reload();
     } catch (error) {
       console.error("Error updating property:", error);
       alert("Failed to update property.");
     }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setUpdateProperty({
+      ...updateProperty,
+      Link: file,
+    });
   };
 
   const handleUpdatePropChange = async (e) => {
@@ -453,7 +529,7 @@ const UpdateRec = () => {
                   </Stack>
                 </Stack>
 
-                { /* FIELDS: Document Name */}
+                { /* FIELDS: Document Name, Document Type */}
                 <Stack
                   padding={1}
                   spacing={10}
@@ -479,6 +555,152 @@ const UpdateRec = () => {
                       onChange={handleUpdatePropChange}
                       style={{ width: "300px", display: "inline-block" }}
                     />
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="Document Type"
+                      style={{
+                        display: "inline-block",
+                        width: "250px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      New Document Type{" "}
+                    </label>
+                    <select
+                      name="DocumentType"
+                      value={updateProperty.DocumentType}
+                      onChange={handleUpdatePropChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      required
+                    >
+                      <option value="">Select Document Type</option>
+                      {types.map((type, index) => (
+                        <option
+                          key={`Type_${index}`}
+                          value={type.Type}
+                        >
+                          {type.Type}
+                        </option>
+                      ))}
+                    </select>
+                  </Stack>
+                </Stack>
+
+                {/* FIELDS: DateIssued, New File */}
+                <Stack
+                  padding={1}
+                  spacing={10}
+                  mt={2}
+                  direction="row"
+                  justifyContent="flex-start"
+                >
+                  <Stack item>
+                    <label
+                      htmlFor="DateIssued"
+                      style={{
+                        display: "inline-block",
+                        width: "150px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Date Issued
+                    </label>
+                    <input
+                      type="date"
+                      name="DateIssued"
+                      value={updateProperty.DateIssued}
+                      onChange={handleUpdatePropChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      required
+                    />
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="New File"
+                      style={{
+                        display: "inline-block",
+                        width: "250px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      New File{" "}
+                    </label>
+                    <input
+                      type="file"
+                      name="Link"
+                      onChange={handleFileChange}
+                      style={{ width: "250px", display: "inline-block" }}
+                      required
+                    />
+                  </Stack>
+                </Stack>
+
+                { /* FIELDS: Issued By, Received By */}
+                <Stack
+                  padding={1}
+                  spacing={10}
+                  mt={1}
+                  direction="row"
+                  justifyContent="flex-start"
+                >
+                  <Stack item>
+                    <label
+                      htmlFor="IssuedBy"
+                      style={{
+                        display: "inline-block",
+                        width: "250px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Issued By{" "}
+                    </label>
+                    <select
+                      name="IssuedBy"
+                      value={updateProperty.IssuedBy}
+                      onChange={handleUpdatePropChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      required
+                    >
+                      <option value="">Select Issued By</option>
+                      {users.map((user, index) => (
+                        <option
+                          key={`Trustee_${index}`}
+                          value={user.UserID}
+                        >
+                          {getFullName(user)}
+                        </option>
+                      ))}
+                    </select>
+                  </Stack>
+                  <Stack item>
+                    <label
+                      htmlFor="ReceivedBy"
+                      style={{
+                        display: "inline-block",
+                        width: "250px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      Received By{" "}
+                    </label>
+                    <select
+                      name="ReceivedBy"
+                      value={updateProperty.ReceivedBy}
+                      onChange={handleUpdatePropChange}
+                      style={{ width: "300px", display: "inline-block" }}
+                      required
+                    >
+                      <option value="">Select Received By</option>
+                      {users.map((user, index) => (
+                        <option
+                          key={`Trustee_${index}`}
+                          value={user.UserID}
+                        >
+                          {getFullName(user)}
+                        </option>
+                      ))}
+                    </select>
                   </Stack>
                 </Stack>
 
@@ -806,70 +1028,3 @@ export default UpdateRec;
 //personal notes
 //current problems with adding record:
 //lengthy process if doing it one by one per property
-//current problems with updating record:
-//
-
-{
-  /* <main>
-        <Link to="/app/submitform/">Return to Submit Form Page</Link>
-        <form onSubmit={handleUpdateProperty}>
-          <div>
-            <p>Update Property Details</p>
-            <label htmlFor="PropertyID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Property ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="PropertyID" value={updateProperty.PropertyID} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
-            <br />
-            <label htmlFor="Status" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Status:   </label>
-            <select name="StatusID" value={updateProperty.StatusID} onChange={handleUpdatePropChange} style={{ width: '310px', display: 'inline-block' }} >
-            <option value ="">Select Status</option>
-              {statuses.map((status, index) => (
-                <option key={`status${index}`} value={status.StatusID}>{status.StatusName}</option>
-              ))}
-            </select>
-            <br />
-            <label htmlFor="TrusteeID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Trustee ID:   </label>
-            <select name="TrusteeID" value={updateProperty.TrusteeID} onChange={handleUpdatePropChange} style={{ width: '300px', display: 'inline-block' }} required >
-              <option value="">Select Trustee</option>
-              {users.map((user, index) => (
-                <option key={`Trustee_${index}`} value={user.UserID}>{getFullName(user)}</option>
-              ))}
-            </select>
-            <br />
-            <label htmlFor="LocationID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Location:   </label>
-            <select name="LocationID" value={updateProperty.LocationID} onChange={handleUpdatePropChange} style={{ width: '310px', display: 'inline-block' }} required >
-              <option value ="">Select Location</option>
-              {locations.map((location, index) => (
-                <option key={`location_${index}`} value={location.LocationID}>{getFullLoc(location)}</option>
-              ))}
-            </select>
-            <br />
-          </div>
-          <button type="submit">Submit</button>
-        </form>
-        <form onSubmit={handleUpdateSupplier}>
-          <div>
-            <p>Update Supplier</p>
-            <label htmlFor="SupplierID" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier ID<span style={{ color: 'red' }}>*</span>:   </label>
-            <input type="text" name="SupplierID" value={updateSupplier.SupplierID} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
-            <br />
-            <label htmlFor="SupplierName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Name:   </label>
-            <input type="text" name="SupplierName" value={updateSupplier.SupplierName} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only." required/>
-            <br />
-            <label htmlFor="SupplierContact" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Supplier Contact:   </label>
-            <input type="text" name="SupplierContact" value={updateSupplier.SupplierContact} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only."/>
-            <br />
-            <label htmlFor="UnitNumber" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Unit Number:   </label>
-            <input type="text" name="UnitNumber" value={updateSupplier.UnitNumber} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} pattern="[0-9]*" title="Numbers only."/>
-            <br />
-            <label htmlFor="StreetName" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>Street Name:   </label>
-            <input type="text" name="StreetName" value={updateSupplier.StreetName} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} />
-            <br />
-            <label htmlFor="City" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>City:   </label>
-            <input type="text" name="City1" value={updateSupplier.City} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} />
-            <br />
-            <label htmlFor="State" style={{ display: 'inline-block', width: '150px', verticalAlign: 'top' }}>State:   </label>
-            <input type="text" name="State1" value={updateSupplier.State} onChange={handleUpdateSupChange} style={{ width: '300px', display: 'inline-block' }} />
-          </div>
-          <button type="submit">Submit</button>
-        </form>
-      </main> */
-}
