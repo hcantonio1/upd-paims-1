@@ -13,8 +13,11 @@ import { db } from "../../../firebase-config.js";
 import { commonCollections } from "../../services/prefetch.js";
 import Box from '@mui/material/Box';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import firebase from 'firebase/app';
+import 'firebase/database';
 
 
+// This is for sample table, ignore
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
   {
@@ -57,6 +60,9 @@ const rows = [
   { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
   { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
 ];
+
+// ^For sample table, ignore
+
 
 
 
@@ -149,10 +155,27 @@ const InventoryPage = () => {
     { key: "LocationName", label: "Location", filterable: true },
     { key: "PurchaseOrderID", label: "Purchase Order", filterable: true },
     { key: "SupplierID", label: "Supplier", filterable: true },
-    // { key: 'Address', label: 'Address', filterable: true  },
+    { key: 'Address', label: 'Address', filterable: true  },
     { key: "DocumentID", label: "Document", filterable: true },
-    // { key: "InvDate", label: "Date Issued", filterable: true },
+    { key: "InvDate", label: "Date Issued", filterable: true },
   ];
+
+  const InvCol = [
+    { field: 'PropertyID', headerName: 'ID', width: 90 },
+    { field: 'PropertyName', headerName: 'Name', width: 150 },
+    { field: 'CategoryName', headerName: 'Category', width: 90 },
+    { field: 'StatusName', headerName: 'Status', width: 150 },
+    { field: 'TrusteeID', headerName: 'Trustee ID', width: 90 },
+    { field: 'LocationName', headerName: 'Location', width: 150 },
+    { field: 'PurchaseOrderID', headerName: 'Purchase Order', width: 90 },
+    { field: 'SupplierID', headerName: 'Supplier', width: 150 },
+    // { field: 'InvDate', headerName: 'Trustee Date Issued', width: 90 },
+
+
+  ];
+
+
+
 
   const filterableColumns = InventoryColumns.filter(
     (column) => column.filterable
@@ -176,7 +199,21 @@ const InventoryPage = () => {
         commonCollections.forEach(({ name, columnNameOfID }) => {
           const id = row[columnNameOfID];
           const newAttr = columnNameOfID.slice(0, -2) + "Name";
-          const replacementName = prefetched[name][id];
+          // let newAttr; // Declare newAttr variable
+          // if (columnNameOfID === "icsID" || columnNameOfID === "parID" || columnNameOfID === "iirupID") {
+          //   console.log("what am i looking at", columnNameOfID);
+          //   newAttr = "VerNum";
+          // } else {
+          //   newAttr = columnNameOfID.slice(0, -2) + "Name"; // Default behavior for other attributes
+          // }
+          const replacementName = String(prefetched[name][id]);
+          // let replacementName = ""; // Default to empty string
+          // if (prefetched[name][id]) {
+          //   replacementName = prefetched[name][id]; // If value exists, use it
+          // }
+          console.log("ID:", id);
+          console.log("New Attribute:", newAttr);
+          console.log("Replacement Name:", replacementName);
           row = { ...row, [newAttr]: replacementName };
         });
         if (row.isArchived !== 1) { // Filter out archived items here
@@ -190,6 +227,9 @@ const InventoryPage = () => {
       setInventoryData(invData);
     });
   }, []);
+
+ 
+  
 
   const handleSearch = (searchTerm) => {
     console.log("Search Term:", searchTerm);
@@ -252,12 +292,12 @@ const InventoryPage = () => {
       <main>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <SearchBar onSearch={handleSearch} />
-          <FilterBy
+          {/* <FilterBy
             options={filterableColumns.map((column) => column.label)}
             onFilterChange={handleFilterChange}
-          />
+          /> */}
         </div>
-        <div>
+        {/* <div>
           {searchResultsEmpty ? (
             <p style={{ textAlign: "center" }}>No records found.</p>
           ) : (
@@ -267,24 +307,28 @@ const InventoryPage = () => {
               onSort={handleSort}
             />
           )}
-        </div>
+        </div> */}
         <div>
-          <Box sx={{ height: 400, width: '100%' }}>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 5,
-                  },
-                },
-              }}
-              pageSizeOptions={[5]}
-              checkboxSelection
-              disableRowSelectionOnClick
-            />
-          </Box>
+          {searchResultsEmpty ? (
+              <p style={{ textAlign: "center" }}>No records found.</p>
+            ) : (
+              <Box sx={{ height: 400, width: '100%' }}>
+                <DataGrid getRowId={(row) =>  row.PropertyID + '_' + row.PurchaseOrderID}
+                  rows={filteredData.length > 0 ? filteredData : inventoryData}
+                  columns={InvCol}
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        pageSize: 5,
+                      },
+                    },
+                  }}
+                  pageSizeOptions={[5]}
+                  checkboxSelection
+                  disableRowSelectionOnClick
+                />
+              </Box>
+            )}
         </div>
       </main>
     </Layout>
@@ -297,3 +341,65 @@ const InventoryPage = () => {
 
 export const Head = () => <title>Inventory Page</title>;
 export default InventoryPage;
+
+
+
+
+ // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const propertiesCollection = collection(db, "property");
+  //     onSnapshot(propertiesCollection, (snapshot) => {
+  //       const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
+  
+  //       let invData = [];
+  //       snapshot.docs.forEach((doc) => {
+  //         let row = doc.data();
+  //         // Add Firestore document ID as the 'id' property
+  //         row.id = doc.id; // <-- Add this line
+  //         commonCollections.forEach(({ name, columnNameOfID }) => {
+  //           const id = row[columnNameOfID];
+  //           const newAttr = columnNameOfID.slice(0, -2) + "Name";
+  //           const replacementName = prefetched[name][id];
+  //           row = { ...row, [newAttr]: replacementName };
+  //         });
+  //         if (row.isArchived !== 1) { // Filter out archived items here
+  //           invData.push(row);
+  //         }
+  //       });
+  
+  //       setInventoryData(invData);
+  //     });
+  //   };
+  
+  //   fetchData();
+  // }, []);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const propertiesCollection = collection(db, "property");
+  //     onSnapshot(propertiesCollection, (snapshot) => {
+  //       const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
+  
+  //       let invData = [];
+  //       snapshot.docs.forEach((doc) => {
+  //         let row = doc.data();
+  //         // Add Firestore document ID as the 'id' property
+  //         row.id = doc.id; // <-- Add this line
+  //         commonCollections.forEach(({ name, columnNameOfID }) => {
+  //           const id = row[columnNameOfID];
+  //           const newAttr = columnNameOfID.slice(0, -2) + "Name";
+  //           const replacementName = prefetched[name][id];
+  //           row = { ...row, [newAttr]: replacementName };
+  //         });
+  //         if (row.isArchived !== 1) { // Filter out archived items here
+  //           invData.push(row);
+  //         }
+  //       });
+  
+  //       setInventoryData(invData);
+  //     });
+  //   };
+  
+  //   fetchData();
+  // }, []);
+  
