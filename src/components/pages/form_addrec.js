@@ -147,15 +147,6 @@ const InsertRecord = () => {
       return;
     }
 
-    if (inputData.DocumentType === "ICS" && inputData.TotalCost > 49999) {
-      alert("ICS cannot have total cost over PHP49,999.");
-      return;
-    }
-    if (inputData.DocumentType === "PAR" && inputData.TotalCost < 50000) {
-      alert("PAR cannot have total cost below PHP50,000.");
-      return;
-    }
-
     try {
       await Promise.all(itemDetailsCount.map(async (_, index) => {
         const itemData = {
@@ -171,6 +162,14 @@ const InsertRecord = () => {
           TotalCost: inputData[`TotalCost_${index}`],
           PurchaseDate: inputData[`PurchaseDate_${index}`],
         };
+        if (itemData.DocumentType === "ICS" && itemData.TotalCost > 49999) {
+          alert("ICS cannot have total cost over PHP49,999.");
+          return;
+        }
+        if (itemData.DocumentType === "PAR" && parseInt(itemData.TotalCost) < 50000) {
+          alert("PAR cannot have total cost below PHP50,000.");
+          return;
+        }
         await setDoc(doc(db, "supplier", inputData.SupplierID), {
           City: inputData.City,
           State: inputData.State,
@@ -180,6 +179,7 @@ const InsertRecord = () => {
           SupplierName: inputData.SupplierName,
           UnitNumber: parseInt(inputData.UnitNumber),
         });
+        console.log("Inserted to supplier!");
         console.log("Uploading file to Firebase Storage");
         const fileRef = ref(storage, "DCS/" + inputData.Link.name);
         await uploadBytes(fileRef, inputData.Link);
@@ -220,12 +220,16 @@ const InsertRecord = () => {
           PurchaseOrderID: parseInt(itemData.PurchaseOrderID),
           VerNum: 1,
         });
+        console.log("Inserted to property!");
+        console.log("PurchaseDate:", Timestamp.fromDate(new Date(itemData.PurchaseDate)));
+        console.log("DateIssued:", Timestamp.fromDate(new Date(itemData.DateIssued)));
         await setDoc(doc(db, "purchase_order", itemData.PurchaseOrderID), {
           PurchaseDate: Timestamp.fromDate(new Date(itemData.PurchaseDate)),
           PurchaseOrderID: parseInt(itemData.PurchaseOrderID),
           SupplierID: parseInt(itemData.SupplierID),
           TotalCost: parseInt(itemData.TotalCost),
         });
+        console.log("Inserted to purchase_order!");
         alert("Successfully inserted!");
         window.location.reload();
       }));
