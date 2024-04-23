@@ -113,7 +113,7 @@ const UpdateProp = () => {
     if (e.target.id === "PropertyID") {
       fetchPropData(e.target.value);
     }
-    if (e.target.name === "SpecDoc") {
+    if (e.target.id === "SpecDoc") {
       fetchDocumentData(e.target.value);
     }
   };
@@ -227,8 +227,6 @@ const UpdateProp = () => {
         VerNum: newVar,
       });
 
-      console.log(formData.DateIssued);
-      console.log(Timestamp.fromDate(new Date(formData.DateIssued)));
       await setDoc(doc(db, "item_document", formData.SpecDoc), {
         DateIssued: Timestamp.fromDate(new Date(formData.DateIssued)),
         DocumentID: formData.SpecDoc,
@@ -429,10 +427,9 @@ const UpdateProp = () => {
               </label>
               <input
                 type="date"
-                name="DateIssued"
+                id="DateIssued"
                 value={formData.DateIssued}
                 onChange={(e) => {
-                  console.log(e.target);
                   handleInputChange(e);
                 }}
                 style={{ width: "300px", display: "inline-block" }}
@@ -512,7 +509,7 @@ const UpdateProp = () => {
               </label>
               <input
                 type="file"
-                name="Link"
+                id="Link"
                 onChange={handleFileChange}
                 style={{ width: "250px", display: "inline-block" }}
                 disabled={docLocked}
