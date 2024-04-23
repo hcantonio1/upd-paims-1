@@ -299,12 +299,12 @@ const InsertRecord = () => {
     if (e.target.name === "SupplierID") {
       fetchSupplierData(e.target.value);
     }
-    if (e.target.name === "PropertyID") {
+    if (e.target.name === `PropertyID_${index}`) {
       fetchPropertyData(e.target.value);
     }
-    if (e.target.name === "PurchaseOrderID") {
-      fetchOrderData(e.target.value);
-    }
+    //if (e.target.name === `PurchaseOrderID_${index}`) {
+    //  fetchOrderData(e.target.value);
+    //}
   };
 
   const setPurchaseDate = (value, index) => {
@@ -349,13 +349,14 @@ const InsertRecord = () => {
     }
   };
 
-  const fetchOrderData = async (orderId) => {
+  {/*const fetchOrderData = async (orderId) => {
     try {
       const orderRef = doc(db, "purchase_order", orderId);
       const orderSnap = await getDoc(orderRef);
 
       if (orderSnap.exists()) {
         const orderData = orderSnap.data();
+        console.log(`TotalCost_${index}`);
         setOrderLocked(true);
         setInputData((prevData) => ({
           ...prevData,
@@ -378,13 +379,12 @@ const InsertRecord = () => {
     } catch (error) {
       console.error("Error fetching purchase order:", error);
     }
-  };
+  }; */}
 
   const fetchPropertyData = async (propId) => {
     try {
       const propRef = doc(db, "property", propId);
       const propSnap = await getDoc(propRef);
-      console.log("running fetchpropertydata");
 
       if (propSnap.exists()) {
         alert("A property with this ID already exists!");
