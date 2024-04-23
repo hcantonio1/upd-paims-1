@@ -382,9 +382,11 @@ const InsertRecord = () => {
     try {
       const propRef = doc(db, "property", propId);
       const propSnap = await getDoc(propRef);
+      console.log("running fetchpropertydata");
 
       if (propSnap.exists()) {
         alert("A property with this ID already exists!");
+        return;
       }
     } catch (error) {
       console.error("Error fetching property:", error);
@@ -498,7 +500,8 @@ const InsertRecord = () => {
                           onChange={(e) => handleInputChange(e, index)}
                           required
                           sx={{ width: 300 }}
-                          pattern="[0-9]*"
+                          type="string"
+                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                           title="Numbers only."
                         />
                       </Stack>
@@ -630,7 +633,8 @@ const InsertRecord = () => {
                           name={`PurchaseOrderID_${index}`}
                           value={inputData[`PurchaseOrderID_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          pattern="[0-9]*"
+                          type="string"
+                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                           title="Numbers only."
                           required
                           sx={{ width: 300 }}
@@ -651,7 +655,8 @@ const InsertRecord = () => {
                           name={`TotalCost_${index}`}
                           value={inputData[`TotalCost_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          pattern="^\d*\.?\d+$"
+                          type="string"
+                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: "0", step: "any" }}
                           title="Please enter a positive number."
                           required
                           sx={{ width: 300 }}
@@ -925,7 +930,7 @@ const InsertRecord = () => {
                       value={inputData.SupplierID}
                       onChange={handleInputChange}
                       style={{ width: "300px", display: "inline-block" }}
-                      pattern="[0-9]*"
+                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                       title="Numbers only."
                       required
                     />
@@ -939,7 +944,7 @@ const InsertRecord = () => {
                         verticalAlign: "top",
                       }}
                     >
-                      Supplier Name{" "}
+                      Supplier Name<span style={{ color: "red" }}>*</span>{" "}
                     </label>
                     <input
                       type="text"
@@ -948,6 +953,7 @@ const InsertRecord = () => {
                       onChange={handleInputChange}
                       style={{ width: "300px", display: "inline-block" }}
                       readOnly={supLocked}
+                      required
                     />
                   </Stack>
                   <Stack item>
