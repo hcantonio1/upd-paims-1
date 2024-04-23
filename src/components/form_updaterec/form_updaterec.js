@@ -48,6 +48,7 @@ const UpdateRec = () => {
   const [locations, setLocations] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [types, setTypes] = useState([]);
+  const [docLocked, setDocLocked] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -168,6 +169,38 @@ const UpdateRec = () => {
     }
   };
 
+  const fetchDocumentData = async (documentId) => {
+    try {
+      const docRef = doc(db, "item_document", documentId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const docData = docSnap.data();
+        console.log(docData.ReceivedBy);
+        setDocLocked(true);
+        setUpdateProperty((prevData) => ({
+          ...prevData,
+          DocumentType: docData.DocumentType,
+          DateIssued: docData.DateIssued.toDate().toISOString().split("T")[0],
+          IssuedBy: docData.IssuedBy,
+          ReceivedBy: docData.ReceivedBy,
+        }));
+      }
+      if (!docSnap.exists()) {
+        setDocLocked(false);
+        setUpdateProperty((prevData) => ({
+          ...prevData,
+          DocumentType: "",
+          DateIssued: "",
+          IssuedBy: "",
+          ReceivedBy: "",
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching document:", error);
+    }
+  };
+
   const handleUpdateSupplier = async (e) => {
     e.preventDefault();
 
@@ -191,6 +224,11 @@ const UpdateRec = () => {
 
   const handleUpdateProperty = async (e) => {
     e.preventDefault();
+
+    if (updateProperty.IssuedBy === updateProperty.ReceivedBy) {
+      alert("IssuedBy and ReceivedBy cannot be the same user.");
+      return;
+    }
 
     try {
       var iirupUpdate = {};
@@ -249,6 +287,9 @@ const UpdateRec = () => {
 
     if (e.target.name === "PropertyID") {
       fetchPropertyData(e.target.value);
+    }
+    if (e.target.name === "SpecDoc") {
+      fetchDocumentData(e.target.value);
     }
   };
 
@@ -536,6 +577,7 @@ const UpdateRec = () => {
                       value={updateProperty.SpecDoc}
                       onChange={handleUpdatePropChange}
                       style={{ width: "300px", display: "inline-block" }}
+                      required
                     />
                   </Stack>
                   <Stack item>
@@ -555,6 +597,7 @@ const UpdateRec = () => {
                       onChange={handleUpdatePropChange}
                       style={{ width: "300px", display: "inline-block" }}
                       required
+                      disabled={docLocked}
                     >
                       <option value="">Select Document Type</option>
                       {types.map((type, index) => (
@@ -592,6 +635,7 @@ const UpdateRec = () => {
                       onChange={handleUpdatePropChange}
                       style={{ width: "300px", display: "inline-block" }}
                       required
+                      disabled={docLocked}
                     />
                   </Stack>
                   <Stack item>
@@ -611,6 +655,7 @@ const UpdateRec = () => {
                       onChange={handleFileChange}
                       style={{ width: "250px", display: "inline-block" }}
                       required
+                      disabled={docLocked}
                     />
                   </Stack>
                 </Stack>
@@ -640,6 +685,7 @@ const UpdateRec = () => {
                       onChange={handleUpdatePropChange}
                       style={{ width: "300px", display: "inline-block" }}
                       required
+                      disabled={docLocked}
                     >
                       <option value="">Select Issued By</option>
                       {users.map((user, index) => (
@@ -666,6 +712,7 @@ const UpdateRec = () => {
                       onChange={handleUpdatePropChange}
                       style={{ width: "300px", display: "inline-block" }}
                       required
+                      disabled={docLocked}
                     >
                       <option value="">Select Received By</option>
                       {users.map((user, index) => (
