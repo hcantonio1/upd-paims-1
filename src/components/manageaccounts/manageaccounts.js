@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Layout from "../layout";
+import Layout from "../common/layout";
 import { Box } from "@material-ui/core";
 import { db } from "../../../firebase-config.js";
 import { onSnapshot, collection } from "firebase/firestore";
-import SearchBar from "../searchbar.js";
-import FilterBy from "../filter.js";
-import AddDeptAccountForm from "../addDeptAccountForm.js";
+import SearchBar from "../common/searchbar.js";
+import FilterBy from "../common/filter.js";
+import AddDeptAccountForm from "./addDeptAccountForm.js";
 
 const ManageAccounts = () => {
   return (

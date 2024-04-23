@@ -1,16 +1,16 @@
 import React from "react";
 import { Router } from "@reach/router";
-import PrivateRoute from "../components/privateRoute";
-import HomePage from "../components/pages/home";
-import InventoryPage from "../components/pages/inventory";
-import SubmitPage from "../components/pages/submitform";
-import AboutPage from "../components/pages/about";
+import PrivateRoute from "../components/common/privateRoute";
+import HomePage from "../components/home/home";
+import InventoryPage from "../components/inventory/inventory";
+import SubmitPage from "../components/submitform/submitform";
+import AboutPage from "../components/about/about";
 // import Account from "../components/pages/profile";
-import Login from "../components/pages/login";
-import AddRecordPage from "../components/pages/form_addrec";
-import UpdateRecordPage from "../components/pages/form_updaterec";
-import ArchiveRecordPage from "../components/pages/form_archiverec";
-import ManageAccounts from "../components/pages/manageaccounts";
+import Login from "../components/login/login";
+import AddRecordPage from "../components/form_addrec/form_addrec";
+import UpdateRecordPage from "../components/form_updaterec/form_updaterec";
+import ArchiveRecordPage from "../components/form_archiverec/form_archiverec";
+import ManageAccounts from "../components/manageaccounts/manageaccounts";
 
 const App = () => (
   <Router>
