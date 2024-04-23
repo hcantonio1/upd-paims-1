@@ -231,7 +231,7 @@ const InsertRecord = () => {
           console.log("Inserted to property!");
           console.log(
             "PurchaseDate:",
-            Timestamp.fromDate(new Date(itemData.PurchaseDate))
+            itemData.PurchaseDate
           );
           console.log(
             "DateIssued:",
@@ -305,10 +305,10 @@ const InsertRecord = () => {
     }
   };
 
-  const setPurchaseDate = (value) => {
+  const setPurchaseDate = (value, index) => {
     setInputData((prevData) => ({
       ...prevData,
-      PurchaseDate: value,
+      [`PurchaseDate_${index}`]: value,
     }));
   };
 
@@ -680,8 +680,9 @@ const InsertRecord = () => {
                           <DatePicker
                             label="Purchase Date"
                             name={`PurchaseDate_${index}`}
+                            inputFormat="YYYY-MM-DD"
                             value={inputData[`PurchaseDate_${index}`]}
-                            onChange={(value) => setPurchaseDate(value)}
+                            onChange={(value) => setPurchaseDate(value, index)}
                             sx={{ width: 300 }}
                           />
                         </Stack>
