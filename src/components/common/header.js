@@ -48,7 +48,7 @@ const Header = () => {
           <StaticImage
             className={styles.logo}
             alt="Logo"
-            src="../images/coe_logo.png"
+            src="../../images/coe_logo.png"
           />
 
           {/* webapp title  */}
