@@ -9,7 +9,6 @@ import AboutPage from "../components/about/about";
 import Login from "../components/login/login";
 import AddRecordPage from "../components/form_addrec/form_addrec";
 import UpdateRecordPage from "../components/updaterec/updaterec";
-import ArchiveRecordPage from "../components/form_archiverec/form_archiverec";
 import ManageAccounts from "../components/manageaccounts/manageaccounts";
 
 const App = () => (
@@ -22,7 +21,6 @@ const App = () => (
     {/* <PrivateRoute path="/app/account" component={Account} /> */}
     <PrivateRoute path="/app/form_addrec" component={AddRecordPage} />
     <PrivateRoute path="/app/form_updaterec" component={UpdateRecordPage} />
-    <PrivateRoute path="/app/form_archiverec" component={ArchiveRecordPage} />
     <PrivateRoute path="/app/manageaccounts" component={ManageAccounts} />
     <Login path="/app/login" />
   </Router>

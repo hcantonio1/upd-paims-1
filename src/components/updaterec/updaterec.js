@@ -6,7 +6,7 @@ import UpdateSupplier from "./updateSupplier";
 
 const UpdateRec = () => {
   return (
-    <Layout pageTitle="UPDATE / ARCHIVE">
+    <Layout pageTitle="UPDATE">
       <Box
         sx={{
           display: "flex",
@@ -16,17 +16,6 @@ const UpdateRec = () => {
         }}
       >
         <main>
-          <Box sx={{ mb: 3 }}>
-            <Button
-              href="/app/submitform/"
-              variant="outlined"
-              size="small"
-              color="success"
-            >
-              Back to Forms
-            </Button>
-          </Box>
-
           <UpdateProp />
           <br />
           <br />
