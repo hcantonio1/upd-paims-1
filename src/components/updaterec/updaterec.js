@@ -15,6 +15,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { makeStyles } from "@material-ui/core";
 import { Typography, Divider, Box, Button, Stack } from "@mui/material";
 
+import UpdateProp from "./updateProp";
 import UpdateSupplier from "./updateSupplier";
 
 const UpdateRec = () => {
@@ -375,6 +376,7 @@ const UpdateRec = () => {
             </Button>
           </Box>
 
+          <UpdateProp />
           <Box display="flex" flexDirection="column">
             <Box className={classes.updateRecordTextContainer}>
               <Typography variant="h9" fontWeight={"bold"}>
