@@ -153,6 +153,21 @@ const InventoryPage = () => {
     { key: "InvDate", label: "Date Issued", filterable: true },
   ];
 
+  // function getVerNum(row){
+  //   return row.VerNum;
+  // }
+
+  // const flattenICS = (row) => {
+  //   const ics = row.icsID || {}; // Ensure ics is an object, or use an empty object if it's null or undefined
+  //   const flattenedICS = Object.entries(ics).reduce((acc, [key, value]) => {
+  //     acc[key] = value;
+  //     return acc;
+  //   }, {});
+  //   return flattenedICS;
+  // };
+  // const flattenedICS = flattenICS(row);
+  // console.log(flattenedICS); 
+
   const InvCol = [
     { field: "PropertyID", headerName: "ID", width: 90 },
     { field: "PropertyName", headerName: "Name", width: 150 },
@@ -162,10 +177,89 @@ const InventoryPage = () => {
     { field: "LocationName", headerName: "Location", width: 150 },
     { field: "PurchaseOrderID", headerName: "Purchase Order", width: 90 },
     { field: "SupplierID", headerName: "Supplier", width: 150 },
+    { field: "VerNum", headerName: "VER", width: 150 
+      // ,valueGetter: (value) => { return value } 
+      ,valueGetter: (param, row) => {
+        return `${row.icsID.VerNum || 'AAA'} ${row.PropertyName || ''}`;
+      }, 
+    },
+
+    { field: "icsID", headerName: "ICS", width: 150,   
+    valueGetter: (params, row) => {
+      const propertyName = `${row.VerNum}`;
+      console.log("PROPNAMEAAA", propertyName);
+      console.log(typeof(propertyName));
+      console.log(`row.icsID.${row.VerNum}`);
+      console.log(row.icsID[row.VerNum]);
+      console.log(row.icsID[propertyName]);
+      const propValue = `row.icsID.${row.VerNum}`;
+      
+  
+      return propValue;
+    } 
+
+    // valueGetter: (row) => {
+    //   const propertyName = `${row.VerNum}`;
+    //   console.log("PROPNAME", propertyName);
+    
+    //   // Check if `icsID` is present
+    //   if (row.icsID) {
+    //     // Check if the property exists within `icsID`
+    //     if (row.icsID[propertyName] !== undefined) {
+    //       console.log(row.icsID[propertyName]);
+    //       return row.icsID[propertyName];
+    //     } else {
+    //       // Handle case when the property is not present within `icsID`
+    //       console.log(`Property ${propertyName} does not exist within icsID`);
+    //       return ""; // or any default value you want to return
+    //     }
+    //   } else {
+    //     // Handle case when `icsID` itself is not present
+    //     console.log("icsID is not present");
+    //     return ""; // or any default value you want to return
+    //   }
+    // }
+  
+  
+  
+  },
+
+
+
+
+
+    // { field: "icsID", headerName: "ICS", width: 150,   
+    //   valueGetter: (params) => {
+    //   const { row } = params;
+    //   // Check if row.icsID is not null and not an empty object
+    //   if (row?.icsID && Object.keys(row?.icsID).length > 0) {
+    //     const flattenedValues = Object.keys(row?.icsID).flatMap(key => {
+    //       const value = row.icsID[key];
+    //       return value !== null ? value : [];
+    //     });
+    //     console.log(flattenedValues);
+    //     // Assuming there's only one value in this case
+    //     const value = flattenedValues[0]; // Access the first non-null value
+    //     return value;
+    //   }
+    //   return ""; // Return empty string if row.icsID is null or empty
+    // } },
+
+    // valueGetter: (params) => {
+    //   const { row } = params;
+    //   const propertyName = `${row?.icsID}`;
+    //   console.log(propertyName);
+    //   console.log(typeof(propertyName));
+    //   return row?.icsID?.[propertyName];
+    // } },
+    // { field: "icsID", headerName: "ICS", width: 150, 
+    //   valueGetter: (params) => {
+    //     return params.row.VerNum }},
+
     // { field: 'InvDate', headerName: 'Trustee Date Issued', width: 90 },
   ];
 
-  const filterableColumns = InventoryColumns.filter(
+  const filterableColumns = InvCol.filter(
     (column) => column.filterable
   );
   const [inventoryData, setInventoryData] = useState([]);

@@ -6,6 +6,7 @@ import { onSnapshot, collection } from "firebase/firestore";
 import SearchBar from "../common/searchbar.js";
 import FilterBy from "../common/filter.js";
 import AddDeptAccountForm from "./addDeptAccountForm.js";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 const ManageAccounts = () => {
   return (
@@ -24,16 +25,25 @@ export default ManageAccounts;
 const AccountsTable = () => {
   const usersCollection = collection(db, "user");
 
-  const displayColumns = [
-    { key: "UserID", label: "ID", filterable: true },
-    { key: "Email", label: "Email", filterable: true },
-    { key: "Department", label: "Department", filterable: true },
-    { key: "Role", label: "Role", filterable: true },
-    { key: "LastName", label: "Last Name", filterable: true },
-    { key: "FirstName", label: "First Name", filterable: true },
+  // const displayColumns = [
+  //   { key: "UserID", label: "ID", filterable: true },
+  //   { key: "Email", label: "Email", filterable: true },
+  //   { key: "Department", label: "Department", filterable: true },
+  //   { key: "Role", label: "Role", filterable: true },
+  //   { key: "LastName", label: "Last Name", filterable: true },
+  //   { key: "FirstName", label: "First Name", filterable: true },
+  // ];
+
+  const displayCol = [
+    { field: "UserID", headerName: "ID", width: 90 },
+    { field: "Email", headerName: "Email", width: 150 },
+    { field: "Department", headerName: "Department", width: 90 },
+    { field: "Role", headerName: "Role", width: 150 },
+    { field: "LastName", headerName: "Last Name", width: 90 },
+    { field: "FirstName", headerName: "First Name", width: 150 },
   ];
 
-  const filterableColumns = displayColumns.filter(
+  const filterableColumns = displayCol.filter(
     (column) => column.filterable
   );
   const [accountsData, setAccountsData] = useState([]);
@@ -116,12 +126,40 @@ const AccountsTable = () => {
     <Box>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <SearchBar onSearch={handleSearch} />
-        <FilterBy
+        {/* <FilterBy
           options={filterableColumns.map((column) => column.label)}
           onFilterChange={handleFilterChange}
-        />
+        /> */}
       </div>
       <div>
+          {searchResultsEmpty ? (
+            <p style={{ textAlign: "center" }}>No records found.</p>
+          ) : (
+            <Box sx={{ height: 400, width: "100%" }}>
+              <DataGrid
+                getRowId={(row) => row.UserID}
+                rows={filteredData.length > 0 ? filteredData : accountsData}
+                columns={displayCol}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 5,
+                    },
+                  },
+                }}
+                pageSizeOptions={[5]}
+                checkboxSelection
+                disableRowSelectionOnClick
+              />
+            </Box>
+          )}
+        </div>
+    </Box>
+  );
+};
+
+
+      {/* <div>
         {searchResultsEmpty ? (
           <p style={{ textAlign: "center" }}>No records found.</p>
         ) : (
@@ -131,10 +169,7 @@ const AccountsTable = () => {
             onSort={handleSort}
           />
         )}
-      </div>
-    </Box>
-  );
-};
+      </div> */}
 
 function DataTable({ data, columns, onSort, sortedField }) {
   // For Layout
