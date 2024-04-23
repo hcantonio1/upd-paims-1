@@ -209,7 +209,7 @@ const UpdateSupplier = () => {
             alignItems="flex-start"
             justifyContent="flex-end"
           >
-            <Stack item>
+            <Stack item sx={{ width: 1 / 6 }}>
               <Button
                 type="submit"
                 variant="contained"
