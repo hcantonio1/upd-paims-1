@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "../layout";
-import { getUser } from "../../services/auth";
+import { getUser } from "../../../services/auth";
 
 const Account = () => (
   <Layout pageTitle="Account">

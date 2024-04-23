@@ -1,7 +1,7 @@
 // Step 1: Import React
 import * as React from "react";
 // import { Link } from "gatsby";
-import Layout from "../layout";
+import Layout from "../common/layout";
 import { useState, useEffect } from "react";
 import { db, storage } from "../../../firebase-config";
 import {
@@ -25,7 +25,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import SelectTextField from "../selectTextField";
+import SelectTextField from "../common/selectTextField";
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
@@ -167,7 +167,10 @@ const InsertRecord = () => {
             TotalCost: inputData[`TotalCost_${index}`],
             PurchaseDate: inputData[`PurchaseDate_${index}`],
           };
-          if (itemData.DocumentType === "ICS" && parseInt(itemData.TotalCost) > 49999) {
+          if (
+            itemData.DocumentType === "ICS" &&
+            parseInt(itemData.TotalCost) > 49999
+          ) {
             alert("ICS cannot have total cost over PHP49,999.");
             return;
           }
@@ -229,10 +232,7 @@ const InsertRecord = () => {
             VerNum: 1,
           });
           console.log("Inserted to property!");
-          console.log(
-            "PurchaseDate:",
-            itemData.PurchaseDate
-          );
+          console.log("PurchaseDate:", itemData.PurchaseDate);
           console.log(
             "DateIssued:",
             Timestamp.fromDate(new Date(itemData.DateIssued))

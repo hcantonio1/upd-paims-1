@@ -16,7 +16,7 @@ import {
   AddCircleOutline,
   AccountCircleRounded,
   ExpandLess,
-  ExpandMore
+  ExpandMore,
 } from "@material-ui/icons";
 import RestrictedComponent from "./restrictedComponent";
 import { navigate } from "gatsby";
@@ -42,7 +42,7 @@ const useStyles = makeStyles({
     width: navbarWidth,
   },
   drawerPaper: {
-    width: navbarWidth
+    width: navbarWidth,
   },
   active: {
     background: "#f4f4f4",
@@ -65,24 +65,24 @@ const useStyles = makeStyles({
 
 const Navbar = () => {
   const classes = useStyles(); // FOR STYLING
-  const [isOpen, setOpen] = useState(false)
+  const [isOpen, setOpen] = useState(false);
 
   const handleDropDown = () => {
-    setOpen(!isOpen)
-  }
+    setOpen(!isOpen);
+  };
 
   useEffect(() => {
-    const dropDownState = localStorage.getItem('is_drop_down_open');
+    const dropDownState = localStorage.getItem("is_drop_down_open");
     if (dropDownState !== undefined) {
       setOpen(JSON.parse(dropDownState));
     }
   }, []);
 
   useEffect(() => {
-    if(isOpen !== undefined){
-      localStorage.setItem('is_drop_down_open', JSON.stringify(isOpen))
+    if (isOpen !== undefined) {
+      localStorage.setItem("is_drop_down_open", JSON.stringify(isOpen));
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   // NAVIGATION BAR ITEMS
   const menuItems = [
@@ -123,15 +123,18 @@ const Navbar = () => {
 
   return (
     <nav>
-      <Box display="flex" flexDirection="column" 
-      sx={{
-        width: navbarWidth,
-        height: "100%"
-      }}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        sx={{
+          width: navbarWidth,
+          height: "100%",
+        }}
+      >
         <List>
           {menuItems.map((item) => {
             const itemkey = item.text;
-            const listItem = (
+            const listItem =
               item.text === "Submit Form" ? (
                 // If item.text is "Submit Form", render it as a drop down button
                 <>
@@ -147,24 +150,24 @@ const Navbar = () => {
                   {/* < Collapse in={isOpen} timeout="auto" > */}
                   {isOpen && (
                     <List disablePadding>
-                    <ListItem
-                      button
-                      onClick={() => {
-                        navigate("/app/form_addrec/");
-                      }}
-                    >
-                      <ListItemText primary="Insert Record" />
-                    </ListItem>
+                      <ListItem
+                        button
+                        onClick={() => {
+                          navigate("/app/form_addrec/");
+                        }}
+                      >
+                        <ListItemText primary="Insert Record" />
+                      </ListItem>
 
-                    <ListItem
-                      button
-                      onClick={() => {
-                        navigate("/app/form_updaterec/");
-                      }}
-                    >
-                      <ListItemText primary="Update/Archive Record" />
-                    </ListItem>
-                  </List>
+                      <ListItem
+                        button
+                        onClick={() => {
+                          navigate("/app/form_updaterec/");
+                        }}
+                      >
+                        <ListItemText primary="Update/Archive Record" />
+                      </ListItem>
+                    </List>
                   )}
                   {/* </Collapse> */}
                 </>
@@ -178,9 +181,7 @@ const Navbar = () => {
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} />
                 </ListItem>
-              )
-            );
-
+              );
 
             if (item.restrictedRoles.length === 0) {
               return listItem;
@@ -196,9 +197,8 @@ const Navbar = () => {
           })}
         </List>
       </Box>
-    </nav >
+    </nav>
   );
 };
 
 export default Navbar;
-
