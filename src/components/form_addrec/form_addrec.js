@@ -224,6 +224,7 @@ const InsertRecord = () => {
             iirupID: iirupObject,
             icsID: icsObject,
             isArchived: archiveStat,
+            isApproved: 0,
             LocationID: parseInt(itemData.LocationID),
             PropertyID: parseInt(itemData.PropertyID),
             PropertyName: itemData.PropertyName,
