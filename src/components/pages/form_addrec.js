@@ -463,7 +463,7 @@ const InsertRecord = () => {
                 <Divider />
 
                 {itemDetailsCount.map((_, index) => (
-                  <>
+                  <div key={`itemrow${index}`}>
                     <Stack
                       // key={index}
                       padding={1}
@@ -680,7 +680,7 @@ const InsertRecord = () => {
                         </Stack>
                       </LocalizationProvider>
                     </Stack>
-                  </>
+                  </div>
                 ))}
 
                 <Box display="flex" justifyContent="flex-end">
