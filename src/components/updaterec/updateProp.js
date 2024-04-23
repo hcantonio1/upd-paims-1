@@ -153,6 +153,11 @@ const UpdateProp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (formData.IssuedBy === formData.ReceivedBy) {
+      alert("IssuedBy and ReceivedBy cannot be the same user.");
+      return;
+    }
+
     try {
       var iirupUpdate = {};
       var parUpdate = {};
@@ -186,6 +191,8 @@ const UpdateProp = () => {
         VerNum: newVar,
       });
 
+      console.log(formData.DateIssued);
+      console.log(Timestamp.fromDate(new Date(formData.DateIssued)));
       await setDoc(doc(db, "item_document", formData.SpecDoc), {
         DateIssued: Timestamp.fromDate(new Date(formData.DateIssued)),
         DocumentID: formData.SpecDoc,
@@ -312,8 +319,6 @@ const UpdateProp = () => {
                   value={formData.LocationID}
                   label="Location"
                   onChange={(e) => {
-                    console.log("smth", e.target.value);
-                    console.log(locations);
                     setFormData({
                       ...formData,
                       LocationID: e.target.value,
@@ -389,7 +394,10 @@ const UpdateProp = () => {
                 type="date"
                 name="DateIssued"
                 value={formData.DateIssued}
-                onChange={handleInputChange}
+                onChange={(e) => {
+                  console.log(e.target);
+                  handleInputChange(e);
+                }}
                 style={{ width: "300px", display: "inline-block" }}
               />
             </Stack>
