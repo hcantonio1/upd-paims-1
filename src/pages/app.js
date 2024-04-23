@@ -8,7 +8,7 @@ import AboutPage from "../components/about/about";
 // import Account from "../components/pages/profile";
 import Login from "../components/login/login";
 import AddRecordPage from "../components/form_addrec/form_addrec";
-import UpdateRecordPage from "../components/form_updaterec/form_updaterec";
+import UpdateRecordPage from "../components/updaterec/updaterec";
 import ArchiveRecordPage from "../components/form_archiverec/form_archiverec";
 import ManageAccounts from "../components/manageaccounts/manageaccounts";
 
