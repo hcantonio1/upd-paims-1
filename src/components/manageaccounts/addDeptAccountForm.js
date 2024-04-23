@@ -8,7 +8,7 @@ import {
   Select,
 } from "@mui/material";
 import { Box, TextField } from "@mui/material";
-import { createDepartmentAccount } from "../services/admin_funcs";
+import { createDepartmentAccount } from "../../services/admin_funcs";
 
 const AddDeptAccountForm = () => {
   const [collapsed, setCollapsed] = useState(true);

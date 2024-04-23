@@ -1,7 +1,7 @@
 // Step 1: Import React
 import * as React from "react";
 // import { Link } from "gatsby";
-import Layout from "../layout";
+import Layout from "../common/layout";
 import { useState, useEffect } from "react";
 import { db, storage } from "../../../firebase-config";
 import {
@@ -21,11 +21,13 @@ import {
   Button,
   Stack,
   TextField,
+  Input
 } from "@mui/material";
+import { CloudUpload } from "@material-ui/icons"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import SelectTextField from "../selectTextField";
+import SelectTextField from "../common/selectTextField";
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
@@ -167,7 +169,10 @@ const InsertRecord = () => {
             TotalCost: inputData[`TotalCost_${index}`],
             PurchaseDate: inputData[`PurchaseDate_${index}`],
           };
-          if (itemData.DocumentType === "ICS" && parseInt(itemData.TotalCost) > 49999) {
+          if (
+            itemData.DocumentType === "ICS" &&
+            parseInt(itemData.TotalCost) > 49999
+          ) {
             alert("ICS cannot have total cost over PHP49,999.");
             return;
           }
@@ -229,10 +234,7 @@ const InsertRecord = () => {
             VerNum: 1,
           });
           console.log("Inserted to property!");
-          console.log(
-            "PurchaseDate:",
-            itemData.PurchaseDate
-          );
+          console.log("PurchaseDate:", itemData.PurchaseDate);
           console.log(
             "DateIssued:",
             Timestamp.fromDate(new Date(itemData.DateIssued))
@@ -718,7 +720,7 @@ const InsertRecord = () => {
                 <Typography variant="h9" fontWeight={"bold"}>
                   Document Details
                 </Typography>
-                <Divider></Divider>
+                <Divider />
 
                 {/* FIELDS: DocuType, DocuName, File*/}
                 <Stack
@@ -736,16 +738,15 @@ const InsertRecord = () => {
                         width: "200px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Document Name<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="Document Name"
+                      variant="outlined"
                       name="DocumentID"
                       value={inputData.DocumentID}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
                       required
+                      sx={{ width: 300 }}
                     />
                   </Stack>
                   <Stack item>
@@ -756,23 +757,14 @@ const InsertRecord = () => {
                         width: "200px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Document Type<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <select
+                    />
+                    <SelectTextField
+                      label="Select Document Type"
                       name="DocumentType"
                       value={inputData.DocumentType}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                      required
-                    >
-                      <option value="">Select Document Type</option>
-                      {types.map((type, index) => (
-                        <option key={`Type_${index}`} value={type.Type}>
-                          {type.Type}
-                        </option>
-                      ))}
-                    </select>
+                      options={types}
+                    />
                   </Stack>
                   <Stack item>
                     <label
@@ -782,17 +774,26 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      File<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="file"
-                      name="Link"
-                      onChange={handleFileChange}
-                      style={{ width: "250px", display: "inline-block" }}
-                      required
-                      disabled={docLocked}
                     />
+                    <Button
+                      startIcon={<CloudUpload />}
+                      sx={{ color: "#014421", width: 300, height: 50}}
+                      component='label'
+                      role={undefined}
+                    >
+                      Upload File
+                      <input
+                        type="file"
+                        name="Link"
+                        onChange={handleFileChange}
+                        required
+                        disabled={docLocked}
+                        hidden
+                      />
+                    </Button>
+
+
+
                   </Stack>
                 </Stack>
 

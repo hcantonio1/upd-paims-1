@@ -1,8 +1,8 @@
 import React from "react";
 import { StaticImage } from "gatsby-plugin-image";
-import { Link, navigate } from "gatsby";
-import { getUser, isLoggedIn, logout } from "../services/auth";
-import * as styles from "../styles/header.module.css";
+import { navigate } from "gatsby";
+import { isLoggedIn, logout } from "../../services/auth";
+import * as styles from "../../styles/header.module.css";
 import {
   Typography,
   Box,
@@ -48,7 +48,7 @@ const Header = () => {
           <StaticImage
             className={styles.logo}
             alt="Logo"
-            src="../images/coe_logo.png"
+            src="../../images/coe_logo.png"
           />
 
           {/* webapp title  */}

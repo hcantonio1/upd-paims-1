@@ -52,6 +52,16 @@ function SelectTextField({ label, name, value, options, onChange, getFunc }) {
           </MenuItem>
         ))
       )}
+
+      {label === "Select Document Type" && (
+        options.map((option, index) => (
+          <MenuItem
+            key={`Type_${index}`}
+            value={option.Type}>
+            {option.Type}
+          </MenuItem>
+        ))
+      )}
     </TextField>
   );
 }

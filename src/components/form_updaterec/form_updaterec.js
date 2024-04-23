@@ -1,7 +1,7 @@
 // Step 1: Import React
 import * as React from "react";
 import { Link } from "gatsby";
-import Layout from "../layout";
+import Layout from "../common/layout";
 import { useState, useEffect } from "react";
 import { db, storage } from "../../../firebase-config";
 import {
@@ -210,7 +210,7 @@ const UpdateRec = () => {
       updateDoc(propertyRef, icsUpdate);
       updateDoc(propertyRef, parUpdate);
       updateDoc(propertyRef, iirupUpdate);
-      
+
       console.log("Uploading file to Firebase Storage");
       const fileRef = ref(storage, "DCS/" + updateProperty.Link.name);
       await uploadBytes(fileRef, updateProperty.Link);
@@ -439,10 +439,7 @@ const UpdateRec = () => {
                     >
                       <option value="">Select Trustee</option>
                       {users.map((user, index) => (
-                        <option
-                          key={`Trustee_${index}`}
-                          value={user.UserID}
-                        >
+                        <option key={`Trustee_${index}`} value={user.UserID}>
                           {getFullName(user)}
                         </option>
                       ))}
@@ -514,7 +511,7 @@ const UpdateRec = () => {
                   </Stack>
                 </Stack>
 
-                { /* FIELDS: Document Name, Document Type */}
+                {/* FIELDS: Document Name, Document Type */}
                 <Stack
                   padding={1}
                   spacing={10}
@@ -561,10 +558,7 @@ const UpdateRec = () => {
                     >
                       <option value="">Select Document Type</option>
                       {types.map((type, index) => (
-                        <option
-                          key={`Type_${index}`}
-                          value={type.Type}
-                        >
+                        <option key={`Type_${index}`} value={type.Type}>
                           {type.Type}
                         </option>
                       ))}
@@ -621,7 +615,7 @@ const UpdateRec = () => {
                   </Stack>
                 </Stack>
 
-                { /* FIELDS: Issued By, Received By */}
+                {/* FIELDS: Issued By, Received By */}
                 <Stack
                   padding={1}
                   spacing={10}
@@ -649,10 +643,7 @@ const UpdateRec = () => {
                     >
                       <option value="">Select Issued By</option>
                       {users.map((user, index) => (
-                        <option
-                          key={`Trustee_${index}`}
-                          value={user.UserID}
-                        >
+                        <option key={`Trustee_${index}`} value={user.UserID}>
                           {getFullName(user)}
                         </option>
                       ))}
@@ -678,10 +669,7 @@ const UpdateRec = () => {
                     >
                       <option value="">Select Received By</option>
                       {users.map((user, index) => (
-                        <option
-                          key={`Trustee_${index}`}
-                          value={user.UserID}
-                        >
+                        <option key={`Trustee_${index}`} value={user.UserID}>
                           {getFullName(user)}
                         </option>
                       ))}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../layout.js";
-import SearchBar from "../searchbar.js";
-import FilterBy from "../filter.js";
+import Layout from "../common/layout.js";
+import SearchBar from "../common/searchbar.js";
+import FilterBy from "../common/filter.js";
 import {
   collection,
   getDocs,
@@ -11,62 +11,56 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebase-config.js";
 import { commonCollections } from "../../services/prefetch.js";
-import Box from '@mui/material/Box';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import firebase from 'firebase/app';
-import 'firebase/database';
-
+import Box from "@mui/material/Box";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import firebase from "firebase/app";
+import "firebase/database";
 
 // This is for sample table, ignore
 const columns = [
-  { field: 'id', headerName: 'ID', width: 90 },
+  { field: "id", headerName: "ID", width: 90 },
   {
-    field: 'firstName',
-    headerName: 'First name',
+    field: "firstName",
+    headerName: "First name",
     width: 150,
     editable: true,
   },
   {
-    field: 'lastName',
-    headerName: 'Last name',
+    field: "lastName",
+    headerName: "Last name",
     width: 150,
     editable: true,
   },
   {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
+    field: "age",
+    headerName: "Age",
+    type: "number",
     width: 110,
     editable: true,
   },
   {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
+    field: "fullName",
+    headerName: "Full name",
+    description: "This column has a value getter and is not sortable.",
     sortable: false,
     width: 160,
-    valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+    valueGetter: (value, row) => `${row.firstName || ""} ${row.lastName || ""}`,
   },
 ];
 
 const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+  { id: 1, lastName: "Snow", firstName: "Jon", age: 14 },
+  { id: 2, lastName: "Lannister", firstName: "Cersei", age: 31 },
+  { id: 3, lastName: "Lannister", firstName: "Jaime", age: 31 },
+  { id: 4, lastName: "Stark", firstName: "Arya", age: 11 },
+  { id: 5, lastName: "Targaryen", firstName: "Daenerys", age: null },
+  { id: 6, lastName: "Melisandre", firstName: null, age: 150 },
+  { id: 7, lastName: "Clifford", firstName: "Ferrara", age: 44 },
+  { id: 8, lastName: "Frances", firstName: "Rossini", age: 36 },
+  { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
 ];
 
 // ^For sample table, ignore
-
-
-
-
-
 
 const propertiesCollection = collection(db, "property");
 
@@ -125,12 +119,11 @@ function DataTable({ data, columns, onSort, sortedField }) {
               {columns.map((column) => (
                 <td key={column.key} style={tdStyle}>
                   {/* check if the column key is DocumentID */}
-                  {column.key === "DocumentID" && typeof item[column.key] === "object" ? (
-                    // render the value using TrusteeID from the same row as the key for DocumentID object
-                    item[column.key][item["TrusteeID"]]
-                  ) : (
-                    item[column.key]
-                  )}
+                  {column.key === "DocumentID" &&
+                  typeof item[column.key] === "object"
+                    ? // render the value using TrusteeID from the same row as the key for DocumentID object
+                      item[column.key][item["TrusteeID"]]
+                    : item[column.key]}
                 </td>
               ))}
             </tr>
@@ -155,27 +148,22 @@ const InventoryPage = () => {
     { key: "LocationName", label: "Location", filterable: true },
     { key: "PurchaseOrderID", label: "Purchase Order", filterable: true },
     { key: "SupplierID", label: "Supplier", filterable: true },
-    { key: 'Address', label: 'Address', filterable: true  },
+    { key: "Address", label: "Address", filterable: true },
     { key: "DocumentID", label: "Document", filterable: true },
     { key: "InvDate", label: "Date Issued", filterable: true },
   ];
 
   const InvCol = [
-    { field: 'PropertyID', headerName: 'ID', width: 90 },
-    { field: 'PropertyName', headerName: 'Name', width: 150 },
-    { field: 'CategoryName', headerName: 'Category', width: 90 },
-    { field: 'StatusName', headerName: 'Status', width: 150 },
-    { field: 'TrusteeID', headerName: 'Trustee ID', width: 90 },
-    { field: 'LocationName', headerName: 'Location', width: 150 },
-    { field: 'PurchaseOrderID', headerName: 'Purchase Order', width: 90 },
-    { field: 'SupplierID', headerName: 'Supplier', width: 150 },
+    { field: "PropertyID", headerName: "ID", width: 90 },
+    { field: "PropertyName", headerName: "Name", width: 150 },
+    { field: "CategoryName", headerName: "Category", width: 90 },
+    { field: "StatusName", headerName: "Status", width: 150 },
+    { field: "TrusteeID", headerName: "Trustee ID", width: 90 },
+    { field: "LocationName", headerName: "Location", width: 150 },
+    { field: "PurchaseOrderID", headerName: "Purchase Order", width: 90 },
+    { field: "SupplierID", headerName: "Supplier", width: 150 },
     // { field: 'InvDate', headerName: 'Trustee Date Issued', width: 90 },
-
-
   ];
-
-
-
 
   const filterableColumns = InventoryColumns.filter(
     (column) => column.filterable
@@ -216,7 +204,8 @@ const InventoryPage = () => {
           console.log("Replacement Name:", replacementName);
           row = { ...row, [newAttr]: replacementName };
         });
-        if (row.isArchived !== 1) { // Filter out archived items here
+        if (row.isArchived !== 1) {
+          // Filter out archived items here
           invData.push(row);
         }
       });
@@ -227,9 +216,6 @@ const InventoryPage = () => {
       setInventoryData(invData);
     });
   }, []);
-
- 
-  
 
   const handleSearch = (searchTerm) => {
     console.log("Search Term:", searchTerm);
@@ -310,96 +296,89 @@ const InventoryPage = () => {
         </div> */}
         <div>
           {searchResultsEmpty ? (
-              <p style={{ textAlign: "center" }}>No records found.</p>
-            ) : (
-              <Box sx={{ height: 400, width: '100%' }}>
-                <DataGrid getRowId={(row) =>  row.PropertyID + '_' + row.PurchaseOrderID}
-                  rows={filteredData.length > 0 ? filteredData : inventoryData}
-                  columns={InvCol}
-                  initialState={{
-                    pagination: {
-                      paginationModel: {
-                        pageSize: 5,
-                      },
+            <p style={{ textAlign: "center" }}>No records found.</p>
+          ) : (
+            <Box sx={{ height: 400, width: "100%" }}>
+              <DataGrid
+                getRowId={(row) => row.PropertyID + "_" + row.PurchaseOrderID}
+                rows={filteredData.length > 0 ? filteredData : inventoryData}
+                columns={InvCol}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 5,
                     },
-                  }}
-                  pageSizeOptions={[5]}
-                  checkboxSelection
-                  disableRowSelectionOnClick
-                />
-              </Box>
-            )}
+                  },
+                }}
+                pageSizeOptions={[5]}
+                checkboxSelection
+                disableRowSelectionOnClick
+              />
+            </Box>
+          )}
         </div>
       </main>
     </Layout>
   );
 };
 
-
-
-
-
 export const Head = () => <title>Inventory Page</title>;
 export default InventoryPage;
 
+// useEffect(() => {
+//   const fetchData = async () => {
+//     const propertiesCollection = collection(db, "property");
+//     onSnapshot(propertiesCollection, (snapshot) => {
+//       const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
 
+//       let invData = [];
+//       snapshot.docs.forEach((doc) => {
+//         let row = doc.data();
+//         // Add Firestore document ID as the 'id' property
+//         row.id = doc.id; // <-- Add this line
+//         commonCollections.forEach(({ name, columnNameOfID }) => {
+//           const id = row[columnNameOfID];
+//           const newAttr = columnNameOfID.slice(0, -2) + "Name";
+//           const replacementName = prefetched[name][id];
+//           row = { ...row, [newAttr]: replacementName };
+//         });
+//         if (row.isArchived !== 1) { // Filter out archived items here
+//           invData.push(row);
+//         }
+//       });
 
+//       setInventoryData(invData);
+//     });
+//   };
 
- // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const propertiesCollection = collection(db, "property");
-  //     onSnapshot(propertiesCollection, (snapshot) => {
-  //       const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
-  
-  //       let invData = [];
-  //       snapshot.docs.forEach((doc) => {
-  //         let row = doc.data();
-  //         // Add Firestore document ID as the 'id' property
-  //         row.id = doc.id; // <-- Add this line
-  //         commonCollections.forEach(({ name, columnNameOfID }) => {
-  //           const id = row[columnNameOfID];
-  //           const newAttr = columnNameOfID.slice(0, -2) + "Name";
-  //           const replacementName = prefetched[name][id];
-  //           row = { ...row, [newAttr]: replacementName };
-  //         });
-  //         if (row.isArchived !== 1) { // Filter out archived items here
-  //           invData.push(row);
-  //         }
-  //       });
-  
-  //       setInventoryData(invData);
-  //     });
-  //   };
-  
-  //   fetchData();
-  // }, []);
+//   fetchData();
+// }, []);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const propertiesCollection = collection(db, "property");
-  //     onSnapshot(propertiesCollection, (snapshot) => {
-  //       const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
-  
-  //       let invData = [];
-  //       snapshot.docs.forEach((doc) => {
-  //         let row = doc.data();
-  //         // Add Firestore document ID as the 'id' property
-  //         row.id = doc.id; // <-- Add this line
-  //         commonCollections.forEach(({ name, columnNameOfID }) => {
-  //           const id = row[columnNameOfID];
-  //           const newAttr = columnNameOfID.slice(0, -2) + "Name";
-  //           const replacementName = prefetched[name][id];
-  //           row = { ...row, [newAttr]: replacementName };
-  //         });
-  //         if (row.isArchived !== 1) { // Filter out archived items here
-  //           invData.push(row);
-  //         }
-  //       });
-  
-  //       setInventoryData(invData);
-  //     });
-  //   };
-  
-  //   fetchData();
-  // }, []);
-  
+// useEffect(() => {
+//   const fetchData = async () => {
+//     const propertiesCollection = collection(db, "property");
+//     onSnapshot(propertiesCollection, (snapshot) => {
+//       const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
+
+//       let invData = [];
+//       snapshot.docs.forEach((doc) => {
+//         let row = doc.data();
+//         // Add Firestore document ID as the 'id' property
+//         row.id = doc.id; // <-- Add this line
+//         commonCollections.forEach(({ name, columnNameOfID }) => {
+//           const id = row[columnNameOfID];
+//           const newAttr = columnNameOfID.slice(0, -2) + "Name";
+//           const replacementName = prefetched[name][id];
+//           row = { ...row, [newAttr]: replacementName };
+//         });
+//         if (row.isArchived !== 1) { // Filter out archived items here
+//           invData.push(row);
+//         }
+//       });
+
+//       setInventoryData(invData);
+//     });
+//   };
+
+//   fetchData();
+// }, []);

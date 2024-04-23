@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { navigate } from "gatsby";
-import { isLoggedIn, getUser } from "../services/auth";
+import { isLoggedIn, getUser } from "../../services/auth";
 
 const PrivateRoute = ({ component: Component, location, ...rest }) => {
   const [userRole, setUserRole] = useState(getUser().role);
