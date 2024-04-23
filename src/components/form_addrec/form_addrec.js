@@ -224,6 +224,7 @@ const InsertRecord = () => {
             iirupID: iirupObject,
             icsID: icsObject,
             isArchived: archiveStat,
+            isApproved: 0,
             LocationID: parseInt(itemData.LocationID),
             PropertyID: parseInt(itemData.PropertyID),
             PropertyName: itemData.PropertyName,
@@ -299,12 +300,12 @@ const InsertRecord = () => {
     if (e.target.name === "SupplierID") {
       fetchSupplierData(e.target.value);
     }
-    if (e.target.name === "PropertyID") {
+    if (e.target.name === `PropertyID_${index}`) {
       fetchPropertyData(e.target.value);
     }
-    if (e.target.name === "PurchaseOrderID") {
-      fetchOrderData(e.target.value);
-    }
+    //if (e.target.name === `PurchaseOrderID_${index}`) {
+    //  fetchOrderData(e.target.value);
+    //}
   };
 
   const setPurchaseDate = (value, index) => {
@@ -349,13 +350,14 @@ const InsertRecord = () => {
     }
   };
 
-  const fetchOrderData = async (orderId) => {
+  {/*const fetchOrderData = async (orderId) => {
     try {
       const orderRef = doc(db, "purchase_order", orderId);
       const orderSnap = await getDoc(orderRef);
 
       if (orderSnap.exists()) {
         const orderData = orderSnap.data();
+        console.log(`TotalCost_${index}`);
         setOrderLocked(true);
         setInputData((prevData) => ({
           ...prevData,
@@ -378,7 +380,7 @@ const InsertRecord = () => {
     } catch (error) {
       console.error("Error fetching purchase order:", error);
     }
-  };
+  }; */}
 
   const fetchPropertyData = async (propId) => {
     try {
@@ -387,6 +389,7 @@ const InsertRecord = () => {
 
       if (propSnap.exists()) {
         alert("A property with this ID already exists!");
+        return;
       }
     } catch (error) {
       console.error("Error fetching property:", error);
@@ -500,7 +503,8 @@ const InsertRecord = () => {
                           onChange={(e) => handleInputChange(e, index)}
                           required
                           sx={{ width: 300 }}
-                          pattern="[0-9]*"
+                          type="string"
+                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                           title="Numbers only."
                         />
                       </Stack>
@@ -632,7 +636,8 @@ const InsertRecord = () => {
                           name={`PurchaseOrderID_${index}`}
                           value={inputData[`PurchaseOrderID_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          pattern="[0-9]*"
+                          type="string"
+                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                           title="Numbers only."
                           required
                           sx={{ width: 300 }}
@@ -653,7 +658,8 @@ const InsertRecord = () => {
                           name={`TotalCost_${index}`}
                           value={inputData[`TotalCost_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          pattern="^\d*\.?\d+$"
+                          type="string"
+                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: "0", step: "any" }}
                           title="Please enter a positive number."
                           required
                           sx={{ width: 300 }}
@@ -916,7 +922,8 @@ const InsertRecord = () => {
                       name="SupplierID"
                       value={inputData.SupplierID}
                       onChange={handleInputChange}
-                      pattern="[0-9]*"
+                      style={{ width: "300px", display: "inline-block" }}
+                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                       title="Numbers only."
                       required
                       sx={{ width: 300 }}
@@ -938,6 +945,7 @@ const InsertRecord = () => {
                       onChange={handleInputChange}
                       sx={{ width: 300 }}
                       readOnly={supLocked}
+                      required
                     />
                   </Stack>
                   <Stack item>
