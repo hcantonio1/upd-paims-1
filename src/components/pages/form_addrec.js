@@ -533,7 +533,7 @@ const InsertRecord = () => {
                         <SelectTextField
                           label="Select Trustee"
                           name={`TrusteeID_${index}`}
-                          value=""
+                          value={inputData[`TrusteeID_${index}`] ?? ""}
                           onChange={(e) => handleInputChange(e, index)}
                           options={users}
                           getFunc={getFullName}
@@ -562,7 +562,7 @@ const InsertRecord = () => {
                         <SelectTextField
                           label="Select Category"
                           name={`CategoryID_${index}`}
-                          value=""
+                          value={inputData[`CategoryID_${index}`] ?? ""}
                           onChange={(e) => handleInputChange(e, index)}
                           options={categories}
                         />
@@ -580,7 +580,7 @@ const InsertRecord = () => {
                         <SelectTextField
                           label="Select Status"
                           name={`StatusID_${index}`}
-                          value=""
+                          value={inputData[`StatusID_${index}`] ?? ""}
                           onChange={(e) => handleInputChange(e, index)}
                           options={statuses}
                         />
@@ -598,7 +598,7 @@ const InsertRecord = () => {
                         <SelectTextField
                           label="Select Location"
                           name={`LocationID_${index}`}
-                          value=""
+                          value={inputData[`LocationID_${index}`] ?? ""}
                           onChange={(e) => handleInputChange(e, index)}
                           options={locations}
                           getFunc={getFullLoc}
