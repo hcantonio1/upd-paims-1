@@ -772,7 +772,7 @@ const InsertRecord = () => {
                     />
                     <Button
                       startIcon={<CloudUpload />}
-                      sx={{ color: "#014421", width: 300, height: 50}}
+                      sx={{ color: "#014421", width: 300, height: 50 }}
                       component='label'
                       role={undefined}
                     >
@@ -808,24 +808,16 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Issued By<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <select
+                    />
+                    <SelectTextField
+                      label="Issued By"
                       name="IssuedBy"
                       value={inputData.IssuedBy}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                      required
-                      disabled={docLocked}
-                    >
-                      <option value="">Select Issued By</option>
-                      {users.map((user, index) => (
-                        <option key={user.Username} value={user.Username}>
-                          {getFullName(user)}
-                        </option>
-                      ))}
-                    </select>
+                      options={users}
+                      getFunc={getFullName}
+                      lock={docLocked}
+                    />
                   </Stack>
                   <Stack item>
                     <label
@@ -835,25 +827,19 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Received By<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <select
+                    />
+                    <SelectTextField
+                      label="Received By"
                       name="ReceivedBy"
                       value={inputData.ReceivedBy}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                      required
-                      disabled={docLocked}
-                    >
-                      <option value="">Select Received By</option>
-                      {users.map((user, index) => (
-                        <option key={user.Username} value={user.Username}>
-                          {getFullName(user)}
-                        </option>
-                      ))}
-                    </select>
+                      options={users}
+                      getFunc={getFullName}
+                      lock={docLocked}
+                    />
+
                   </Stack>
+                  {/* <LocalizationProvider dateAdapter={AdapterDayjs}> */}
                   <Stack item>
                     <label
                       htmlFor="DateIssued"
@@ -862,9 +848,7 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Date Issued<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
+                    />
                     <input
                       type="date"
                       name="DateIssued"
@@ -874,7 +858,17 @@ const InsertRecord = () => {
                       required
                       readOnly={docLocked}
                     />
+                    {/* <DatePicker
+                        label="Date Issued"
+                        name="DateIssued"
+                        inputFormat="YYYY-MM-DD"
+                        value={inputData.DateIssued}
+                        onChange={handleInputChange}
+                        sx={{ width: 300 }}
+                        readOnly={docLocked}
+                      /> */}
                   </Stack>
+                  {/* </LocalizationProvider> */}
                 </Stack>
 
                 <Stack
@@ -887,9 +881,8 @@ const InsertRecord = () => {
                     <Button
                       type="submit"
                       variant="contained"
-                      size="small"
-                      color="success"
                       onClick={handleInsertDoc}
+                      sx={{ backgroundColor: "#014421", m: 1 }}
                     >
                       Submit Document
                     </Button>
@@ -917,18 +910,16 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Supplier ID<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="Supplier ID"
                       name="SupplierID"
                       value={inputData.SupplierID}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
                       pattern="[0-9]*"
                       title="Numbers only."
                       required
+                      sx={{ width: 300 }}
                     />
                   </Stack>
                   <Stack item>
@@ -939,15 +930,13 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Supplier Name{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="Supplier Name"
                       name="SupplierName"
                       value={inputData.SupplierName}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
+                      sx={{ width: 300 }}
                       readOnly={supLocked}
                     />
                   </Stack>
@@ -959,19 +948,18 @@ const InsertRecord = () => {
                         width: "200px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Supplier Contact{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="Supplier Contact"
                       name="SupplierContact"
                       value={inputData.SupplierContact}
                       onChange={handleInputChange}
-                      style={{ width: "250px", display: "inline-block" }}
+                      sx={{ width: 300 }}
                       pattern="[0-9]*"
                       title="Numbers only."
                       readOnly={supLocked}
                     />
+
                   </Stack>
                 </Stack>
 
@@ -991,15 +979,13 @@ const InsertRecord = () => {
                         width: "120px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Unit Number
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="Unit #"
                       name="UnitNumber"
                       value={inputData.UnitNumber}
                       onChange={handleInputChange}
-                      style={{ width: "110px", display: "inline-block" }}
+                      sx={{ width: 110 }}
                       pattern="[0-9]*"
                       title="Numbers only."
                       readOnly={supLocked}
@@ -1013,15 +999,13 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Street Name{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="Street Name"
                       name="StreetName"
                       value={inputData.StreetName}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
+                      sx={{ width: 300 }}
                       readOnly={supLocked}
                     />
                   </Stack>
@@ -1033,15 +1017,13 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      City{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="City"
                       name="City"
                       value={inputData.City}
                       onChange={handleInputChange}
-                      style={{ width: "290px", display: "inline-block" }}
+                      sx={{ width: 290 }}
                       readOnly={supLocked}
                     />
                   </Stack>
@@ -1053,15 +1035,13 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      State{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="State"
                       name="State"
                       value={inputData.State}
                       onChange={handleInputChange}
-                      style={{ width: "140px", display: "inline-block" }}
+                      sx={{ width: 140 }}
                       readOnly={supLocked}
                     />
                   </Stack>
@@ -1077,8 +1057,7 @@ const InsertRecord = () => {
                     <Button
                       type="submit"
                       variant="contained"
-                      size="small"
-                      color="success"
+                      sx={{ backgroundColor: "#014421", m: 1 }}
                     >
                       Submit All
                     </Button>
