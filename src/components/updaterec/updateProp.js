@@ -44,6 +44,7 @@ const UpdateProp = () => {
   const [locations, setLocations] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [types, setTypes] = useState([]);
+  const [docLocked, setDocLocked] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -112,6 +113,9 @@ const UpdateProp = () => {
     if (e.target.id === "PropertyID") {
       fetchPropData(e.target.value);
     }
+    if (e.target.name === "SpecDoc") {
+      fetchDocumentData(e.target.value);
+    }
   };
 
   const fetchPropData = async (propID) => {
@@ -139,6 +143,38 @@ const UpdateProp = () => {
       }
     } catch (error) {
       console.error("Error fetching property:", error);
+    }
+  };
+
+  const fetchDocumentData = async (documentId) => {
+    try {
+      const docRef = doc(db, "item_document", documentId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const docData = docSnap.data();
+        console.log(docData.ReceivedBy);
+        setDocLocked(true);
+        setFormData((prevData) => ({
+          ...prevData,
+          DocumentType: docData.DocumentType,
+          DateIssued: docData.DateIssued.toDate().toISOString().split("T")[0],
+          IssuedBy: docData.IssuedBy,
+          ReceivedBy: docData.ReceivedBy,
+        }));
+      }
+      if (!docSnap.exists()) {
+        setDocLocked(false);
+        setFormData((prevData) => ({
+          ...prevData,
+          DocumentType: "",
+          DateIssued: "",
+          IssuedBy: "",
+          ReceivedBy: "",
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching document:", error);
     }
   };
 
@@ -370,6 +406,7 @@ const UpdateProp = () => {
                       DocumentType: e.target.value,
                     })
                   }
+                  disabled={docLocked}
                 >
                   {types.map((type, index) => (
                     <MenuItem key={`type_${index}`} value={type.Type}>
@@ -399,6 +436,7 @@ const UpdateProp = () => {
                   handleInputChange(e);
                 }}
                 style={{ width: "300px", display: "inline-block" }}
+                disabled={docLocked}
               />
             </Stack>
           </Stack>
@@ -426,6 +464,7 @@ const UpdateProp = () => {
                       IssuedBy: e.target.value,
                     })
                   }
+                  disabled={docLocked}
                 >
                   {users.map((user, index) => (
                     <MenuItem key={`IssuedBy_${index}`} value={user.UserID}>
@@ -450,6 +489,7 @@ const UpdateProp = () => {
                       ReceivedBy: e.target.value,
                     })
                   }
+                  disabled={docLocked}
                 >
                   {users.map((user, index) => (
                     <MenuItem key={`ReceivedBy_${index}`} value={user.UserID}>
@@ -475,6 +515,7 @@ const UpdateProp = () => {
                 name="Link"
                 onChange={handleFileChange}
                 style={{ width: "250px", display: "inline-block" }}
+                disabled={docLocked}
               />
             </Stack>
           </Stack>
@@ -512,5 +553,5 @@ export default UpdateProp;
 //     return <Stack item></Stack>
 // }
 const TextField1 = (props) => {
-  return <TextField {...props} size="small" variant="outlined" />;
+  return <TextField {...props} size="small" variant="outlined" required />;
 };
