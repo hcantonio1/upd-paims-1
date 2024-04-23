@@ -305,6 +305,13 @@ const InsertRecord = () => {
     }
   };
 
+  const setPurchaseDate = (value) => {
+    setInputData((prevData) => ({
+      ...prevData,
+      PurchaseDate: value,
+    }));
+  };
+
   const fetchSupplierData = async (supplierId) => {
     try {
       const supRef = doc(db, "supplier", supplierId);
@@ -674,7 +681,7 @@ const InsertRecord = () => {
                             label="Purchase Date"
                             name={`PurchaseDate_${index}`}
                             value={inputData[`PurchaseDate_${index}`]}
-                            onChange={(e) => handleInputChange(e, index)}
+                            onChange={(value) => setPurchaseDate(value)}
                             sx={{ width: 300 }}
                           />
                         </Stack>
