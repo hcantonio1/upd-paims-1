@@ -14,12 +14,18 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { makeStyles } from "@material-ui/core";
-import { Typography, Divider, Box, Button, Stack, TextField } from "@mui/material";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import SelectTextField from "../selectTextField"
-
+import {
+  Typography,
+  Divider,
+  Box,
+  Button,
+  Stack,
+  TextField,
+} from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import SelectTextField from "../selectTextField";
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
@@ -47,18 +53,16 @@ const InsertRecord = () => {
     UnitNumber: "",
   });
 
-  const [itemDetailsCount, setItemDetailsCount] = useState([
-    1
-  ])
+  const [itemDetailsCount, setItemDetailsCount] = useState([1]);
 
   const handleAddItem = () => {
-    setItemDetailsCount([...itemDetailsCount, 1])
-  }
+    setItemDetailsCount([...itemDetailsCount, 1]);
+  };
 
   const handleRemoveItem = () => {
     const newArray = itemDetailsCount.slice(0, -1);
     setItemDetailsCount(newArray);
-  }
+  };
 
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -148,91 +152,102 @@ const InsertRecord = () => {
     }
 
     try {
-      await Promise.all(itemDetailsCount.map(async (_, index) => {
-        const itemData = {
-          ...inputData,
-          // Update property values based on the index
-          PropertyID: inputData[`PropertyID_${index}`],
-          PropertyName: inputData[`PropertyName_${index}`],
-          TrusteeID: inputData[`TrusteeID_${index}`],
-          CategoryID: inputData[`CategoryID_${index}`],
-          StatusID: inputData[`StatusID_${index}`],
-          LocationID: inputData[`LocationID_${index}`],
-          PurchaseOrderID: inputData[`PurchaseOrderID_${index}`],
-          TotalCost: inputData[`TotalCost_${index}`],
-          PurchaseDate: inputData[`PurchaseDate_${index}`],
-        };
-        if (itemData.DocumentType === "ICS" && itemData.TotalCost > 49999) {
-          alert("ICS cannot have total cost over PHP49,999.");
-          return;
-        }
-        if (itemData.DocumentType === "PAR" && parseInt(itemData.TotalCost) < 50000) {
-          alert("PAR cannot have total cost below PHP50,000.");
-          return;
-        }
-        await setDoc(doc(db, "supplier", inputData.SupplierID), {
-          City: inputData.City,
-          State: inputData.State,
-          StreetName: inputData.StreetName,
-          SupplierContact: inputData.SupplierContact.toString(),
-          SupplierID: parseInt(inputData.SupplierID),
-          SupplierName: inputData.SupplierName,
-          UnitNumber: parseInt(inputData.UnitNumber),
-        });
-        console.log("Inserted to supplier!");
-        console.log("Uploading file to Firebase Storage");
-        const fileRef = ref(storage, "DCS/" + inputData.Link.name);
-        await uploadBytes(fileRef, inputData.Link);
-        const fileUrl = await getDownloadURL(fileRef);
-        console.log("File uploaded successfully:", fileUrl);
-        await setDoc(doc(db, "item_document", inputData.DocumentID), {
-          DateIssued: Timestamp.fromDate(new Date(inputData.DateIssued)),
-          DocumentID: inputData.DocumentID,
-          DocumentType: inputData.DocumentType,
-          IssuedBy: inputData.IssuedBy,
-          Link: fileUrl,
-          ReceivedBy: inputData.ReceivedBy,
-        });
-        var parObject = {};
-        var icsObject = {};
-        var iirupObject = {};
-        var archiveStat = 0;
-        if (inputData.DocumentType === "IIRUP") {
-          iirupObject[1] = inputData.DocumentID;
-          archiveStat = 1;
-        } else if (inputData.DocumentType === "PAR") {
-          parObject[1] = inputData.DocumentID;
-        } else {
-          icsObject[1] = inputData.DocumentID;
-        }
-        await setDoc(doc(db, "property", itemData.PropertyID), {
-          CategoryID: parseInt(itemData.CategoryID),
-          parID: parObject,
-          iirupID: iirupObject,
-          icsID: icsObject,
-          isArchived: archiveStat,
-          LocationID: parseInt(itemData.LocationID),
-          PropertyID: parseInt(itemData.PropertyID),
-          PropertyName: itemData.PropertyName,
-          TrusteeID: parseInt(itemData.TrusteeID),
-          StatusID: parseInt(itemData.StatusID),
-          SupplierID: parseInt(itemData.SupplierID),
-          PurchaseOrderID: parseInt(itemData.PurchaseOrderID),
-          VerNum: 1,
-        });
-        console.log("Inserted to property!");
-        console.log("PurchaseDate:", Timestamp.fromDate(new Date(itemData.PurchaseDate)));
-        console.log("DateIssued:", Timestamp.fromDate(new Date(itemData.DateIssued)));
-        await setDoc(doc(db, "purchase_order", itemData.PurchaseOrderID), {
-          PurchaseDate: Timestamp.fromDate(new Date(itemData.PurchaseDate)),
-          PurchaseOrderID: parseInt(itemData.PurchaseOrderID),
-          SupplierID: parseInt(itemData.SupplierID),
-          TotalCost: parseInt(itemData.TotalCost),
-        });
-        console.log("Inserted to purchase_order!");
-        alert("Successfully inserted!");
-        window.location.reload();
-      }));
+      await Promise.all(
+        itemDetailsCount.map(async (_, index) => {
+          const itemData = {
+            ...inputData,
+            // Update property values based on the index
+            PropertyID: inputData[`PropertyID_${index}`],
+            PropertyName: inputData[`PropertyName_${index}`],
+            TrusteeID: inputData[`TrusteeID_${index}`],
+            CategoryID: inputData[`CategoryID_${index}`],
+            StatusID: inputData[`StatusID_${index}`],
+            LocationID: inputData[`LocationID_${index}`],
+            PurchaseOrderID: inputData[`PurchaseOrderID_${index}`],
+            TotalCost: inputData[`TotalCost_${index}`],
+            PurchaseDate: inputData[`PurchaseDate_${index}`],
+          };
+          if (itemData.DocumentType === "ICS" && itemData.TotalCost > 49999) {
+            alert("ICS cannot have total cost over PHP49,999.");
+            return;
+          }
+          if (
+            itemData.DocumentType === "PAR" &&
+            parseInt(itemData.TotalCost) < 50000
+          ) {
+            alert("PAR cannot have total cost below PHP50,000.");
+            return;
+          }
+          await setDoc(doc(db, "supplier", inputData.SupplierID), {
+            City: inputData.City,
+            State: inputData.State,
+            StreetName: inputData.StreetName,
+            SupplierContact: inputData.SupplierContact.toString(),
+            SupplierID: parseInt(inputData.SupplierID),
+            SupplierName: inputData.SupplierName,
+            UnitNumber: parseInt(inputData.UnitNumber),
+          });
+          console.log("Inserted to supplier!");
+          console.log("Uploading file to Firebase Storage");
+          const fileRef = ref(storage, "DCS/" + inputData.Link.name);
+          await uploadBytes(fileRef, inputData.Link);
+          const fileUrl = await getDownloadURL(fileRef);
+          console.log("File uploaded successfully:", fileUrl);
+          await setDoc(doc(db, "item_document", inputData.DocumentID), {
+            DateIssued: Timestamp.fromDate(new Date(inputData.DateIssued)),
+            DocumentID: inputData.DocumentID,
+            DocumentType: inputData.DocumentType,
+            IssuedBy: inputData.IssuedBy,
+            Link: fileUrl,
+            ReceivedBy: inputData.ReceivedBy,
+          });
+          var parObject = {};
+          var icsObject = {};
+          var iirupObject = {};
+          var archiveStat = 0;
+          if (inputData.DocumentType === "IIRUP") {
+            iirupObject[1] = inputData.DocumentID;
+            archiveStat = 1;
+          } else if (inputData.DocumentType === "PAR") {
+            parObject[1] = inputData.DocumentID;
+          } else {
+            icsObject[1] = inputData.DocumentID;
+          }
+          await setDoc(doc(db, "property", itemData.PropertyID), {
+            CategoryID: parseInt(itemData.CategoryID),
+            parID: parObject,
+            iirupID: iirupObject,
+            icsID: icsObject,
+            isArchived: archiveStat,
+            LocationID: parseInt(itemData.LocationID),
+            PropertyID: parseInt(itemData.PropertyID),
+            PropertyName: itemData.PropertyName,
+            TrusteeID: parseInt(itemData.TrusteeID),
+            StatusID: parseInt(itemData.StatusID),
+            SupplierID: parseInt(itemData.SupplierID),
+            PurchaseOrderID: parseInt(itemData.PurchaseOrderID),
+            VerNum: 1,
+          });
+          console.log("Inserted to property!");
+          console.log(
+            "PurchaseDate:",
+            Timestamp.fromDate(new Date(itemData.PurchaseDate))
+          );
+          console.log(
+            "DateIssued:",
+            Timestamp.fromDate(new Date(itemData.DateIssued))
+          );
+          await setDoc(doc(db, "purchase_order", itemData.PurchaseOrderID), {
+            PurchaseDate: Timestamp.fromDate(new Date(itemData.PurchaseDate)),
+            PurchaseOrderID: parseInt(itemData.PurchaseOrderID),
+            SupplierID: parseInt(itemData.SupplierID),
+            TotalCost: parseInt(itemData.TotalCost),
+          });
+          console.log("Inserted to purchase_order!");
+          alert("Successfully inserted!");
+          window.location.reload();
+        })
+      );
     } catch (error) {
       console.error("Error inserting document:", error);
       alert("Failed to insert record.");
@@ -271,9 +286,9 @@ const InsertRecord = () => {
 
   const handleInputChange = (e, index) => {
     const { name, value } = e.target;
-    setInputData(prevData => ({
+    setInputData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
 
     if (e.target.name === "DocumentID") {
@@ -433,7 +448,6 @@ const InsertRecord = () => {
     <Layout pageTitle="INSERT">
       <Box display="flex" flexDirection="column" className={classes.root}>
         <main>
-
           <Box display="flex" flexDirection="column">
             <Box className={classes.addRecordTextContainer}>
               <Typography variant="h9" fontWeight={"bold"}>
@@ -504,12 +518,15 @@ const InsertRecord = () => {
                       <Stack item>
                         <label
                           htmlFor={`TrusteeID_${index}`}
-                          style={{ display: "inline-block", verticalAlign: "top" }}
+                          style={{
+                            display: "inline-block",
+                            verticalAlign: "top",
+                          }}
                         />
                         <SelectTextField
                           label="Select Trustee"
                           name={`TrusteeID_${index}`}
-                          value={inputData[`TrusteeID_${index}`]}
+                          value=""
                           onChange={(e) => handleInputChange(e, index)}
                           options={users}
                           getFunc={getFullName}
@@ -538,7 +555,7 @@ const InsertRecord = () => {
                         <SelectTextField
                           label="Select Category"
                           name={`CategoryID_${index}`}
-                          value={inputData[`CategoryID_${index}`]}
+                          value=""
                           onChange={(e) => handleInputChange(e, index)}
                           options={categories}
                         />
@@ -556,7 +573,7 @@ const InsertRecord = () => {
                         <SelectTextField
                           label="Select Status"
                           name={`StatusID_${index}`}
-                          value={inputData[`StatusID_${index}`]}
+                          value=""
                           onChange={(e) => handleInputChange(e, index)}
                           options={statuses}
                         />
@@ -574,7 +591,7 @@ const InsertRecord = () => {
                         <SelectTextField
                           label="Select Location"
                           name={`LocationID_${index}`}
-                          value={inputData[`LocationID_${index}`]}
+                          value=""
                           onChange={(e) => handleInputChange(e, index)}
                           options={locations}
                           getFunc={getFullLoc}
@@ -658,7 +675,7 @@ const InsertRecord = () => {
                             name={`PurchaseDate_${index}`}
                             value={inputData[`PurchaseDate_${index}`]}
                             onChange={(e) => handleInputChange(e, index)}
-                            sx={{width: 300}}
+                            sx={{ width: 300 }}
                           />
                         </Stack>
                       </LocalizationProvider>
@@ -666,14 +683,11 @@ const InsertRecord = () => {
                   </>
                 ))}
 
-                <Box
-                  display="flex"
-                  justifyContent="flex-end"
-                >
+                <Box display="flex" justifyContent="flex-end">
                   {itemDetailsCount.length > 1 && (
                     <Button
                       variant="contained"
-                      sx={{ backgroundColor: '#014421', m: 1 }}
+                      sx={{ backgroundColor: "#014421", m: 1 }}
                       onClick={handleRemoveItem}
                     >
                       Remove Item
@@ -681,7 +695,7 @@ const InsertRecord = () => {
                   )}
                   <Button
                     variant="contained"
-                    sx={{ backgroundColor: '#014421', m: 1 }}
+                    sx={{ backgroundColor: "#014421", m: 1 }}
                     onClick={handleAddItem}
                   >
                     Add Item
@@ -724,7 +738,11 @@ const InsertRecord = () => {
                   <Stack item>
                     <label
                       htmlFor="DocumentType"
-                      style={{ display: "inline-block", width: "200px", verticalAlign: "top" }}
+                      style={{
+                        display: "inline-block",
+                        width: "200px",
+                        verticalAlign: "top",
+                      }}
                     >
                       Document Type<span style={{ color: "red" }}>*</span>{" "}
                     </label>
@@ -737,10 +755,7 @@ const InsertRecord = () => {
                     >
                       <option value="">Select Document Type</option>
                       {types.map((type, index) => (
-                        <option
-                          key={`Type_${index}`}
-                          value={type.Type}
-                        >
+                        <option key={`Type_${index}`} value={type.Type}>
                           {type.Type}
                         </option>
                       ))}
