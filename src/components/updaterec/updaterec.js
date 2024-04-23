@@ -15,6 +15,8 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { makeStyles } from "@material-ui/core";
 import { Typography, Divider, Box, Button, Stack } from "@mui/material";
 
+import UpdateSupplier from "./updateSupplier";
+
 const UpdateRec = () => {
   const [updateProperty, setUpdateProperty] = useState({
     StatusID: "",
@@ -372,6 +374,10 @@ const UpdateRec = () => {
               Back to Forms
             </Button>
           </Box>
+
+          <UpdateSupplier />
+          <br />
+          <br />
 
           <Box display="flex" flexDirection="column">
             <Box className={classes.updateRecordTextContainer}>
