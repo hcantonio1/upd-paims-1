@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "../layout";
+import Layout from "../common/layout";
 // import * as styles from "../../styles/index.module.css";
 import { getUser } from "../../services/auth";
 import { Box, Typography, makeStyles } from "@material-ui/core";

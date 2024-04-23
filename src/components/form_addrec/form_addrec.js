@@ -1,7 +1,7 @@
 // Step 1: Import React
 import * as React from "react";
 // import { Link } from "gatsby";
-import Layout from "../layout";
+import Layout from "../common/layout";
 import { useState, useEffect } from "react";
 import { db, storage } from "../../../firebase-config";
 import {
@@ -27,7 +27,7 @@ import { CloudUpload } from "@material-ui/icons"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import SelectTextField from "../selectTextField";
+import SelectTextField from "../common/selectTextField";
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
@@ -169,7 +169,10 @@ const InsertRecord = () => {
             TotalCost: inputData[`TotalCost_${index}`],
             PurchaseDate: inputData[`PurchaseDate_${index}`],
           };
-          if (itemData.DocumentType === "ICS" && itemData.TotalCost > 49999) {
+          if (
+            itemData.DocumentType === "ICS" &&
+            parseInt(itemData.TotalCost) > 49999
+          ) {
             alert("ICS cannot have total cost over PHP49,999.");
             return;
           }
@@ -231,10 +234,7 @@ const InsertRecord = () => {
             VerNum: 1,
           });
           console.log("Inserted to property!");
-          console.log(
-            "PurchaseDate:",
-            Timestamp.fromDate(new Date(itemData.PurchaseDate))
-          );
+          console.log("PurchaseDate:", itemData.PurchaseDate);
           console.log(
             "DateIssued:",
             Timestamp.fromDate(new Date(itemData.DateIssued))
@@ -307,10 +307,10 @@ const InsertRecord = () => {
     }
   };
 
-  const setPurchaseDate = (value) => {
+  const setPurchaseDate = (value, index) => {
     setInputData((prevData) => ({
       ...prevData,
-      PurchaseDate: value,
+      [`PurchaseDate_${index}`]: value,
     }));
   };
 
@@ -682,8 +682,9 @@ const InsertRecord = () => {
                           <DatePicker
                             label="Purchase Date"
                             name={`PurchaseDate_${index}`}
+                            inputFormat="YYYY-MM-DD"
                             value={inputData[`PurchaseDate_${index}`]}
-                            onChange={(value) => setPurchaseDate(value)}
+                            onChange={(value) => setPurchaseDate(value, index)}
                             sx={{ width: 300 }}
                           />
                         </Stack>
