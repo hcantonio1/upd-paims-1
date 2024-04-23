@@ -1,10 +1,8 @@
 // Step 1: Import React
 import * as React from "react";
-import { Link } from "gatsby";
 import Layout from "../common/layout";
-import { Icon, IconButton, makeStyles } from "@material-ui/core";
-import { Typography, Divider, Box, Button, Stack } from "@mui/material";
-import { LibraryAddRoundedIcon, UpdateRoundedIcon } from "@material-ui/icons";
+import { makeStyles } from "@material-ui/core";
+import { Box, Button, Stack } from "@mui/material";
 
 const SubmitPage = () => {
   const useStyles = makeStyles({
