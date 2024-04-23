@@ -16,6 +16,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import firebase from "firebase/app";
 import "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
+import { Redirect, Link } from 'react-router-dom';
 
 
 const propertyDocRef = doc(db, "property", "YOUR_PROPERTY_ID");
@@ -48,22 +49,45 @@ if (propertyDocSnapshot.exists()) {
   console.log("Property document not found.");
 }
 
+
+
 const InventoryPage = () => {
 
-  // function getVerNum(row){
-  //   return row.VerNum;
-  // }
+  const [link, setLink] = useState(null);
+  const [rows, setRows] = useState([]);
 
-  // const flattenICS = (row) => {
-  //   const ics = row.icsID || {}; // Ensure ics is an object, or use an empty object if it's null or undefined
-  //   const flattenedICS = Object.entries(ics).reduce((acc, [key, value]) => {
-  //     acc[key] = value;
-  //     return acc;
-  //   }, {});
-  //   return flattenedICS;
-  // };
-  // const flattenedICS = flattenICS(row);
-  // console.log(flattenedICS); 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch link from Firestore
+        const propertyDocSnapshot = await getDoc(propertyDocRef);
+        if (propertyDocSnapshot.exists()) {
+          const propertyData = propertyDocSnapshot.data();
+          const icsID = propertyData.icsID;
+          if (icsID) {
+            const documentID = `${propertyData.VerNum}`;
+            const documentDocRef = doc(db, 'item_document', documentID);
+            const documentDocSnapshot = await getDoc(documentDocRef);
+            if (documentDocSnapshot.exists()) {
+              const documentData = documentDocSnapshot.data();
+              const fetchedLink = documentData.Link;
+              setLink(fetchedLink);
+            } else {
+              console.log('Document not found in item_document collection.');
+            }
+          } else {
+            console.log('icsID is empty.');
+          }
+        } else {
+          console.log('Property document not found.');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   
 
@@ -77,14 +101,12 @@ const InventoryPage = () => {
     { field: "PurchaseOrderID", headerName: "Purchase Order", width: 90 },
     { field: "SupplierID", headerName: "Supplier", width: 150 },
 
-    { field: "DocumentID", headerName: "Document", width: 150 },
-
-    { field: "VerNum", headerName: "VER", width: 150 
-      // ,valueGetter: (value) => { return value } 
-      ,valueGetter: (param, row) => {
-        return `${row.icsID.VerNum || 'AAA'} ${row.PropertyName || ''}`;
-      }, 
-    },
+    // { field: "VerNum", headerName: "VER", width: 150 
+    //   // ,valueGetter: (value) => { return value } 
+    //   ,valueGetter: (param, row) => {
+    //     return `${row.icsID.VerNum || 'AAA'} ${row.PropertyName || ''}`;
+    //   }, 
+    // },
 
     { field: "icsID", headerName: "ICS", width: 150,   
     valueGetter: (params, row) => {
@@ -99,66 +121,18 @@ const InventoryPage = () => {
   
       return row.icsID[row.VerNum];
     } 
-
-    // valueGetter: (row) => {
-    //   const propertyName = `${row.VerNum}`;
-    //   console.log("PROPNAME", propertyName);
-    
-    //   // Check if `icsID` is present
-    //   if (row.icsID) {
-    //     // Check if the property exists within `icsID`
-    //     if (row.icsID[propertyName] !== undefined) {
-    //       console.log(row.icsID[propertyName]);
-    //       return row.icsID[propertyName];
-    //     } else {
-    //       // Handle case when the property is not present within `icsID`
-    //       console.log(`Property ${propertyName} does not exist within icsID`);
-    //       return ""; // or any default value you want to return
-    //     }
-    //   } else {
-    //     // Handle case when `icsID` itself is not present
-    //     console.log("icsID is not present");
-    //     return ""; // or any default value you want to return
-    //   }
-    // }
-  
-  
-  
   },
 
+  // { field: "link", headerName: "ICS", width: 150 
+  //   , renderCell: (params) => (
+  //     <Link to={`/form/${params.value}`}>{params.value}</Link>
+  //   )
+  // },
 
 
 
 
-    // { field: "icsID", headerName: "ICS", width: 150,   
-    //   valueGetter: (params) => {
-    //   const { row } = params;
-    //   // Check if row.icsID is not null and not an empty object
-    //   if (row?.icsID && Object.keys(row?.icsID).length > 0) {
-    //     const flattenedValues = Object.keys(row?.icsID).flatMap(key => {
-    //       const value = row.icsID[key];
-    //       return value !== null ? value : [];
-    //     });
-    //     console.log(flattenedValues);
-    //     // Assuming there's only one value in this case
-    //     const value = flattenedValues[0]; // Access the first non-null value
-    //     return value;
-    //   }
-    //   return ""; // Return empty string if row.icsID is null or empty
-    // } },
 
-    // valueGetter: (params) => {
-    //   const { row } = params;
-    //   const propertyName = `${row?.icsID}`;
-    //   console.log(propertyName);
-    //   console.log(typeof(propertyName));
-    //   return row?.icsID?.[propertyName];
-    // } },
-    // { field: "icsID", headerName: "ICS", width: 150, 
-    //   valueGetter: (params) => {
-    //     return params.row.VerNum }},
-
-    // { field: 'InvDate', headerName: 'Trustee Date Issued', width: 90 },
   ];
 
   const filterableColumns = InvCol.filter(

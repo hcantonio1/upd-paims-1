@@ -124,13 +124,13 @@ const AccountsTable = () => {
 
   return (
     <Box>
-      {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <SearchBar onSearch={handleSearch} />
         {/* <FilterBy
           options={filterableColumns.map((column) => column.label)}
           onFilterChange={handleFilterChange}
-        />
-      </div> */}
+  />*/}
+      </div>
       <div>
           {searchResultsEmpty ? (
             <p style={{ textAlign: "center" }}>No records found.</p>
