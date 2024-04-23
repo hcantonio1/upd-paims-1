@@ -404,20 +404,52 @@ const UpdateProp = () => {
             }}
           >
             <Stack item sx={{ width: 1 / 3 }}>
-              <TextField1
-                id="IssuedBy"
-                label="Issued By"
-                value={formData.IssuedBy}
-                onChange={handleInputChange}
-              />
+              <FormControl>
+                <InputLabel id="select-issuedby">Issued By</InputLabel>
+                <Select
+                  size="small"
+                  labelId="select-issuedby"
+                  id="IssuedBy"
+                  value={formData.IssuedBy}
+                  label="Issued By"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      IssuedBy: e.target.value,
+                    })
+                  }
+                >
+                  {users.map((user, index) => (
+                    <MenuItem key={`IssuedBy_${index}`} value={user.UserID}>
+                      {getFullName(user)}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Stack>
             <Stack item sx={{ width: 1 / 3 }}>
-              <TextField1
-                id="ReceivedBy"
-                label="Received By"
-                value={formData.ReceivedBy}
-                onChange={handleInputChange}
-              />
+              <FormControl>
+                <InputLabel id="select-receivedby">Received By</InputLabel>
+                <Select
+                  size="small"
+                  labelId="select-receivedby"
+                  id="ReceivedBy"
+                  value={formData.ReceivedBy}
+                  label="Received By"
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      ReceivedBy: e.target.value,
+                    })
+                  }
+                >
+                  {users.map((user, index) => (
+                    <MenuItem key={`ReceivedBy_${index}`} value={user.UserID}>
+                      {getFullName(user)}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Stack>
             <Stack item sx={{ width: 1 / 3 }}>
               <label
