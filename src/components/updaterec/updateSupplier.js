@@ -8,6 +8,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../../firebase-config";
 
 const UpdateSupplier = () => {
   const [formData, setFormData] = useState({
@@ -25,9 +27,29 @@ const UpdateSupplier = () => {
       ...formData,
       [e.target.id]: e.target.value,
     });
+
+    // if (e.target.id === "SupplierID") {
+    //   fetchSupplierData(e.target.value);
+    // }
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const supplierRef = doc(db, "supplier", formData.SupplierID);
+      await updateDoc(supplierRef, {
+        City: formData.City,
+        State: formData.State,
+        StreetName: formData.StreetName,
+        SupplierContact: formData.SupplierContact.toString(),
+        SupplierName: formData.SupplierName,
+        UnitNumber: parseInt(formData.UnitNumber),
+      });
+      alert("Successfully updated supplier!");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error updating supplier:", error);
+      alert("Failed to update supplier.");
+    }
   };
 
   return (
