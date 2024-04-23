@@ -21,7 +21,9 @@ import {
   Button,
   Stack,
   TextField,
+  Input
 } from "@mui/material";
+import { CloudUpload } from "@material-ui/icons"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -222,6 +224,7 @@ const InsertRecord = () => {
             iirupID: iirupObject,
             icsID: icsObject,
             isArchived: archiveStat,
+            isApproved: 0,
             LocationID: parseInt(itemData.LocationID),
             PropertyID: parseInt(itemData.PropertyID),
             PropertyName: itemData.PropertyName,
@@ -297,12 +300,12 @@ const InsertRecord = () => {
     if (e.target.name === "SupplierID") {
       fetchSupplierData(e.target.value);
     }
-    if (e.target.name === "PropertyID") {
+    if (e.target.name === `PropertyID_${index}`) {
       fetchPropertyData(e.target.value);
     }
-    if (e.target.name === "PurchaseOrderID") {
-      fetchOrderData(e.target.value);
-    }
+    //if (e.target.name === `PurchaseOrderID_${index}`) {
+    //  fetchOrderData(e.target.value);
+    //}
   };
 
   const setPurchaseDate = (value, index) => {
@@ -347,13 +350,14 @@ const InsertRecord = () => {
     }
   };
 
-  const fetchOrderData = async (orderId) => {
+  {/*const fetchOrderData = async (orderId) => {
     try {
       const orderRef = doc(db, "purchase_order", orderId);
       const orderSnap = await getDoc(orderRef);
 
       if (orderSnap.exists()) {
         const orderData = orderSnap.data();
+        console.log(`TotalCost_${index}`);
         setOrderLocked(true);
         setInputData((prevData) => ({
           ...prevData,
@@ -376,7 +380,7 @@ const InsertRecord = () => {
     } catch (error) {
       console.error("Error fetching purchase order:", error);
     }
-  };
+  }; */}
 
   const fetchPropertyData = async (propId) => {
     try {
@@ -385,6 +389,7 @@ const InsertRecord = () => {
 
       if (propSnap.exists()) {
         alert("A property with this ID already exists!");
+        return;
       }
     } catch (error) {
       console.error("Error fetching property:", error);
@@ -498,7 +503,8 @@ const InsertRecord = () => {
                           onChange={(e) => handleInputChange(e, index)}
                           required
                           sx={{ width: 300 }}
-                          pattern="[0-9]*"
+                          type="string"
+                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                           title="Numbers only."
                         />
                       </Stack>
@@ -630,7 +636,8 @@ const InsertRecord = () => {
                           name={`PurchaseOrderID_${index}`}
                           value={inputData[`PurchaseOrderID_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          pattern="[0-9]*"
+                          type="string"
+                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                           title="Numbers only."
                           required
                           sx={{ width: 300 }}
@@ -651,7 +658,8 @@ const InsertRecord = () => {
                           name={`TotalCost_${index}`}
                           value={inputData[`TotalCost_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
-                          pattern="^\d*\.?\d+$"
+                          type="string"
+                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: "0", step: "any" }}
                           title="Please enter a positive number."
                           required
                           sx={{ width: 300 }}
@@ -713,7 +721,7 @@ const InsertRecord = () => {
                 <Typography variant="h9" fontWeight={"bold"}>
                   Document Details
                 </Typography>
-                <Divider></Divider>
+                <Divider />
 
                 {/* FIELDS: DocuType, DocuName, File*/}
                 <Stack
@@ -731,16 +739,15 @@ const InsertRecord = () => {
                         width: "200px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Document Name<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="Document Name"
+                      variant="outlined"
                       name="DocumentID"
                       value={inputData.DocumentID}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
                       required
+                      sx={{ width: 300 }}
                     />
                   </Stack>
                   <Stack item>
@@ -751,23 +758,14 @@ const InsertRecord = () => {
                         width: "200px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Document Type<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <select
+                    />
+                    <SelectTextField
+                      label="Select Document Type"
                       name="DocumentType"
                       value={inputData.DocumentType}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                      required
-                    >
-                      <option value="">Select Document Type</option>
-                      {types.map((type, index) => (
-                        <option key={`Type_${index}`} value={type.Type}>
-                          {type.Type}
-                        </option>
-                      ))}
-                    </select>
+                      options={types}
+                    />
                   </Stack>
                   <Stack item>
                     <label
@@ -777,17 +775,26 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      File<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="file"
-                      name="Link"
-                      onChange={handleFileChange}
-                      style={{ width: "250px", display: "inline-block" }}
-                      required
-                      disabled={docLocked}
                     />
+                    <Button
+                      startIcon={<CloudUpload />}
+                      sx={{ color: "#014421", width: 300, height: 50 }}
+                      component='label'
+                      role={undefined}
+                    >
+                      Upload File
+                      <input
+                        type="file"
+                        name="Link"
+                        onChange={handleFileChange}
+                        required
+                        disabled={docLocked}
+                        hidden
+                      />
+                    </Button>
+
+
+
                   </Stack>
                 </Stack>
 
@@ -807,24 +814,16 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Issued By<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <select
+                    />
+                    <SelectTextField
+                      label="Issued By"
                       name="IssuedBy"
                       value={inputData.IssuedBy}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                      required
-                      disabled={docLocked}
-                    >
-                      <option value="">Select Issued By</option>
-                      {users.map((user, index) => (
-                        <option key={user.Username} value={user.Username}>
-                          {getFullName(user)}
-                        </option>
-                      ))}
-                    </select>
+                      options={users}
+                      getFunc={getFullName}
+                      lock={docLocked}
+                    />
                   </Stack>
                   <Stack item>
                     <label
@@ -834,25 +833,19 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Received By<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <select
+                    />
+                    <SelectTextField
+                      label="Received By"
                       name="ReceivedBy"
                       value={inputData.ReceivedBy}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                      required
-                      disabled={docLocked}
-                    >
-                      <option value="">Select Received By</option>
-                      {users.map((user, index) => (
-                        <option key={user.Username} value={user.Username}>
-                          {getFullName(user)}
-                        </option>
-                      ))}
-                    </select>
+                      options={users}
+                      getFunc={getFullName}
+                      lock={docLocked}
+                    />
+
                   </Stack>
+                  {/* <LocalizationProvider dateAdapter={AdapterDayjs}> */}
                   <Stack item>
                     <label
                       htmlFor="DateIssued"
@@ -861,9 +854,7 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Date Issued<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
+                    />
                     <input
                       type="date"
                       name="DateIssued"
@@ -873,7 +864,17 @@ const InsertRecord = () => {
                       required
                       readOnly={docLocked}
                     />
+                    {/* <DatePicker
+                        label="Date Issued"
+                        name="DateIssued"
+                        inputFormat="YYYY-MM-DD"
+                        value={inputData.DateIssued}
+                        onChange={handleInputChange}
+                        sx={{ width: 300 }}
+                        readOnly={docLocked}
+                      /> */}
                   </Stack>
+                  {/* </LocalizationProvider> */}
                 </Stack>
 
                 <Stack
@@ -886,9 +887,8 @@ const InsertRecord = () => {
                     <Button
                       type="submit"
                       variant="contained"
-                      size="small"
-                      color="success"
                       onClick={handleInsertDoc}
+                      sx={{ backgroundColor: "#014421", m: 1 }}
                     >
                       Submit Document
                     </Button>
@@ -916,18 +916,17 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Supplier ID<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="Supplier ID"
                       name="SupplierID"
                       value={inputData.SupplierID}
                       onChange={handleInputChange}
                       style={{ width: "300px", display: "inline-block" }}
-                      pattern="[0-9]*"
+                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                       title="Numbers only."
                       required
+                      sx={{ width: 300 }}
                     />
                   </Stack>
                   <Stack item>
@@ -938,16 +937,15 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Supplier Name{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="Supplier Name"
                       name="SupplierName"
                       value={inputData.SupplierName}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
+                      sx={{ width: 300 }}
                       readOnly={supLocked}
+                      required
                     />
                   </Stack>
                   <Stack item>
@@ -958,19 +956,18 @@ const InsertRecord = () => {
                         width: "200px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Supplier Contact{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="Supplier Contact"
                       name="SupplierContact"
                       value={inputData.SupplierContact}
                       onChange={handleInputChange}
-                      style={{ width: "250px", display: "inline-block" }}
+                      sx={{ width: 300 }}
                       pattern="[0-9]*"
                       title="Numbers only."
                       readOnly={supLocked}
                     />
+
                   </Stack>
                 </Stack>
 
@@ -990,15 +987,13 @@ const InsertRecord = () => {
                         width: "120px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Unit Number
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="Unit #"
                       name="UnitNumber"
                       value={inputData.UnitNumber}
                       onChange={handleInputChange}
-                      style={{ width: "110px", display: "inline-block" }}
+                      sx={{ width: 110 }}
                       pattern="[0-9]*"
                       title="Numbers only."
                       readOnly={supLocked}
@@ -1012,15 +1007,13 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Street Name{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="Street Name"
                       name="StreetName"
                       value={inputData.StreetName}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
+                      sx={{ width: 300 }}
                       readOnly={supLocked}
                     />
                   </Stack>
@@ -1032,15 +1025,13 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      City{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="City"
                       name="City"
                       value={inputData.City}
                       onChange={handleInputChange}
-                      style={{ width: "290px", display: "inline-block" }}
+                      sx={{ width: 290 }}
                       readOnly={supLocked}
                     />
                   </Stack>
@@ -1052,15 +1043,13 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      State{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="State"
                       name="State"
                       value={inputData.State}
                       onChange={handleInputChange}
-                      style={{ width: "140px", display: "inline-block" }}
+                      sx={{ width: 140 }}
                       readOnly={supLocked}
                     />
                   </Stack>
@@ -1076,8 +1065,7 @@ const InsertRecord = () => {
                     <Button
                       type="submit"
                       variant="contained"
-                      size="small"
-                      color="success"
+                      sx={{ backgroundColor: "#014421", m: 1 }}
                     >
                       Submit All
                     </Button>

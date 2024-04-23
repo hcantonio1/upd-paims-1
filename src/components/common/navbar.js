@@ -165,7 +165,7 @@ const Navbar = () => {
                           navigate("/app/form_updaterec/");
                         }}
                       >
-                        <ListItemText primary="Update/Archive Record" />
+                        <ListItemText primary="Update Record" />
                       </ListItem>
                     </List>
                   )}
