@@ -21,7 +21,9 @@ import {
   Button,
   Stack,
   TextField,
+  Input
 } from "@mui/material";
+import { CloudUpload } from "@material-ui/icons"
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -712,7 +714,7 @@ const InsertRecord = () => {
                 <Typography variant="h9" fontWeight={"bold"}>
                   Document Details
                 </Typography>
-                <Divider></Divider>
+                <Divider />
 
                 {/* FIELDS: DocuType, DocuName, File*/}
                 <Stack
@@ -730,16 +732,15 @@ const InsertRecord = () => {
                         width: "200px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Document Name<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="text"
+                    />
+                    <TextField
+                      label="Document Name"
+                      variant="outlined"
                       name="DocumentID"
                       value={inputData.DocumentID}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
                       required
+                      sx={{ width: 300 }}
                     />
                   </Stack>
                   <Stack item>
@@ -750,23 +751,14 @@ const InsertRecord = () => {
                         width: "200px",
                         verticalAlign: "top",
                       }}
-                    >
-                      Document Type<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <select
+                    />
+                    <SelectTextField
+                      label="Select Document Type"
                       name="DocumentType"
                       value={inputData.DocumentType}
                       onChange={handleInputChange}
-                      style={{ width: "300px", display: "inline-block" }}
-                      required
-                    >
-                      <option value="">Select Document Type</option>
-                      {types.map((type, index) => (
-                        <option key={`Type_${index}`} value={type.Type}>
-                          {type.Type}
-                        </option>
-                      ))}
-                    </select>
+                      options={types}
+                    />
                   </Stack>
                   <Stack item>
                     <label
@@ -776,17 +768,26 @@ const InsertRecord = () => {
                         width: "150px",
                         verticalAlign: "top",
                       }}
-                    >
-                      File<span style={{ color: "red" }}>*</span>{" "}
-                    </label>
-                    <input
-                      type="file"
-                      name="Link"
-                      onChange={handleFileChange}
-                      style={{ width: "250px", display: "inline-block" }}
-                      required
-                      disabled={docLocked}
                     />
+                    <Button
+                      startIcon={<CloudUpload />}
+                      sx={{ color: "#014421", width: 300, height: 50}}
+                      component='label'
+                      role={undefined}
+                    >
+                      Upload File
+                      <input
+                        type="file"
+                        name="Link"
+                        onChange={handleFileChange}
+                        required
+                        disabled={docLocked}
+                        hidden
+                      />
+                    </Button>
+
+
+
                   </Stack>
                 </Stack>
 
