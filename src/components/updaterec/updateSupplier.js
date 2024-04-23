@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -8,8 +7,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
+
+/* In the future, add a heading "Edit an Existing Supplier" dropdown component before the first heading, "Supplier Details" */
 
 const UpdateSupplier = () => {
   const [formData, setFormData] = useState({
@@ -28,10 +29,45 @@ const UpdateSupplier = () => {
       [e.target.id]: e.target.value,
     });
 
-    // if (e.target.id === "SupplierID") {
-    //   fetchSupplierData(e.target.value);
-    // }
+    if (e.target.id === "SupplierID") {
+      fetchSupplierData(e.target.value);
+    }
   };
+
+  const fetchSupplierData = async (supplierID) => {
+    try {
+      const supRef = doc(db, "supplier", supplierID);
+      const supSnap = await getDoc(supRef);
+
+      if (supSnap.exists()) {
+        const supData = supSnap.data();
+        console.log(supData);
+        setFormData((prevData) => ({
+          ...prevData,
+          City: supData.City,
+          State: supData.State,
+          StreetName: supData.StreetName,
+          SupplierContact: supData.SupplierContact,
+          SupplierName: supData.SupplierName,
+          UnitNumber: parseInt(supData.UnitNumber),
+        }));
+      }
+      if (!supSnap.exists()) {
+        setFormData((prevData) => ({
+          ...prevData,
+          City: "",
+          State: "",
+          StreetName: "",
+          SupplierContact: "",
+          SupplierName: "",
+          UnitNumber: "",
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching supplier:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -89,6 +125,7 @@ const UpdateSupplier = () => {
               <TextField1
                 id="SupplierID"
                 label="Supplier ID"
+                value={formData.SupplierID}
                 onChange={handleInputChange}
                 pattern="[0-9]*"
                 title="Numbers only."
@@ -99,6 +136,7 @@ const UpdateSupplier = () => {
               <TextField1
                 id="SupplierName"
                 label="Supplier Name"
+                value={formData.SupplierName}
                 onChange={handleInputChange}
                 required
               />
@@ -107,6 +145,7 @@ const UpdateSupplier = () => {
               <TextField1
                 id="SupplierContact"
                 label="Contact Number"
+                value={formData.SupplierContact}
                 onChange={handleInputChange}
                 required
               />
@@ -130,6 +169,7 @@ const UpdateSupplier = () => {
               <TextField1
                 id="UnitNumber"
                 label="Unit Number"
+                value={formData.UnitNumber}
                 onChange={handleInputChange}
               />
             </Stack>
@@ -137,16 +177,23 @@ const UpdateSupplier = () => {
               <TextField1
                 id="StreetName"
                 label="Street Name"
+                value={formData.StreetName}
                 onChange={handleInputChange}
               />
             </Stack>
             <Stack item sx={{ width: 1 / 4 }}>
-              <TextField1 id="City" label="City" onChange={handleInputChange} />
+              <TextField1
+                id="City"
+                label="City"
+                value={formData.City}
+                onChange={handleInputChange}
+              />
             </Stack>
             <Stack item sx={{ width: 1 / 4 }}>
               <TextField1
                 id="State"
                 label="State"
+                value={formData.State}
                 onChange={handleInputChange}
               />
             </Stack>
