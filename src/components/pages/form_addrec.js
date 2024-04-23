@@ -167,7 +167,7 @@ const InsertRecord = () => {
             TotalCost: inputData[`TotalCost_${index}`],
             PurchaseDate: inputData[`PurchaseDate_${index}`],
           };
-          if (itemData.DocumentType === "ICS" && itemData.TotalCost > 49999) {
+          if (itemData.DocumentType === "ICS" && parseInt(itemData.TotalCost) > 49999) {
             alert("ICS cannot have total cost over PHP49,999.");
             return;
           }
