@@ -1,6 +1,4 @@
-// Step 1: Import React
 import * as React from "react";
-// import { Link } from "gatsby";
 import Layout from "../common/layout";
 import { useState, useEffect } from "react";
 import { db, storage } from "../../../firebase-config";
@@ -13,7 +11,6 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { makeStyles } from "@material-ui/core";
 import {
   Typography,
   Divider,
@@ -21,9 +18,8 @@ import {
   Button,
   Stack,
   TextField,
-  Input
 } from "@mui/material";
-import { CloudUpload } from "@material-ui/icons"
+// import { CloudUpload } from "@material-ui/icons";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -350,7 +346,8 @@ const InsertRecord = () => {
     }
   };
 
-  {/*const fetchOrderData = async (orderId) => {
+  {
+    /*const fetchOrderData = async (orderId) => {
     try {
       const orderRef = doc(db, "purchase_order", orderId);
       const orderSnap = await getDoc(orderRef);
@@ -380,7 +377,8 @@ const InsertRecord = () => {
     } catch (error) {
       console.error("Error fetching purchase order:", error);
     }
-  }; */}
+  }; */
+  }
 
   const fetchPropertyData = async (propId) => {
     try {
@@ -435,40 +433,38 @@ const InsertRecord = () => {
     });
   };
 
-  const useStyles = makeStyles({
-    root: {
-      padding: 20,
-      margin: 5,
-    },
-
-    addRecordTextContainer: {
-      backgroundColor: "#e5e5e5",
-      padding: 10,
-    },
-
-    addRecordFields: {
-      borderStyle: "solid",
-      borderColor: "#e5e5e5",
-      padding: 10,
-      mr: 150,
-    },
-  });
-
-  const classes = useStyles();
-
   return (
     <Layout pageTitle="INSERT">
-      <Box display="flex" flexDirection="column" className={classes.root}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        sx={{
+          p: 2,
+          m: 1,
+        }}
+      >
         <main>
           <Box display="flex" flexDirection="column">
-            <Box className={classes.addRecordTextContainer}>
+            <Box
+              sx={{
+                bgcolor: "#e5e5e5",
+                p: 1,
+              }}
+            >
               <Typography variant="h9" fontWeight={"bold"}>
                 Insert a New Record into the Database
               </Typography>
             </Box>
 
             <form onSubmit={handleInsert}>
-              <Box sx={{ pt: 3, pb: 3 }} className={classes.addRecordFields}>
+              <Box
+                sx={{
+                  py: 3,
+                  borderStyle: "solid",
+                  borderColor: "#e5e5e5",
+                  padding: 1,
+                }}
+              >
                 <Typography variant="h9" fontWeight={"bold"}>
                   Item Details
                 </Typography>
@@ -504,7 +500,10 @@ const InsertRecord = () => {
                           required
                           sx={{ width: 300 }}
                           type="string"
-                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                          inputProps={{
+                            inputMode: "numeric",
+                            pattern: "[0-9]*",
+                          }}
                           title="Numbers only."
                         />
                       </Stack>
@@ -637,7 +636,10 @@ const InsertRecord = () => {
                           value={inputData[`PurchaseOrderID_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
                           type="string"
-                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                          inputProps={{
+                            inputMode: "numeric",
+                            pattern: "[0-9]*",
+                          }}
                           title="Numbers only."
                           required
                           sx={{ width: 300 }}
@@ -659,7 +661,12 @@ const InsertRecord = () => {
                           value={inputData[`TotalCost_${index}`]}
                           onChange={(e) => handleInputChange(e, index)}
                           type="string"
-                          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: "0", step: "any" }}
+                          inputProps={{
+                            inputMode: "numeric",
+                            pattern: "[0-9]*",
+                            min: "0",
+                            step: "any",
+                          }}
                           title="Please enter a positive number."
                           required
                           sx={{ width: 300 }}
@@ -767,7 +774,27 @@ const InsertRecord = () => {
                       options={types}
                     />
                   </Stack>
+
                   <Stack item>
+                    <label
+                      htmlFor="Link"
+                      style={{
+                        display: "inline-block",
+                        width: "250px",
+                        verticalAlign: "top",
+                      }}
+                    >
+                      New File{" "}
+                    </label>
+                    <input
+                      type="file"
+                      id="Link"
+                      onChange={handleFileChange}
+                      style={{ width: "250px", display: "inline-block" }}
+                      disabled={docLocked}
+                    />
+                  </Stack>
+                  {/* <Stack item>
                     <label
                       htmlFor="Link"
                       style={{
@@ -779,7 +806,7 @@ const InsertRecord = () => {
                     <Button
                       startIcon={<CloudUpload />}
                       sx={{ color: "#014421", width: 300, height: 50 }}
-                      component='label'
+                      component="label"
                       role={undefined}
                     >
                       Upload File
@@ -792,10 +819,7 @@ const InsertRecord = () => {
                         hidden
                       />
                     </Button>
-
-
-
-                  </Stack>
+                  </Stack> */}
                 </Stack>
 
                 {/* FIELDS: Issued, Receive, Date */}
@@ -843,7 +867,6 @@ const InsertRecord = () => {
                       getFunc={getFullName}
                       lock={docLocked}
                     />
-
                   </Stack>
                   {/* <LocalizationProvider dateAdapter={AdapterDayjs}> */}
                   <Stack item>
@@ -923,7 +946,7 @@ const InsertRecord = () => {
                       value={inputData.SupplierID}
                       onChange={handleInputChange}
                       style={{ width: "300px", display: "inline-block" }}
-                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                      inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
                       title="Numbers only."
                       required
                       sx={{ width: 300 }}
@@ -967,7 +990,6 @@ const InsertRecord = () => {
                       title="Numbers only."
                       readOnly={supLocked}
                     />
-
                   </Stack>
                 </Stack>
 
