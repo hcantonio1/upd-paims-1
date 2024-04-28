@@ -1,25 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Divider,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-import {
-  doc,
-  updateDoc,
-  getDoc,
-  getDocs,
-  collection,
-  setDoc,
-  Timestamp,
-} from "firebase/firestore";
+import { Box, Button, Divider, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+import { doc, updateDoc, getDoc, getDocs, collection, setDoc, Timestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../../../firebase-config";
 
@@ -252,38 +233,15 @@ const UpdateProp = () => {
       </Box>
 
       <form onSubmit={handleSubmit}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 1,
-            p: 2,
-            borderStyle: "solid",
-            borderColor: "#e5e5e5",
-          }}
-        >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, p: 2, borderStyle: "solid", borderColor: "#e5e5e5" }}>
           <Typography variant="h9" fontWeight={"bold"}>
             Property Details
           </Typography>
           <Divider></Divider>
 
-          <Stack
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              px: 1,
-              gap: 1,
-            }}
-          >
+          <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1 }}>
             <Stack item sx={{ width: 1 / 3 }}>
-              <TextField1
-                id="PropertyID"
-                label="Property ID"
-                value={formData.PropertyID}
-                onChange={handleInputChange}
-                pattern="[0-9]*"
-                title="Numbers only."
-              />
+              <TextField1 id="PropertyID" label="Property ID" value={formData.PropertyID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." />
             </Stack>
             <Stack item sx={{ width: 1 / 3 }}>
               <FormControl>
@@ -310,15 +268,7 @@ const UpdateProp = () => {
               </FormControl>
             </Stack>
           </Stack>
-          <Stack
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              px: 1,
-              gap: 1,
-              mb: 2,
-            }}
-          >
+          <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1, mb: 2 }}>
             <Stack item sx={{ width: 1 / 3 }}>
               <FormControl>
                 <InputLabel id="select-status">Status</InputLabel>
@@ -382,12 +332,7 @@ const UpdateProp = () => {
             }}
           >
             <Stack item sx={{ width: 1 / 3 }}>
-              <TextField1
-                id="SpecDoc"
-                label="Document Name"
-                value={formData.SpecDoc}
-                onChange={handleInputChange}
-              />
+              <TextField1 id="SpecDoc" label="Document Name" value={formData.SpecDoc} onChange={handleInputChange} />
             </Stack>
             <Stack item sx={{ width: 1 / 3 }}>
               <FormControl>
@@ -415,14 +360,7 @@ const UpdateProp = () => {
               </FormControl>
             </Stack>
             <Stack item sx={{ width: 1 / 3 }}>
-              <label
-                htmlFor="DateIssued"
-                style={{
-                  display: "inline-block",
-                  width: "150px",
-                  verticalAlign: "top",
-                }}
-              >
+              <label htmlFor="DateIssued" style={{ display: "inline-block", width: "150px", verticalAlign: "top" }}>
                 Date Issued
               </label>
               <input
@@ -437,15 +375,7 @@ const UpdateProp = () => {
               />
             </Stack>
           </Stack>
-          <Stack
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              px: 1,
-              gap: 1,
-              mb: 2,
-            }}
-          >
+          <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1, mb: 2 }}>
             <Stack item sx={{ width: 1 / 3 }}>
               <FormControl>
                 <InputLabel id="select-issuedby">Issued By</InputLabel>
@@ -497,43 +427,15 @@ const UpdateProp = () => {
               </FormControl>
             </Stack>
             <Stack item sx={{ width: 1 / 3 }}>
-              <label
-                htmlFor="New File"
-                style={{
-                  display: "inline-block",
-                  width: "250px",
-                  verticalAlign: "top",
-                }}
-              >
+              <label htmlFor="New File" style={{ display: "inline-block", width: "250px", verticalAlign: "top" }}>
                 New File{" "}
               </label>
-              <input
-                type="file"
-                id="Link"
-                onChange={handleFileChange}
-                style={{ width: "250px", display: "inline-block" }}
-                disabled={docLocked}
-              />
+              <input type="file" id="Link" onChange={handleFileChange} style={{ width: "250px", display: "inline-block" }} disabled={docLocked} />
             </Stack>
           </Stack>
-          <Stack
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              px: 1,
-              gap: 1,
-              mb: 2,
-            }}
-            alignItems="flex-start"
-            justifyContent="flex-end"
-          >
+          <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1, mb: 2 }} alignItems="flex-start" justifyContent="flex-end">
             <Stack item sx={{ width: 1 / 6 }}>
-              <Button
-                type="submit"
-                variant="contained"
-                size="small"
-                color="success"
-              >
+              <Button type="submit" variant="contained" size="small" color="success">
                 Update Property
               </Button>
             </Stack>
