@@ -15,15 +15,14 @@ const AddDeptAccountForm = () => {
   const [passwordsMatch, setPasswordsMatch] = useState(false);
   const [confirmPassChanged, setConfirmPassChanged] = useState(false);
 
+  const passwordField = formData.password;
+  const confirmPasswordField = formData["confirm-password"];
   useEffect(() => {
-    if (formData["confirm-password"]) {
-      const pass1 = formData.password;
-      const pass2 = formData["confirm-password"];
-      const matches = pass1 === pass2;
+    if (confirmPasswordField) {
       setConfirmPassChanged(true);
-      setPasswordsMatch(matches);
+      setPasswordsMatch(passwordField === confirmPasswordField);
     }
-  }, [formData]);
+  }, [passwordField, confirmPasswordField]);
 
   const buttonClick = (e) => {
     setCollapsed(!collapsed);
