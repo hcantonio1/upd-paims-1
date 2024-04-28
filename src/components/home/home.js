@@ -7,31 +7,9 @@ import { db } from "../../../firebase-config.js";
 import { commonCollections } from "../../services/prefetch.js";
 import { collection, onSnapshot } from "firebase/firestore";
 import { DataGrid } from "@mui/x-data-grid";
+import UserDetailDisplay from "./userDetailDisplay.js";
 
 const propertiesCollection = collection(db, "property");
-
-const UserDetailDisplay = ({ IconComponent, entryLabel, entryValue }) => {
-  return (
-    <Box display="flex" flexDirection="row" sx={{ bgcolor: "#e5e5e5", p: 1 }}>
-      <IconComponent />
-      <Box>
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: "bold",
-            mx: 1,
-          }}
-        >
-          {entryLabel}:
-        </Typography>
-      </Box>
-
-      <Box>
-        <Typography variant="h6">{entryValue}</Typography>
-      </Box>
-    </Box>
-  );
-};
 
 const HomePage = () => {
   const InvCol = [
