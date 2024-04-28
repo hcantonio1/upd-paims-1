@@ -7,9 +7,9 @@ const FormSelect = (props) => {
   const inputLabelLabel = `select-${smallLabel}`;
 
   return (
-    <FormControl>
+    <FormControl size="small">
       <InputLabel id={inputLabelLabel}>{label}</InputLabel>
-      <Select {...props} size="small" labelId={inputLabelLabel}>
+      <Select {...props} labelId={inputLabelLabel}>
         {choiceValuePairs.map((choice, index) => (
           <MenuItem key={`${label}_${index}`} value={choice[1]}>
             {choice[0]}
