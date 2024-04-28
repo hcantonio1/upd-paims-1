@@ -11,6 +11,15 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import SelectTextField from "../common/selectTextField";
 
+import PaimsForm from "../paimsform/PaimsForm";
+import FormSubheadered from "../paimsform/FormSubheadered";
+import FormRow from "../paimsform/FormRow";
+import SmallTextField from "../paimsform/SmallTextField";
+import FormSelect from "../paimsform/FormSelect";
+import SubmitButton from "../paimsform/SubmitButton";
+import FormDatePicker from "../paimsform/FormDatePicker";
+import FormFileUpload from "../paimsform/FormFileUpload";
+
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
     DocumentID: "",
@@ -409,6 +418,17 @@ const InsertRecord = () => {
       Link: file,
     });
   };
+
+  const itemSubheadered = (
+    <FormSubheadered subheader="Item Details">
+      {/* <FormRow segments={3}>
+        <SmallTextField id="PropertyID" label="Property ID" value={formData.PropertyID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
+      </FormRow> */}
+    </FormSubheadered>
+  );
+  const poSubheadered = <FormSubheadered></FormSubheadered>;
+  const supplierSubheadered = <FormSubheadered></FormSubheadered>;
+  const docSubheadered = <FormSubheadered></FormSubheadered>;
 
   return (
     <Layout pageTitle="INSERT">

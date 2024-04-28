@@ -94,10 +94,19 @@ const UpdateProp = () => {
   };
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
+    if (e.target.name !== "") {
+      // probably a PointerEvent due to MUI Select
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    } else {
+      // regular onChange event
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.value,
+      });
+    }
 
     if (e.target.id === "PropertyID") {
       fetchPropData(e.target.value);
@@ -235,52 +244,19 @@ const UpdateProp = () => {
   return (
     <PaimsForm header="Update a Property in the Database" onSubmit={handleSubmit}>
       <FormSubheadered subheader="Property Details">
-        <FormRow segments={3} test="Hello from updateProp">
+        <FormRow segments={3}>
           <SmallTextField id="PropertyID" label="Property ID" value={formData.PropertyID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
-          <FormSelect
-            label="Trustee"
-            id="TrusteeID"
-            value={formData.TrusteeID}
-            onChange={(e) => {
-              setFormData({ ...formData, TrusteeID: e.target.value });
-            }}
-            choiceValuePairs={users.map((user) => [getFullName(user), user.UserID])}
-          />
+          <FormSelect label="Trustee" id="TrusteeID" value={formData.TrusteeID} onChange={handleInputChange} choiceValuePairs={users.map((user) => [getFullName(user), user.UserID])} />
         </FormRow>
         <FormRow segments={3}>
-          <FormSelect
-            label="Status"
-            id="StatusID"
-            value={formData.StatusID}
-            onChange={(e) => {
-              setFormData({ ...formData, StatusID: e.target.value });
-            }}
-            choiceValuePairs={statuses.map((status) => [status.StatusName, status.StatusID])}
-          />
-          <FormSelect
-            label="Location"
-            id="LocationID"
-            value={formData.LocationID}
-            onChange={(e) => {
-              setFormData({ ...formData, LocationID: e.target.value });
-            }}
-            choiceValuePairs={locations.map((loc) => [getFullLoc(loc), loc.LocationID])}
-          />
+          <FormSelect label="Status" id="StatusID" value={formData.StatusID} onChange={handleInputChange} choiceValuePairs={statuses.map((status) => [status.StatusName, status.StatusID])} />
+          <FormSelect label="Location" id="LocationID" value={formData.LocationID} onChange={handleInputChange} choiceValuePairs={locations.map((loc) => [getFullLoc(loc), loc.LocationID])} />
         </FormRow>
       </FormSubheadered>
       <FormSubheadered subheader="Accompanying Document">
         <FormRow segments={3}>
           <SmallTextField id="SpecDoc" label="Document Name" value={formData.SpecDoc} onChange={handleInputChange} required />
-          <FormSelect
-            label="Type"
-            id="DocumentType"
-            value={formData.DocumentType}
-            onChange={(e) => {
-              setFormData({ ...formData, DocumentType: e.target.value });
-            }}
-            disabled={docLocked}
-            choiceValuePairs={types.map((type) => [type.Type, type.Type])}
-          />
+          <FormSelect label="Type" id="DocumentType" value={formData.DocumentType} onChange={handleInputChange} disabled={docLocked} choiceValuePairs={types.map((type) => [type.Type, type.Type])} />
           <FormDatePicker id="DateIssued" value={formData.DateIssued} onChange={handleInputChange} disabled={docLocked} />
         </FormRow>
         <FormRow segments={3}>
@@ -288,9 +264,7 @@ const UpdateProp = () => {
             label="IssuedBy"
             id="IssuedBy"
             value={formData.IssuedBy}
-            onChange={(e) => {
-              setFormData({ ...formData, IssuedBy: e.target.value });
-            }}
+            onChange={handleInputChange}
             disabled={docLocked}
             choiceValuePairs={users.map((user) => [getFullName(user), user.Username])}
           />
@@ -298,9 +272,7 @@ const UpdateProp = () => {
             label="ReceivedBy"
             id="ReceivedBy"
             value={formData.ReceivedBy}
-            onChange={(e) => {
-              setFormData({ ...formData, ReceivedBy: e.target.value });
-            }}
+            onChange={handleInputChange}
             disabled={docLocked}
             choiceValuePairs={users.map((user) => [getFullName(user), user.Username])}
           />
