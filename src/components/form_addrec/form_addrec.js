@@ -11,15 +11,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import SelectTextField from "../common/selectTextField";
 
-import PaimsForm from "../paimsform/PaimsForm";
-import FormSubheadered from "../paimsform/FormSubheadered";
-import FormRow from "../paimsform/FormRow";
-import SmallTextField from "../paimsform/SmallTextField";
-import FormSelect from "../paimsform/FormSelect";
-import SubmitButton from "../paimsform/SubmitButton";
-import FormDatePicker from "../paimsform/FormDatePicker";
-import FormFileUpload from "../paimsform/FormFileUpload";
-
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
     DocumentID: "",
@@ -419,17 +410,6 @@ const InsertRecord = () => {
     });
   };
 
-  const itemSubheadered = (
-    <FormSubheadered subheader="Item Details">
-      {/* <FormRow segments={3}>
-        <SmallTextField id="PropertyID" label="Property ID" value={formData.PropertyID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
-      </FormRow> */}
-    </FormSubheadered>
-  );
-  const poSubheadered = <FormSubheadered></FormSubheadered>;
-  const supplierSubheadered = <FormSubheadered></FormSubheadered>;
-  const docSubheadered = <FormSubheadered></FormSubheadered>;
-
   return (
     <Layout pageTitle="INSERT">
       <Box
@@ -459,7 +439,7 @@ const InsertRecord = () => {
                   <div key={`itemrow${index}`}>
                     <Stack padding={1} spacing={2} mt={2} direction="row" justifyContent="space-between">
                       {/* FIELDS: PropertyID, PropertyName, Trustee */}
-                      <Stack>
+                      <Stack item>
                         <label htmlFor={`PropertyID_${index}`} style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                         <TextField
                           label="Property ID"
@@ -477,7 +457,7 @@ const InsertRecord = () => {
                           title="Numbers only."
                         />
                       </Stack>
-                      <Stack>
+                      <Stack item>
                         <label htmlFor={`PropertyName_${index}`} style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                         <TextField
                           label="Property Name"
@@ -489,7 +469,7 @@ const InsertRecord = () => {
                           sx={{ width: 300 }}
                         />
                       </Stack>
-                      <Stack>
+                      <Stack item>
                         <label htmlFor={`TrusteeID_${index}`} style={{ display: "inline-block", verticalAlign: "top" }} />
                         <SelectTextField
                           label="Select Trustee"
@@ -504,7 +484,7 @@ const InsertRecord = () => {
 
                     {/* FIELDS: Category, Status, Location */}
                     <Stack padding={1} spacing={2} direction="row" justifyContent="space-between">
-                      <Stack>
+                      <Stack item>
                         <label htmlFor={`CategoryID_${index}`} style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                         <SelectTextField
                           label="Select Category"
@@ -514,7 +494,7 @@ const InsertRecord = () => {
                           options={categories}
                         />
                       </Stack>
-                      <Stack>
+                      <Stack item>
                         <label htmlFor={`StatusID_${index}`} style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
 
                         <SelectTextField
@@ -525,7 +505,7 @@ const InsertRecord = () => {
                           options={statuses}
                         />
                       </Stack>
-                      <Stack>
+                      <Stack item>
                         <label htmlFor={`LocationID_${index}`} style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
 
                         <SelectTextField
@@ -541,7 +521,7 @@ const InsertRecord = () => {
 
                     {/* FIELDS: PurchaseID, PurchaseDate, Cost */}
                     <Stack padding={1} spacing={2} mb={3} direction="row" justifyContent="space-between">
-                      <Stack>
+                      <Stack item>
                         <label htmlFor={`PurchaseOrderID_${index}`} style={{ display: "inline-block", width: "200px", verticalAlign: "top" }} />
 
                         <TextField
@@ -560,7 +540,7 @@ const InsertRecord = () => {
                           sx={{ width: 300 }}
                         />
                       </Stack>
-                      <Stack>
+                      <Stack item>
                         <label htmlFor={`TotalCost_${index}`} style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                         <TextField
                           label="Total Cost"
@@ -582,7 +562,7 @@ const InsertRecord = () => {
                         />
                       </Stack>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <Stack>
+                        <Stack item>
                           <label htmlFor={`PurchaseDate_${index}`} style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                           {/* <input
                           type="date"
@@ -625,22 +605,22 @@ const InsertRecord = () => {
 
                 {/* FIELDS: DocuType, DocuName, File*/}
                 <Stack padding={1} spacing={2} mt={2} direction="row" justifyContent="space-between">
-                  <Stack>
+                  <Stack item>
                     <label htmlFor="DocumentID" style={{ display: "inline-block", width: "200px", verticalAlign: "top" }} />
                     <TextField label="Document Name" variant="outlined" name="DocumentID" value={inputData.DocumentID} onChange={handleInputChange} required sx={{ width: 300 }} />
                   </Stack>
-                  <Stack>
+                  <Stack item>
                     <label htmlFor="DocumentType" style={{ display: "inline-block", width: "200px", verticalAlign: "top" }} />
                     <SelectTextField label="Select Document Type" name="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} options={types} />
                   </Stack>
 
-                  <Stack>
+                  <Stack item>
                     <label htmlFor="Link" style={{ display: "inline-block", width: "250px", verticalAlign: "top" }}>
                       New File{" "}
                     </label>
                     <input type="file" id="Link" onChange={handleFileChange} style={{ width: "250px", display: "inline-block" }} disabled={docLocked} />
                   </Stack>
-                  {/* <Stack>
+                  {/* <Stack item>
                     <label htmlFor="Link" style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                     <Button startIcon={<CloudUpload />} sx={{ color: "#014421", width: 300, height: 50 }} component="label" role={undefined}>
                       Upload File
@@ -651,16 +631,16 @@ const InsertRecord = () => {
 
                 {/* FIELDS: Issued, Receive, Date */}
                 <Stack padding={1} spacing={2} mb={3} direction="row" justifyContent="space-between">
-                  <Stack>
+                  <Stack item>
                     <label htmlFor="IssuedBy" style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                     <SelectTextField label="Issued By" name="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} options={users} getFunc={getFullName} lock={docLocked} />
                   </Stack>
-                  <Stack>
+                  <Stack item>
                     <label htmlFor="ReceivedBy" style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                     <SelectTextField label="Received By" name="ReceivedBy" value={inputData.ReceivedBy} onChange={handleInputChange} options={users} getFunc={getFullName} lock={docLocked} />
                   </Stack>
                   {/* <LocalizationProvider dateAdapter={AdapterDayjs}> */}
-                  <Stack>
+                  <Stack item>
                     <label htmlFor="DateIssued" style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                     <input type="date" name="DateIssued" value={inputData.DateIssued} onChange={handleInputChange} style={{ width: "250px", display: "inline-block" }} required readOnly={docLocked} />
                     {/* <DatePicker
@@ -677,7 +657,7 @@ const InsertRecord = () => {
                 </Stack>
 
                 <Stack padding={1} direction="row" alignItems="flex-start" justifyContent="flex-end">
-                  <Stack>
+                  <Stack item>
                     <Button type="submit" variant="contained" onClick={handleInsertDoc} sx={{ backgroundColor: "#014421", m: 1 }}>
                       Submit Document
                     </Button>
@@ -691,7 +671,7 @@ const InsertRecord = () => {
 
                 {/* FIELDS: SupplierID, SupplierName */}
                 <Stack padding={1} spacing={2} mt={2} direction="row" justifyContent="space-between">
-                  <Stack>
+                  <Stack item>
                     <label htmlFor="SupplierID" style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                     <TextField
                       label="Supplier ID"
@@ -705,11 +685,11 @@ const InsertRecord = () => {
                       sx={{ width: 300 }}
                     />
                   </Stack>
-                  <Stack>
+                  <Stack item>
                     <label htmlFor="SupplierName" style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                     <TextField label="Supplier Name" name="SupplierName" value={inputData.SupplierName} onChange={handleInputChange} sx={{ width: 300 }} readOnly={supLocked} required />
                   </Stack>
-                  <Stack>
+                  <Stack item>
                     <label htmlFor="SupplierContact" style={{ display: "inline-block", width: "200px", verticalAlign: "top" }} />
                     <TextField
                       label="Supplier Contact"
@@ -726,7 +706,7 @@ const InsertRecord = () => {
 
                 {/* FIELDS: Unit, Street, City, State */}
                 <Stack padding={1} spacing={2} mb={1} direction="row" justifyContent="space-between">
-                  <Stack>
+                  <Stack item>
                     <label htmlFor="UnitNumber" style={{ display: "inline-block", width: "120px", verticalAlign: "top" }} />
                     <TextField
                       label="Unit #"
@@ -739,22 +719,22 @@ const InsertRecord = () => {
                       readOnly={supLocked}
                     />
                   </Stack>
-                  <Stack>
+                  <Stack item>
                     <label htmlFor="StreetName" style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                     <TextField label="Street Name" name="StreetName" value={inputData.StreetName} onChange={handleInputChange} sx={{ width: 300 }} readOnly={supLocked} />
                   </Stack>
-                  <Stack>
+                  <Stack item>
                     <label htmlFor="City" style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                     <TextField label="City" name="City" value={inputData.City} onChange={handleInputChange} sx={{ width: 290 }} readOnly={supLocked} />
                   </Stack>
-                  <Stack>
+                  <Stack item>
                     <label htmlFor="State" style={{ display: "inline-block", width: "150px", verticalAlign: "top" }} />
                     <TextField label="State" name="State" value={inputData.State} onChange={handleInputChange} sx={{ width: 140 }} readOnly={supLocked} />
                   </Stack>
                 </Stack>
 
                 <Stack padding={1} direction="row" alignItems="flex-start" justifyContent="flex-end">
-                  <Stack>
+                  <Stack item>
                     <Button type="submit" variant="contained" sx={{ backgroundColor: "#014421", m: 1 }}>
                       Submit All
                     </Button>
