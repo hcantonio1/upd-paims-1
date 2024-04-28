@@ -12,3 +12,14 @@ const FormDatePicker = (props) => {
 };
 
 export default FormDatePicker;
+
+export const HtmlFormDatePicker = (props) => {
+  return (
+    <>
+      <label htmlFor={props.id} style={{ display: "inline-block", verticalAlign: "top" }}>
+        Date Issued
+      </label>
+      <input {...props} type="date" style={{ display: "inline-block" }} />
+    </>
+  );
+};
