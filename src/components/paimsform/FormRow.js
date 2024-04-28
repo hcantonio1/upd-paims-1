@@ -8,19 +8,26 @@ import { child } from "firebase/database";
  * children
  * segments
  */
-const FormRow = ({ children, segments }) => {
+const FormRow = ({ children, segments, test }) => {
   const segmentWidth = 1 / segments;
-  return (
-    <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1, mb: 2 }}>
-      {children.map((child, index) => {
-        return (
-          <Stack item sx={{ width: segmentWidth }} key={`${child.id}_column${index}`}>
-            {child}
-          </Stack>
-        );
-      })}
-    </Stack>
-  );
+  const childrens =
+    children.constructor !== Array ? (
+      <Stack item sx={{ width: segmentWidth }} key={`${child.id}_column1`}>
+        {children}
+      </Stack>
+    ) : (
+      <>
+        {children.map((child, index) => {
+          return (
+            <Stack item sx={{ width: segmentWidth }} key={`${child.id}_column${index}`}>
+              {child}
+            </Stack>
+          );
+        })}
+      </>
+    );
+
+  return <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1, mb: 2 }}>{childrens}</Stack>;
 };
 
 export default FormRow;

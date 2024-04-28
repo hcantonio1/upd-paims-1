@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Divider, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import { doc, updateDoc, getDoc, getDocs, collection, setDoc, Timestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../../../firebase-config";
+
+import PaimsForm from "../paimsform/PaimsForm";
+import FormSubheader from "../paimsform/FormSubheader";
+import FormRow from "../paimsform/FormRow";
+import SmallTextField from "../paimsform/SmallTextField";
+import FormSelect from "../paimsform/FormSelect";
+import SubmitButton from "../paimsform/SubmitButton";
+import FormDatePicker from "../paimsform/FormDatePicker";
+import FormFileUpload from "../paimsform/FormFileUpload";
 
 const UpdateProp = () => {
   const [formData, setFormData] = useState({
@@ -225,232 +233,81 @@ const UpdateProp = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column">
-      <Box sx={{ backgroundColor: "#e5e5e5", padding: 1 }}>
-        <Typography variant="h9" fontWeight={"bold"}>
-          Update an Existing Property in the Database
-        </Typography>
-      </Box>
-
-      <form onSubmit={handleSubmit}>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, p: 2, borderStyle: "solid", borderColor: "#e5e5e5" }}>
-          <Typography variant="h9" fontWeight={"bold"}>
-            Property Details
-          </Typography>
-          <Divider></Divider>
-
-          <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1 }}>
-            <Stack item sx={{ width: 1 / 3 }}>
-              <TextField1 id="PropertyID" label="Property ID" value={formData.PropertyID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." />
-            </Stack>
-            <Stack item sx={{ width: 1 / 3 }}>
-              <FormControl>
-                <InputLabel id="select-trustee">Trustee</InputLabel>
-                <Select
-                  size="small"
-                  labelId="select-trustee"
-                  id="TrusteeID"
-                  value={formData.TrusteeID}
-                  label="Trustee"
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      TrusteeID: e.target.value,
-                    })
-                  }
-                >
-                  {users.map((user, index) => (
-                    <MenuItem key={`Trustee_${index}`} value={user.UserID}>
-                      {getFullName(user)}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Stack>
-          </Stack>
-          <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1, mb: 2 }}>
-            <Stack item sx={{ width: 1 / 3 }}>
-              <FormControl>
-                <InputLabel id="select-status">Status</InputLabel>
-                <Select
-                  size="small"
-                  labelId="select-status"
-                  id="StatusID"
-                  value={formData.StatusID}
-                  label="Status"
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      StatusID: e.target.value,
-                    })
-                  }
-                >
-                  {statuses.map((status, index) => (
-                    <MenuItem key={`Status_${index}`} value={status.StatusID}>
-                      {status.StatusName}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Stack>
-            <Stack item sx={{ width: 1 / 3 }}>
-              <FormControl>
-                <InputLabel id="select-location">Location</InputLabel>
-                <Select
-                  size="small"
-                  labelId="select-location"
-                  id="LocationID"
-                  value={formData.LocationID}
-                  label="Location"
-                  onChange={(e) => {
-                    setFormData({
-                      ...formData,
-                      LocationID: e.target.value,
-                    });
-                  }}
-                >
-                  {locations.map((loc, index) => (
-                    <MenuItem key={`Location_${index}`} value={loc.LocationID}>
-                      {getFullLoc(loc)}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Stack>
-          </Stack>
-
-          <Typography variant="h9" fontWeight={"bold"}>
-            Accompanying Document
-          </Typography>
-          <Divider></Divider>
-          <Stack
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              px: 1,
-              gap: 1,
-            }}
-          >
-            <Stack item sx={{ width: 1 / 3 }}>
-              <TextField1 id="SpecDoc" label="Document Name" value={formData.SpecDoc} onChange={handleInputChange} />
-            </Stack>
-            <Stack item sx={{ width: 1 / 3 }}>
-              <FormControl>
-                <InputLabel id="select-type">Type</InputLabel>
-                <Select
-                  size="small"
-                  labelId="select-type"
-                  id="DocumentType"
-                  value={formData.DocumentType}
-                  label="Type"
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      DocumentType: e.target.value,
-                    })
-                  }
-                  disabled={docLocked}
-                >
-                  {types.map((type, index) => (
-                    <MenuItem key={`type_${index}`} value={type.Type}>
-                      {type.Type}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Stack>
-            <Stack item sx={{ width: 1 / 3 }}>
-              <label htmlFor="DateIssued" style={{ display: "inline-block", width: "150px", verticalAlign: "top" }}>
-                Date Issued
-              </label>
-              <input
-                type="date"
-                id="DateIssued"
-                value={formData.DateIssued}
-                onChange={(e) => {
-                  handleInputChange(e);
-                }}
-                style={{ width: "300px", display: "inline-block" }}
-                disabled={docLocked}
-              />
-            </Stack>
-          </Stack>
-          <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1, mb: 2 }}>
-            <Stack item sx={{ width: 1 / 3 }}>
-              <FormControl>
-                <InputLabel id="select-issuedby">Issued By</InputLabel>
-                <Select
-                  size="small"
-                  labelId="select-issuedby"
-                  id="IssuedBy"
-                  value={formData.IssuedBy}
-                  label="Issued By"
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      IssuedBy: e.target.value,
-                    })
-                  }
-                  disabled={docLocked}
-                >
-                  {users.map((user, index) => (
-                    <MenuItem key={`IssuedBy_${index}`} value={user.UserID}>
-                      {getFullName(user)}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Stack>
-            <Stack item sx={{ width: 1 / 3 }}>
-              <FormControl>
-                <InputLabel id="select-receivedby">Received By</InputLabel>
-                <Select
-                  size="small"
-                  labelId="select-receivedby"
-                  id="ReceivedBy"
-                  value={formData.ReceivedBy}
-                  label="Received By"
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      ReceivedBy: e.target.value,
-                    })
-                  }
-                  disabled={docLocked}
-                >
-                  {users.map((user, index) => (
-                    <MenuItem key={`ReceivedBy_${index}`} value={user.UserID}>
-                      {getFullName(user)}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Stack>
-            <Stack item sx={{ width: 1 / 3 }}>
-              <label htmlFor="New File" style={{ display: "inline-block", width: "250px", verticalAlign: "top" }}>
-                New File{" "}
-              </label>
-              <input type="file" id="Link" onChange={handleFileChange} style={{ width: "250px", display: "inline-block" }} disabled={docLocked} />
-            </Stack>
-          </Stack>
-          <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1, mb: 2 }} alignItems="flex-start" justifyContent="flex-end">
-            <Stack item sx={{ width: 1 / 6 }}>
-              <Button type="submit" variant="contained" size="small" color="success">
-                Update Property
-              </Button>
-            </Stack>
-          </Stack>
-        </Box>
-      </form>
-    </Box>
+    <PaimsForm header="Update a Property in the Database" onSubmit={handleSubmit}>
+      <FormSubheader subheader="Property Details" />
+      <FormRow segments={3} test="Hello from updateProp">
+        <SmallTextField id="PropertyID" label="Property ID" value={formData.PropertyID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
+        <FormSelect
+          label="Trustee"
+          id="TrusteeID"
+          value={formData.TrusteeID}
+          onChange={(e) => {
+            setFormData({ ...formData, TrusteeID: e.target.value });
+          }}
+          choiceValuePairs={users.map((user) => [getFullName(user), user.UserID])}
+        />
+      </FormRow>
+      <FormRow segments={3}>
+        <FormSelect
+          label="Status"
+          id="StatusID"
+          value={formData.StatusID}
+          onChange={(e) => {
+            setFormData({ ...formData, StatusID: e.target.value });
+          }}
+          choiceValuePairs={statuses.map((status) => [status.StatusName, status.StatusID])}
+        />
+        <FormSelect
+          label="Location"
+          id="LocationID"
+          value={formData.LocationID}
+          onChange={(e) => {
+            setFormData({ ...formData, LocationID: e.target.value });
+          }}
+          choiceValuePairs={locations.map((loc) => [getFullLoc(loc), loc.LocationID])}
+        />
+      </FormRow>
+      <FormSubheader subheader="Accompanying Document" />
+      <FormRow segments={3}>
+        <SmallTextField id="SpecDoc" label="Document Name" value={formData.SpecDoc} onChange={handleInputChange} required />
+        <FormSelect
+          label="Type"
+          id="DocumentType"
+          value={formData.DocumentType}
+          onChange={(e) => {
+            setFormData({ ...formData, DocumentType: e.target.value });
+          }}
+          disabled={docLocked}
+          choiceValuePairs={types.map((type) => [type.Type, type.Type])}
+        />
+        <FormDatePicker id="DateIssued" value={formData.DateIssued} onChange={handleInputChange} disabled={docLocked} />
+      </FormRow>
+      <FormRow segments={3}>
+        <FormSelect
+          label="IssuedBy"
+          id="IssuedBy"
+          value={formData.IssuedBy}
+          onChange={(e) => {
+            setFormData({ ...formData, IssuedBy: e.target.value });
+          }}
+          disabled={docLocked}
+          choiceValuePairs={users.map((user) => [getFullName(user), user.UserID])}
+        />
+        <FormSelect
+          label="ReceivedBy"
+          id="ReceivedBy"
+          value={formData.ReceivedBy}
+          onChange={(e) => {
+            setFormData({ ...formData, ReceivedBy: e.target.value });
+          }}
+          disabled={docLocked}
+          choiceValuePairs={users.map((user) => [getFullName(user), user.UserID])}
+        />
+        <FormFileUpload id="Link" onChange={handleFileChange} disabled={docLocked} />
+      </FormRow>
+      <SubmitButton text="Update Property" />
+    </PaimsForm>
   );
 };
 
 export default UpdateProp;
-
-// const StackRow = (props) => {
-//     return <Stack item></Stack>
-// }
-const TextField1 = (props) => {
-  return <TextField {...props} size="small" variant="outlined" required />;
-};
