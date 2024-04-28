@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { navigate } from "gatsby";
-import { isLoggedIn, getUser } from "../../services/auth";
+import { getUser } from "../../services/auth";
 
 const RestrictedComponent = ({ children, restrictedRoles }) => {
-  const [userRole, setUserRole] = useState(getUser().role);
+  const userRole = getUser().role;
   if (restrictedRoles.includes(userRole)) {
     return null;
   }

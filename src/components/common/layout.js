@@ -4,8 +4,6 @@ import Header from "./header";
 // import * as styles from "../styles/layout.module.css";
 import { Typography, Box } from "@mui/material";
 
-const navbarWidth = 200;
-
 const Layout = ({ pageTitle, children }) => {
   // LAYOUT PROPER
   return (

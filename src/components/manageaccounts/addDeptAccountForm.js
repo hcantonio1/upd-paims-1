@@ -27,7 +27,7 @@ const AddDeptAccountForm = () => {
     if (formData["confirm-password"]) {
       verifyConfirmPassField();
     }
-  }, [formData["confirm-password"]]);
+  }, [formData.password, formData["confirm-password"]]);
 
   const buttonClick = (e) => {
     setCollapsed(!collapsed);

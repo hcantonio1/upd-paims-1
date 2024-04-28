@@ -117,16 +117,19 @@ const Login = () => {
                 label="Email"
                 onChange={handleUpdate}
                 variant="outlined"
+                size="small"
               />
 
               {/* password field  */}
+
               <TextField
                 sx={{ mx: "auto", width: "70%" }}
-                type="text"
                 name="password"
                 label="Password"
+                type="password"
                 onChange={handleUpdate}
                 variant="outlined"
+                size="small"
               />
 
               {/* login button  */}

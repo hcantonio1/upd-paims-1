@@ -1,6 +1,6 @@
 import * as React from "react";
 import Layout from "../common/layout";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import UpdateProp from "./updateProp";
 import UpdateSupplier from "./updateSupplier";
 

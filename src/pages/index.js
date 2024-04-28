@@ -1,6 +1,6 @@
 import React from "react";
 // import App from "./app";
-import { Link, navigate } from "gatsby";
+import { navigate } from "gatsby";
 
 export default function IndexPage() {
   navigate("/app/home");
