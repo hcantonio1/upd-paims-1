@@ -1,101 +1,39 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../common/layout";
-// import * as styles from "../../styles/index.module.css";
 import { getUser } from "../../services/auth";
-import { Box, Typography, makeStyles } from "@material-ui/core";
+import { Box, Typography } from "@mui/material";
 import { AccountCircle, Build } from "@material-ui/icons";
 import { db } from "../../../firebase-config.js";
 import { commonCollections } from "../../services/prefetch.js";
-import FilterBy from "../common/filter.js";
-import {
-  collection,
-  getDocs,
-  onSnapshot,
-  query,
-  where,
-} from "firebase/firestore";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import firebase from "firebase/app";
-import "firebase/database";
-
-const useStyles = makeStyles({
-  root: {
-    padding: 20,
-  },
-
-  userInfo: {
-    backgroundColor: "#e5e5e5",
-  },
-
-  changeLogTextContainer: {
-    backgroundColor: "#e5e5e5",
-    padding: 20,
-  },
-
-  changeLogText: {
-    fontWeight: "bold",
-  },
-
-  userText: {
-    fontWeight: "bold",
-    margin: 5,
-  },
-
-  changeLog: {
-    borderStyle: "solid",
-    borderColor: "#e5e5e5",
-  },
-
-  recentChangesText: {
-    fontStyle: "italic",
-  },
-
-  roleText: {
-    fontWeight: "bold",
-    padding: 5,
-  },
-
-  icons: {
-    marginTop: 8,
-    marginLeft: 8,
-  },
-
-  email: {
-    marginTop: 5,
-    marginBottom: 5,
-  },
-});
-
+import { collection, onSnapshot } from "firebase/firestore";
+import { DataGrid } from "@mui/x-data-grid";
 
 const propertiesCollection = collection(db, "property");
 
 const UserDetailDisplay = ({ IconComponent, entryLabel, entryValue }) => {
-  const classes = useStyles();
   return (
-    <Box display="flex" flexDirection="row" className={classes.userInfo}>
-      <IconComponent className={classes.icons} />
+    <Box display="flex" flexDirection="row" sx={{ bgcolor: "#e5e5e5", p: 1 }}>
+      <IconComponent />
       <Box>
-        <Typography variant="h6" className={classes.roleText}>
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: "bold",
+            mx: 1,
+          }}
+        >
           {entryLabel}:
         </Typography>
       </Box>
 
       <Box>
-        <Typography variant="h6" className={classes.email}>
-          {entryValue}
-        </Typography>
+        <Typography variant="h6">{entryValue}</Typography>
       </Box>
-
-      
     </Box>
   );
 };
 
 const HomePage = () => {
-  const classes = useStyles();
-
-
-
   const InvCol = [
     { field: "PropertyID", headerName: "ID", width: 90 },
     { field: "PropertyName", headerName: "Name", width: 150 },
@@ -107,9 +45,7 @@ const HomePage = () => {
     { field: "SupplierID", headerName: "Supplier", width: 150 },
   ];
 
-  const filterableColumns = InvCol.filter(
-    (column) => column.filterable
-  );
+  const filterableColumns = InvCol.filter((column) => column.filterable);
   const [inventoryData, setInventoryData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchResultsEmpty, setSearchResultsEmpty] = useState(false);
@@ -201,23 +137,26 @@ const HomePage = () => {
     setFilteredData(sortedResults);
   };
 
-
-
   return (
     <Layout pageTitle="DASHBOARD">
       {/* home content container  */}
       <Box
         display="flex"
         flexDirection="column"
-        className={classes.root}
         sx={{
-          rowGap: 20,
+          rowGap: 2,
         }}
       >
         {/* user information container  */}
         <Box display="flex" flexDirection="column">
           {/* hello user  */}
-          <Typography variant="h6" className={classes.userText}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "bold",
+              margin: 1,
+            }}
+          >
             Hello, {getUser().firstname}!
           </Typography>
 
@@ -243,45 +182,50 @@ const HomePage = () => {
         {/* changelog container  */}
         <Box display="flex" flexDirection="column">
           {/* changelog text  */}
-          <Box className={classes.changeLogTextContainer}>
-            <Typography variant="h6" className={classes.changeLogText}>
+          <Box
+            sx={{
+              bgcolor: "#e5e5e5",
+              padding: 2,
+            }}
+          >
+            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               Changelog
             </Typography>
           </Box>
 
           {/* recent changes container APRL 24 COMMENT: add condition to put back ung No recent changes 
-          mmade if there is no pending properties */} 
-          <Box className={classes.changeLog}>  
-            {/* <Typography align="center" className={classes.recentChangesText}>
+          mmade if there is no pending properties */}
+          <Box
+            sx={{
+              borderStyle: "solid",
+              borderColor: "#e5e5e5",
+            }}
+          >
+            {/* <Typography align="center" sx={{fontStyle: "italic"}}>
               No recent changes have been made.
             </Typography> */}
-              <Box sx={{ height: 400, width: "100%" }}>
-                <DataGrid
-                  getRowId={(row) => row.PropertyID + "_" + row.PurchaseOrderID}
-                  rows={filteredData.length > 0 ? filteredData : inventoryData}
-                  columns={InvCol}
-                  initialState={{
-                    pagination: {
-                      paginationModel: {
-                        pageSize: 5,
-                      },
+            <Box sx={{ height: 400, width: "100%" }}>
+              <DataGrid
+                getRowId={(row) => row.PropertyID + "_" + row.PurchaseOrderID}
+                rows={filteredData.length > 0 ? filteredData : inventoryData}
+                columns={InvCol}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 5,
                     },
-                  }}
-                  pageSizeOptions={[5]}
-                  checkboxSelection
-                  disableRowSelectionOnClick
-                />
+                  },
+                }}
+                pageSizeOptions={[5]}
+                checkboxSelection
+                disableRowSelectionOnClick
+              />
             </Box>
           </Box>
-
-
-          
         </Box>
       </Box>
     </Layout>
   );
 };
-
-
 
 export default HomePage;
