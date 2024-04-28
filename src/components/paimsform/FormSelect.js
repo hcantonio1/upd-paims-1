@@ -2,7 +2,7 @@ import React from "react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
 const FormSelect = (props) => {
-  const { id, label, choiceValuePairs } = props;
+  const { id, label, choicevaluepairs } = props;
   const smallLabel = label.charAt(0).toLowerCase() + label.slice(1);
   const inputLabelLabel = `select-${smallLabel}`;
 
@@ -10,7 +10,7 @@ const FormSelect = (props) => {
     <FormControl id={id} size="small">
       <InputLabel id={inputLabelLabel}>{label}</InputLabel>
       <Select {...props} name={id} labelId={inputLabelLabel}>
-        {choiceValuePairs.map((choice, index) => (
+        {choicevaluepairs.map((choice, index) => (
           <MenuItem key={`${label}_${index}`} value={choice[1]}>
             {choice[0]}
           </MenuItem>

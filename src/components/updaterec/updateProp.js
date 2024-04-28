@@ -246,17 +246,17 @@ const UpdateProp = () => {
       <FormSubheadered subheader="Property Details">
         <FormRow segments={3}>
           <SmallTextField id="PropertyID" label="Property ID" value={formData.PropertyID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
-          <FormSelect label="Trustee" id="TrusteeID" value={formData.TrusteeID} onChange={handleInputChange} choiceValuePairs={users.map((user) => [getFullName(user), user.UserID])} />
+          <FormSelect label="Trustee" id="TrusteeID" value={formData.TrusteeID} onChange={handleInputChange} choicevaluepairs={users.map((user) => [getFullName(user), user.UserID])} />
         </FormRow>
         <FormRow segments={3}>
-          <FormSelect label="Status" id="StatusID" value={formData.StatusID} onChange={handleInputChange} choiceValuePairs={statuses.map((status) => [status.StatusName, status.StatusID])} />
-          <FormSelect label="Location" id="LocationID" value={formData.LocationID} onChange={handleInputChange} choiceValuePairs={locations.map((loc) => [getFullLoc(loc), loc.LocationID])} />
+          <FormSelect label="Status" id="StatusID" value={formData.StatusID} onChange={handleInputChange} choicevaluepairs={statuses.map((status) => [status.StatusName, status.StatusID])} />
+          <FormSelect label="Location" id="LocationID" value={formData.LocationID} onChange={handleInputChange} choicevaluepairs={locations.map((loc) => [getFullLoc(loc), loc.LocationID])} />
         </FormRow>
       </FormSubheadered>
       <FormSubheadered subheader="Accompanying Document">
         <FormRow segments={3}>
           <SmallTextField id="SpecDoc" label="Document Name" value={formData.SpecDoc} onChange={handleInputChange} required />
-          <FormSelect label="Type" id="DocumentType" value={formData.DocumentType} onChange={handleInputChange} disabled={docLocked} choiceValuePairs={types.map((type) => [type.Type, type.Type])} />
+          <FormSelect label="Type" id="DocumentType" value={formData.DocumentType} onChange={handleInputChange} disabled={docLocked} choicevaluepairs={types.map((type) => [type.Type, type.Type])} />
           <FormDatePicker id="DateIssued" value={formData.DateIssued} onChange={handleInputChange} disabled={docLocked} />
         </FormRow>
         <FormRow segments={3}>
@@ -266,7 +266,7 @@ const UpdateProp = () => {
             value={formData.IssuedBy}
             onChange={handleInputChange}
             disabled={docLocked}
-            choiceValuePairs={users.map((user) => [getFullName(user), user.Username])}
+            choicevaluepairs={users.map((user) => [getFullName(user), user.Username])}
           />
           <FormSelect
             label="ReceivedBy"
@@ -274,7 +274,7 @@ const UpdateProp = () => {
             value={formData.ReceivedBy}
             onChange={handleInputChange}
             disabled={docLocked}
-            choiceValuePairs={users.map((user) => [getFullName(user), user.Username])}
+            choicevaluepairs={users.map((user) => [getFullName(user), user.Username])}
           />
           <FormFileUpload id="Link" onChange={handleFileChange} disabled={docLocked} />
         </FormRow>
