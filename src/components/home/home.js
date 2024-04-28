@@ -144,7 +144,6 @@ const HomePage = () => {
         display="flex"
         flexDirection="column"
         sx={{
-          width: "100%",
           px: 1,
           rowGap: 2,
         }}
