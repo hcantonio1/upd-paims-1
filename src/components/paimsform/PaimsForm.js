@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 
 // Testing. Import subcomps to make UpdateSup form
+import FormTitle from "./FormHeader";
 import FormSubheader from "./FormSubheader";
 
 /* TOP-DOWN DESIGN APPROACH: make PaimsForm first
@@ -10,11 +11,27 @@ import FormSubheader from "./FormSubheader";
  * "I also want that I am the one who will supply Components to FormRow."
  */
 
-const PaimsForm = (props) => {
-  <Box display="flex" flexDirection="column">
-    <FormSubheader subheader="Update a Supplier in the Database" />
-    {props.children}
-  </Box>;
+const formtitle = <FormTitle title="Update a Supplier in the Database" />;
+
+const children = (
+  <>
+    <FormSubheader subheader="Supplier Details" />
+  </>
+);
+
+const PaimsForm = () => {
+  return (
+    <form>
+      <Box display="flex" flexDirection="column">
+        {/* props.formtitle */}
+        {formtitle}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, p: 2, borderStyle: "solid", borderColor: "#e5e5e5" }}>
+          {/* props.children */}
+          {children}
+        </Box>
+      </Box>
+    </form>
+  );
 };
 
 export default PaimsForm;

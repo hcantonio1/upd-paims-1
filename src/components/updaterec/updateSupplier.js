@@ -3,6 +3,8 @@ import { Box, Button, Divider, Stack, TextField, Typography } from "@mui/materia
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 
+import PaimsForm from "../paimsform/PaimsForm";
+
 /* In the future, add a heading "Edit an Existing Supplier" dropdown component before the first heading, "Supplier Details" */
 
 const UpdateSupplier = () => {
@@ -82,14 +84,20 @@ const UpdateSupplier = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column">
-      <Box sx={{ backgroundColor: "#e5e5e5", padding: 1 }}>
+    <form onSubmit={handleSubmit}>
+      <Box display="flex" flexDirection="column">
+        {/* <Box sx={{ backgroundColor: "#e5e5e5", padding: 1 }}>
         <Typography variant="h9" fontWeight={"bold"}>
           Update a Supplier in the Database
         </Typography>
-      </Box>
+      </Box> */}
 
-      <form onSubmit={handleSubmit}>
+        {/* <form onSubmit={handleSubmit}> */}
+        <Box sx={{ backgroundColor: "#e5e5e5", padding: 1 }}>
+          <Typography variant="h9" fontWeight={"bold"}>
+            Update a Supplier in the Database
+          </Typography>
+        </Box>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1, p: 2, borderStyle: "solid", borderColor: "#e5e5e5" }}>
           <Typography variant="h9" fontWeight={"bold"}>
             Supplier Details
@@ -144,8 +152,11 @@ const UpdateSupplier = () => {
             </Stack>
           </Stack>
         </Box>
-      </form>
-    </Box>
+        <br />
+        <br />
+        <PaimsForm />
+      </Box>
+    </form>
   );
 };
 
