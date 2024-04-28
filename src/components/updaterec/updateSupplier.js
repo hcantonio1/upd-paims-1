@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  Divider,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Divider, Stack, TextField, Typography } from "@mui/material";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 
@@ -97,58 +90,21 @@ const UpdateSupplier = () => {
       </Box>
 
       <form onSubmit={handleSubmit}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 1,
-            p: 2,
-            borderStyle: "solid",
-            borderColor: "#e5e5e5",
-          }}
-        >
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, p: 2, borderStyle: "solid", borderColor: "#e5e5e5" }}>
           <Typography variant="h9" fontWeight={"bold"}>
             Supplier Details
           </Typography>
           <Divider></Divider>
 
-          <Stack
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              px: 1,
-              gap: 1,
-              mb: 2,
-            }}
-          >
+          <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1, mb: 2 }}>
             <Stack item sx={{ width: 1 / 3 }}>
-              <TextField1
-                id="SupplierID"
-                label="Supplier ID"
-                value={formData.SupplierID}
-                onChange={handleInputChange}
-                pattern="[0-9]*"
-                title="Numbers only."
-                required
-              />
+              <TextField1 id="SupplierID" label="Supplier ID" value={formData.SupplierID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
             </Stack>
             <Stack item sx={{ width: 1 / 3 }}>
-              <TextField1
-                id="SupplierName"
-                label="Supplier Name"
-                value={formData.SupplierName}
-                onChange={handleInputChange}
-                required
-              />
+              <TextField1 id="SupplierName" label="Supplier Name" value={formData.SupplierName} onChange={handleInputChange} required />
             </Stack>
             <Stack item sx={{ width: 1 / 3 }}>
-              <TextField1
-                id="SupplierContact"
-                label="Contact Number"
-                value={formData.SupplierContact}
-                onChange={handleInputChange}
-                required
-              />
+              <TextField1 id="SupplierContact" label="Contact Number" value={formData.SupplierContact} onChange={handleInputChange} required />
             </Stack>
           </Stack>
 
@@ -156,46 +112,18 @@ const UpdateSupplier = () => {
             Supplier Address
           </Typography>
           <Divider></Divider>
-          <Stack
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              px: 1,
-              gap: 1,
-              mb: 2,
-            }}
-          >
+          <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1, mb: 2 }}>
             <Stack item sx={{ width: 1 / 4 }}>
-              <TextField1
-                id="UnitNumber"
-                label="Unit Number"
-                value={formData.UnitNumber}
-                onChange={handleInputChange}
-              />
+              <TextField1 id="UnitNumber" label="Unit Number" value={formData.UnitNumber} onChange={handleInputChange} />
             </Stack>
             <Stack item sx={{ width: 1 / 4 }}>
-              <TextField1
-                id="StreetName"
-                label="Street Name"
-                value={formData.StreetName}
-                onChange={handleInputChange}
-              />
+              <TextField1 id="StreetName" label="Street Name" value={formData.StreetName} onChange={handleInputChange} />
             </Stack>
             <Stack item sx={{ width: 1 / 4 }}>
-              <TextField1
-                id="City"
-                label="City"
-                value={formData.City}
-                onChange={handleInputChange}
-              />
+              <TextField1 id="City" label="City" value={formData.City} onChange={handleInputChange} />
             </Stack>
             <Stack item sx={{ width: 1 / 4 }}>
-              <TextField1
-                id="State"
-                label="State"
-                value={formData.State}
-                onChange={handleInputChange}
-              />
+              <TextField1 id="State" label="State" value={formData.State} onChange={handleInputChange} />
             </Stack>
           </Stack>
           <Stack
@@ -210,12 +138,7 @@ const UpdateSupplier = () => {
             justifyContent="flex-end"
           >
             <Stack item sx={{ width: 1 / 6 }}>
-              <Button
-                type="submit"
-                variant="contained"
-                size="small"
-                color="success"
-              >
+              <Button type="submit" variant="contained" size="small" color="success">
                 Update Supplier
               </Button>
             </Stack>
