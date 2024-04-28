@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { Box, Button, Divider, Stack, TextField, Typography } from "@mui/material";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 
 import PaimsForm from "../paimsform/PaimsForm";
+import FormSubheader from "../paimsform/FormSubheader";
+import FormRow from "../paimsform/FormRow";
+import SmallTextField from "../paimsform/SmallTextField";
+import SubmitButton from "../paimsform/SubmitButton";
 
-/* In the future, add a heading "Edit an Existing Supplier" dropdown component before the first heading, "Supplier Details" */
+/* In the future, add a heading "Select Existing Supplier" dropdown component before the first heading, "Supplier Details" */
 
 const UpdateSupplier = () => {
   const [formData, setFormData] = useState({
@@ -84,87 +87,23 @@ const UpdateSupplier = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Box display="flex" flexDirection="column">
-        {/* <Box sx={{ backgroundColor: "#e5e5e5", padding: 1 }}>
-        <Typography variant="h9" fontWeight={"bold"}>
-          Update a Supplier in the Database
-        </Typography>
-      </Box> */}
-
-        {/* <form onSubmit={handleSubmit}> */}
-        <Box sx={{ backgroundColor: "#e5e5e5", padding: 1 }}>
-          <Typography variant="h9" fontWeight={"bold"}>
-            Update a Supplier in the Database
-          </Typography>
-        </Box>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1, p: 2, borderStyle: "solid", borderColor: "#e5e5e5" }}>
-          <Typography variant="h9" fontWeight={"bold"}>
-            Supplier Details
-          </Typography>
-          <Divider></Divider>
-
-          <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1, mb: 2 }}>
-            <Stack item sx={{ width: 1 / 3 }}>
-              <TextField1 id="SupplierID" label="Supplier ID" value={formData.SupplierID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
-            </Stack>
-            <Stack item sx={{ width: 1 / 3 }}>
-              <TextField1 id="SupplierName" label="Supplier Name" value={formData.SupplierName} onChange={handleInputChange} required />
-            </Stack>
-            <Stack item sx={{ width: 1 / 3 }}>
-              <TextField1 id="SupplierContact" label="Contact Number" value={formData.SupplierContact} onChange={handleInputChange} required />
-            </Stack>
-          </Stack>
-
-          <Typography variant="h9" fontWeight={"bold"}>
-            Supplier Address
-          </Typography>
-          <Divider></Divider>
-          <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1, mb: 2 }}>
-            <Stack item sx={{ width: 1 / 4 }}>
-              <TextField1 id="UnitNumber" label="Unit Number" value={formData.UnitNumber} onChange={handleInputChange} />
-            </Stack>
-            <Stack item sx={{ width: 1 / 4 }}>
-              <TextField1 id="StreetName" label="Street Name" value={formData.StreetName} onChange={handleInputChange} />
-            </Stack>
-            <Stack item sx={{ width: 1 / 4 }}>
-              <TextField1 id="City" label="City" value={formData.City} onChange={handleInputChange} />
-            </Stack>
-            <Stack item sx={{ width: 1 / 4 }}>
-              <TextField1 id="State" label="State" value={formData.State} onChange={handleInputChange} />
-            </Stack>
-          </Stack>
-          <Stack
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              px: 1,
-              gap: 1,
-              mb: 2,
-            }}
-            alignItems="flex-start"
-            justifyContent="flex-end"
-          >
-            <Stack item sx={{ width: 1 / 6 }}>
-              <Button type="submit" variant="contained" size="small" color="success">
-                Update Supplier
-              </Button>
-            </Stack>
-          </Stack>
-        </Box>
-        <br />
-        <br />
-        <PaimsForm />
-      </Box>
-    </form>
+    <PaimsForm header="Update an Supplier in the Database" onSubmit={handleSubmit}>
+      <FormSubheader subheader="Supplier Details" />
+      <FormRow segments={3}>
+        <SmallTextField id="SupplierID" label="Supplier ID" value={formData.SupplierID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
+        <SmallTextField id="SupplierName" label="Supplier Name" value={formData.SupplierName} onChange={handleInputChange} required />
+        <SmallTextField id="SupplierContact" label="Contact Number" value={formData.SupplierContact} onChange={handleInputChange} required />
+      </FormRow>
+      <FormSubheader subheader="Supplier Address" />
+      <FormRow segments={4}>
+        <SmallTextField id="UnitNumber" label="Unit Number" value={formData.UnitNumber} onChange={handleInputChange} />
+        <SmallTextField id="StreetName" label="Street Name" value={formData.StreetName} onChange={handleInputChange} />
+        <SmallTextField id="City" label="City" value={formData.City} onChange={handleInputChange} />
+        <SmallTextField id="State" label="State" value={formData.State} onChange={handleInputChange} />
+      </FormRow>
+      <SubmitButton text="Update Supplier" />
+    </PaimsForm>
   );
 };
 
 export default UpdateSupplier;
-
-// const StackRow = (props) => {
-//     return <Stack item></Stack>
-// }
-const TextField1 = (props) => {
-  return <TextField {...props} size="small" variant="outlined" />;
-};
