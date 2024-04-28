@@ -2,13 +2,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "../common/layout.js";
 import SearchBar from "../common/searchbar.js";
 import FilterBy from "../common/filter.js";
-import {
-  collection,
-  getDocs,
-  onSnapshot,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../../firebase-config.js";
 import { commonCollections } from "../../services/prefetch.js";
 import Box from "@mui/material/Box";
@@ -16,43 +10,38 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import firebase from "firebase/app";
 import "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
-import { Redirect, Link } from 'react-router-dom';
-
+import { Redirect, Link } from "react-router-dom";
 
 const propertyDocRef = doc(db, "property", "YOUR_PROPERTY_ID");
 
-
 const propertiesCollection = collection(db, "property");
 
-const propertyDocSnapshot = await getDoc(propertyDocRef);
-if (propertyDocSnapshot.exists()) {
-  const propertyData = propertyDocSnapshot.data();
-  const icsID = propertyData.icsID;
-  if (icsID) {
-    // Retrieve the DocumentID from icsID
-    const documentID = `${propertyData.VerNum}`;
-    const documentDocRef = doc(db, "item_document", documentID);
-    
-    // Fetch the document from item_document collection
-    const documentDocSnapshot = await getDoc(documentDocRef);
-    if (documentDocSnapshot.exists()) {
-      const documentData = documentDocSnapshot.data();
-      const link = documentData.Link;
-      console.log("Link:", link);
-    } else {
-      console.log("Document not found in item_document collection.");
-    }
-  } else {
-    console.log("icsID is empty.");
-  }
-} else {
-  console.log("Property document not found.");
-}
+// const propertyDocSnapshot = await getDoc(propertyDocRef);
+// if (propertyDocSnapshot.exists()) {
+//   const propertyData = propertyDocSnapshot.data();
+//   const icsID = propertyData.icsID;
+//   if (icsID) {
+//     // Retrieve the DocumentID from icsID
+//     const documentID = `${propertyData.VerNum}`;
+//     const documentDocRef = doc(db, "item_document", documentID);
 
-
+//     // Fetch the document from item_document collection
+//     const documentDocSnapshot = await getDoc(documentDocRef);
+//     if (documentDocSnapshot.exists()) {
+//       const documentData = documentDocSnapshot.data();
+//       const link = documentData.Link;
+//       console.log("Link:", link);
+//     } else {
+//       console.log("Document not found in item_document collection.");
+//     }
+//   } else {
+//     console.log("icsID is empty.");
+//   }
+// } else {
+//   console.log("Property document not found.");
+// }
 
 const InventoryPage = () => {
-
   const [link, setLink] = useState(null);
   const [rows, setRows] = useState([]);
 
@@ -66,30 +55,28 @@ const InventoryPage = () => {
           const icsID = propertyData.icsID;
           if (icsID) {
             const documentID = `${propertyData.VerNum}`;
-            const documentDocRef = doc(db, 'item_document', documentID);
+            const documentDocRef = doc(db, "item_document", documentID);
             const documentDocSnapshot = await getDoc(documentDocRef);
             if (documentDocSnapshot.exists()) {
               const documentData = documentDocSnapshot.data();
               const fetchedLink = documentData.Link;
               setLink(fetchedLink);
             } else {
-              console.log('Document not found in item_document collection.');
+              console.log("Document not found in item_document collection.");
             }
           } else {
-            console.log('icsID is empty.');
+            console.log("icsID is empty.");
           }
         } else {
-          console.log('Property document not found.');
+          console.log("Property document not found.");
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
   }, []);
-
-  
 
   const InvCol = [
     { field: "PropertyID", headerName: "ID", width: 90 },
@@ -101,43 +88,38 @@ const InventoryPage = () => {
     { field: "PurchaseOrderID", headerName: "Purchase Order", width: 90 },
     { field: "SupplierID", headerName: "Supplier", width: 150 },
 
-    // { field: "VerNum", headerName: "VER", width: 150 
-    //   // ,valueGetter: (value) => { return value } 
+    // { field: "VerNum", headerName: "VER", width: 150
+    //   // ,valueGetter: (value) => { return value }
     //   ,valueGetter: (param, row) => {
     //     return `${row.icsID.VerNum || 'AAA'} ${row.PropertyName || ''}`;
-    //   }, 
+    //   },
     // },
 
-    { field: "icsID", headerName: "ICS", width: 150,   
-    valueGetter: (params, row) => {
-      const propertyName = `${row.VerNum}`;
-      console.log("PROPNAMEAAA", propertyName);
-      console.log(typeof(propertyName));
-      console.log(`row.icsID.${row.VerNum}`);
-      console.log("what #1",row.icsID[row.VerNum]);
-      console.log("what #2", row.icsID[propertyName]);
-      const propValue = `row.icsID.${row.VerNum}`;
-      
-  
-      return row.icsID[row.VerNum];
-    } 
-  },
+    {
+      field: "icsID",
+      headerName: "ICS",
+      width: 150,
+      valueGetter: (params, row) => {
+        const propertyName = `${row.VerNum}`;
+        console.log("PROPNAMEAAA", propertyName);
+        console.log(typeof propertyName);
+        console.log(`row.icsID.${row.VerNum}`);
+        console.log("what #1", row.icsID[row.VerNum]);
+        console.log("what #2", row.icsID[propertyName]);
+        const propValue = `row.icsID.${row.VerNum}`;
 
-  // { field: "link", headerName: "ICS", width: 150 
-  //   , renderCell: (params) => (
-  //     <Link to={`/form/${params.value}`}>{params.value}</Link>
-  //   )
-  // },
+        return row.icsID[row.VerNum];
+      },
+    },
 
-
-
-
-
+    // { field: "link", headerName: "ICS", width: 150
+    //   , renderCell: (params) => (
+    //     <Link to={`/form/${params.value}`}>{params.value}</Link>
+    //   )
+    // },
   ];
 
-  const filterableColumns = InvCol.filter(
-    (column) => column.filterable
-  );
+  const filterableColumns = InvCol.filter((column) => column.filterable);
   const [inventoryData, setInventoryData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchResultsEmpty, setSearchResultsEmpty] = useState(false);
@@ -222,10 +204,7 @@ const InventoryPage = () => {
   };
 
   const handleSort = (columnKey) => {
-    const direction =
-      columnKey === sortConfig.key && sortConfig.direction === "asc"
-        ? "desc"
-        : "asc";
+    const direction = columnKey === sortConfig.key && sortConfig.direction === "asc" ? "desc" : "asc";
     setSortConfig({ key: columnKey, direction });
     const sortedResults = [...filteredData].sort((a, b) => {
       const aValue = a[columnKey];
@@ -234,9 +213,7 @@ const InventoryPage = () => {
       if (typeof aValue === "number" && typeof bValue === "number") {
         return direction === "asc" ? aValue - bValue : bValue - aValue;
       } else if (typeof aValue === "string" && typeof bValue === "string") {
-        return direction === "asc"
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
+        return direction === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
       }
       return 0;
     });
@@ -352,7 +329,6 @@ export default InventoryPage;
 
 //   fetchData();
 // }, []);
-
 
 // function DataTable({ data, columns, onSort, sortedField }) {
 //   // For Layout
