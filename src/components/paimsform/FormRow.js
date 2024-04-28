@@ -12,14 +12,14 @@ const FormRow = ({ children, segments, test }) => {
   const segmentWidth = 1 / segments;
   const childrens =
     children.constructor !== Array ? (
-      <Stack item sx={{ width: segmentWidth }} key={`${child.id}_column1`}>
+      <Stack sx={{ width: segmentWidth }} key={`${child.id}_column1`}>
         {children}
       </Stack>
     ) : (
       <>
         {children.map((child, index) => {
           return (
-            <Stack item sx={{ width: segmentWidth }} key={`${child.id}_column${index}`}>
+            <Stack sx={{ width: segmentWidth }} key={`${child.id}_column${index}`}>
               {child}
             </Stack>
           );
