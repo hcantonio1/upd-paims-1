@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  makeStyles,
-  ListItem,
-  List,
-  ListItemIcon,
-  ListItemText,
-} from "@material-ui/core";
+import { ListItem, List, ListItemIcon, ListItemText } from "@mui/material";
 import {
   HomeRounded,
   Folder,
@@ -20,47 +14,7 @@ import { Box } from "@mui/material";
 
 const navbarWidth = 235;
 
-// CLASSES AND STYLES FOR DESIGNING
-const useStyles = makeStyles({
-  root: {
-    display: "flex",
-    flexDirection: "row",
-    height: "100%",
-  },
-  page: {
-    background: "#f9f9f9",
-    width: "100%",
-  },
-  root: {
-    display: "flex",
-  },
-  drawer: {
-    width: navbarWidth,
-  },
-  drawerPaper: {
-    width: navbarWidth,
-  },
-  active: {
-    background: "#f4f4f4",
-  },
-  header: {
-    margin: 0,
-  },
-  pageTitleStyle: {
-    color: "#014421",
-    padding: 10,
-    marginTop: 10,
-    fontWeight: "bold",
-  },
-  contentContainer: {
-    margin: 10,
-    marginTop: 0,
-    backgroundColor: "#ffffff",
-  },
-});
-
 const Navbar = () => {
-  const classes = useStyles(); // FOR STYLING
   const [isOpen, setOpen] = useState(false);
 
   const handleDropDown = () => {
