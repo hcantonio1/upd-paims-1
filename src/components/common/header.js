@@ -5,22 +5,14 @@ import { isLoggedIn, logout } from "../../services/auth";
 import * as styles from "../../styles/header.module.css";
 import {
   Typography,
-  Box,
+  // Box,
   AppBar,
   Toolbar,
-  makeStyles,
+  // makeStyles,
   Grid,
-  Button,
+  // Button,
 } from "@material-ui/core";
-
-const useStyles = makeStyles({
-  logoutButton: {
-    margin: 40,
-    backgroundColor: "#014421",
-    color: "#ffffff",
-    borderRadius: "25px",
-  },
-});
+import { Box, Button } from "@mui/material";
 
 const Header = () => {
   const handleLogout = (event) => {
@@ -30,8 +22,6 @@ const Header = () => {
       navigate(`/app/login`);
     });
   };
-
-  const classes = useStyles();
 
   return (
     <header className={styles.header}>
@@ -59,11 +49,22 @@ const Header = () => {
           </Box>
 
           {/* log out button  */}
-          <Box>
+          <Box
+            display="flex"
+            flexDirection="row"
+            justifyContent="center"
+            flexGrow={1}
+          >
             <Button
               onClick={handleLogout}
               variant="contained"
-              className={classes.logoutButton}
+              // className={classes.logoutButton}
+              sx={{
+                margin: 4,
+                bgColor: "#014421",
+                color: "#ffffff",
+                borderRadius: 5,
+              }}
             >
               {" "}
               Log Out{" "}
