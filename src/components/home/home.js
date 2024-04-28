@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "../common/layout";
 import { getUser } from "../../services/auth";
 import { Box, Typography } from "@mui/material";
-import { AccountCircle, Build } from "@material-ui/icons";
+import { AccountCircle, Build } from "@mui/icons-material";
 import { db } from "../../../firebase-config.js";
 import { commonCollections } from "../../services/prefetch.js";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -144,6 +144,8 @@ const HomePage = () => {
         display="flex"
         flexDirection="column"
         sx={{
+          width: "100%",
+          px: 1,
           rowGap: 2,
         }}
       >

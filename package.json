@@ -16,13 +16,12 @@
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/styled": "^11.11.5",
     "@firebase/storage": "^0.12.2",
     "@fontsource/roboto": "^5.0.8",
-    "@material-ui/core": "^4.12.4",
-    "@material-ui/icons": "^4.11.3",
     "@mdx-js/react": "^2.3.0",
-    "@mui/material": "^5.15.11",
+    "@mui/icons-material": "^5.15.15",
+    "@mui/material": "^5.15.15",
     "@mui/x-data-grid": "^7.1.1",
     "@mui/x-date-pickers": "^7.1.1",
     "dayjs": "^1.11.10",
@@ -35,9 +34,13 @@
     "gatsby-source-filesystem": "^5.13.1",
     "install": "^0.13.0",
     "npm": "^10.5.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0",
     "react-router-dom": "^6.22.3",
     "sharp": "^0.33.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
   }
 }

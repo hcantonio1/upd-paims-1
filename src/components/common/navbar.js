@@ -7,7 +7,7 @@ import {
   AccountCircleRounded,
   ExpandLess,
   ExpandMore,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import RestrictedComponent from "./restrictedComponent";
 import { navigate } from "gatsby";
 import { Box } from "@mui/material";
