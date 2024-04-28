@@ -2,55 +2,11 @@ import * as React from "react";
 import Navbar from "./navbar";
 import Header from "./header";
 // import * as styles from "../styles/layout.module.css";
-import {
-  makeStyles,
-  Typography,
-  Box,
-  GridSpacing,
-  Button,
-} from "@material-ui/core";
-import { Grid } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 
 const navbarWidth = 200;
 
-// CLASSES AND STYLES FOR DESIGNING
-const useStyles = makeStyles({
-  root: {
-    display: "flex",
-    flexDirection: "row",
-    height: "100%",
-  },
-  page: {
-    background: "#f9f9f9",
-    width: "100%",
-  },
-  root: {
-    display: "flex",
-  },
-  active: {
-    background: "#f4f4f4",
-  },
-  header: {
-    margin: 0,
-  },
-  pageTitleStyle: {
-    color: "#014421",
-    margin: 15,
-    fontWeight: "bold",
-  },
-  contentContainer: {
-    margin: 10,
-    marginTop: 0,
-    backgroundColor: "#ffffff",
-  },
-  contentSegment: {
-    backgroundColor: "e5e5e5",
-  },
-});
-
 const Layout = ({ pageTitle, children }) => {
-  const classes = useStyles(); // FOR STYLING
-
   // LAYOUT PROPER
   return (
     // main container
@@ -64,7 +20,7 @@ const Layout = ({ pageTitle, children }) => {
       }}
     >
       {/* HEADER */}
-      <Header className={classes.header} />
+      <Header sx={{ margin: 0 }} />
 
       <Box
         display="flex"
@@ -86,7 +42,16 @@ const Layout = ({ pageTitle, children }) => {
           }}
         >
           {/* Page title */}
-          <Typography variant="h3" className={classes.pageTitleStyle}>
+          <Typography
+            variant="h3"
+            // color="#014421"
+            sx={{
+              color: "#014421",
+              mx: 2,
+              my: 1,
+              fontWeight: "bold",
+            }}
+          >
             {pageTitle}
           </Typography>
 
