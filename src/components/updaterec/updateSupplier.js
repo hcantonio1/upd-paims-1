@@ -3,7 +3,7 @@ import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 
 import PaimsForm from "../paimsform/PaimsForm";
-import FormSubheader from "../paimsform/FormSubheader";
+import FormSubheadered from "../paimsform/FormSubheadered";
 import FormRow from "../paimsform/FormRow";
 import SmallTextField from "../paimsform/SmallTextField";
 import SubmitButton from "../paimsform/SubmitButton";
@@ -87,20 +87,22 @@ const UpdateSupplier = () => {
   };
 
   return (
-    <PaimsForm header="Update an Supplier in the Database" onSubmit={handleSubmit}>
-      <FormSubheader subheader="Supplier Details" />
-      <FormRow segments={3}>
-        <SmallTextField id="SupplierID" label="Supplier ID" value={formData.SupplierID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
-        <SmallTextField id="SupplierName" label="Supplier Name" value={formData.SupplierName} onChange={handleInputChange} required />
-        <SmallTextField id="SupplierContact" label="Contact Number" value={formData.SupplierContact} onChange={handleInputChange} required />
-      </FormRow>
-      <FormSubheader subheader="Supplier Address" />
-      <FormRow segments={4}>
-        <SmallTextField id="UnitNumber" label="Unit Number" value={formData.UnitNumber} onChange={handleInputChange} />
-        <SmallTextField id="StreetName" label="Street Name" value={formData.StreetName} onChange={handleInputChange} />
-        <SmallTextField id="City" label="City" value={formData.City} onChange={handleInputChange} />
-        <SmallTextField id="State" label="State" value={formData.State} onChange={handleInputChange} />
-      </FormRow>
+    <PaimsForm header="Update a Supplier in the Database" onSubmit={handleSubmit}>
+      <FormSubheadered subheader="Supplier Details">
+        <FormRow segments={3}>
+          <SmallTextField id="SupplierID" label="Supplier ID" value={formData.SupplierID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
+          <SmallTextField id="SupplierName" label="Supplier Name" value={formData.SupplierName} onChange={handleInputChange} required />
+          <SmallTextField id="SupplierContact" label="Contact Number" value={formData.SupplierContact} onChange={handleInputChange} required />
+        </FormRow>
+      </FormSubheadered>
+      <FormSubheadered subheader="Supplier Address">
+        <FormRow segments={4}>
+          <SmallTextField id="UnitNumber" label="Unit Number" value={formData.UnitNumber} onChange={handleInputChange} />
+          <SmallTextField id="StreetName" label="Street Name" value={formData.StreetName} onChange={handleInputChange} />
+          <SmallTextField id="City" label="City" value={formData.City} onChange={handleInputChange} />
+          <SmallTextField id="State" label="State" value={formData.State} onChange={handleInputChange} />
+        </FormRow>
+      </FormSubheadered>
       <SubmitButton text="Update Supplier" />
     </PaimsForm>
   );

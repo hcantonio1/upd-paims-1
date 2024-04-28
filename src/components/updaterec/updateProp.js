@@ -4,7 +4,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../../../firebase-config";
 
 import PaimsForm from "../paimsform/PaimsForm";
-import FormSubheader from "../paimsform/FormSubheader";
+import FormSubheadered from "../paimsform/FormSubheadered";
 import FormRow from "../paimsform/FormRow";
 import SmallTextField from "../paimsform/SmallTextField";
 import FormSelect from "../paimsform/FormSelect";
@@ -234,77 +234,79 @@ const UpdateProp = () => {
 
   return (
     <PaimsForm header="Update a Property in the Database" onSubmit={handleSubmit}>
-      <FormSubheader subheader="Property Details" />
-      <FormRow segments={3} test="Hello from updateProp">
-        <SmallTextField id="PropertyID" label="Property ID" value={formData.PropertyID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
-        <FormSelect
-          label="Trustee"
-          id="TrusteeID"
-          value={formData.TrusteeID}
-          onChange={(e) => {
-            setFormData({ ...formData, TrusteeID: e.target.value });
-          }}
-          choiceValuePairs={users.map((user) => [getFullName(user), user.UserID])}
-        />
-      </FormRow>
-      <FormRow segments={3}>
-        <FormSelect
-          label="Status"
-          id="StatusID"
-          value={formData.StatusID}
-          onChange={(e) => {
-            setFormData({ ...formData, StatusID: e.target.value });
-          }}
-          choiceValuePairs={statuses.map((status) => [status.StatusName, status.StatusID])}
-        />
-        <FormSelect
-          label="Location"
-          id="LocationID"
-          value={formData.LocationID}
-          onChange={(e) => {
-            setFormData({ ...formData, LocationID: e.target.value });
-          }}
-          choiceValuePairs={locations.map((loc) => [getFullLoc(loc), loc.LocationID])}
-        />
-      </FormRow>
-      <FormSubheader subheader="Accompanying Document" />
-      <FormRow segments={3}>
-        <SmallTextField id="SpecDoc" label="Document Name" value={formData.SpecDoc} onChange={handleInputChange} required />
-        <FormSelect
-          label="Type"
-          id="DocumentType"
-          value={formData.DocumentType}
-          onChange={(e) => {
-            setFormData({ ...formData, DocumentType: e.target.value });
-          }}
-          disabled={docLocked}
-          choiceValuePairs={types.map((type) => [type.Type, type.Type])}
-        />
-        <FormDatePicker id="DateIssued" value={formData.DateIssued} onChange={handleInputChange} disabled={docLocked} />
-      </FormRow>
-      <FormRow segments={3}>
-        <FormSelect
-          label="IssuedBy"
-          id="IssuedBy"
-          value={formData.IssuedBy}
-          onChange={(e) => {
-            setFormData({ ...formData, IssuedBy: e.target.value });
-          }}
-          disabled={docLocked}
-          choiceValuePairs={users.map((user) => [getFullName(user), user.UserID])}
-        />
-        <FormSelect
-          label="ReceivedBy"
-          id="ReceivedBy"
-          value={formData.ReceivedBy}
-          onChange={(e) => {
-            setFormData({ ...formData, ReceivedBy: e.target.value });
-          }}
-          disabled={docLocked}
-          choiceValuePairs={users.map((user) => [getFullName(user), user.UserID])}
-        />
-        <FormFileUpload id="Link" onChange={handleFileChange} disabled={docLocked} />
-      </FormRow>
+      <FormSubheadered subheader="Property Details">
+        <FormRow segments={3} test="Hello from updateProp">
+          <SmallTextField id="PropertyID" label="Property ID" value={formData.PropertyID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
+          <FormSelect
+            label="Trustee"
+            id="TrusteeID"
+            value={formData.TrusteeID}
+            onChange={(e) => {
+              setFormData({ ...formData, TrusteeID: e.target.value });
+            }}
+            choiceValuePairs={users.map((user) => [getFullName(user), user.UserID])}
+          />
+        </FormRow>
+        <FormRow segments={3}>
+          <FormSelect
+            label="Status"
+            id="StatusID"
+            value={formData.StatusID}
+            onChange={(e) => {
+              setFormData({ ...formData, StatusID: e.target.value });
+            }}
+            choiceValuePairs={statuses.map((status) => [status.StatusName, status.StatusID])}
+          />
+          <FormSelect
+            label="Location"
+            id="LocationID"
+            value={formData.LocationID}
+            onChange={(e) => {
+              setFormData({ ...formData, LocationID: e.target.value });
+            }}
+            choiceValuePairs={locations.map((loc) => [getFullLoc(loc), loc.LocationID])}
+          />
+        </FormRow>
+      </FormSubheadered>
+      <FormSubheadered subheader="Accompanying Document">
+        <FormRow segments={3}>
+          <SmallTextField id="SpecDoc" label="Document Name" value={formData.SpecDoc} onChange={handleInputChange} required />
+          <FormSelect
+            label="Type"
+            id="DocumentType"
+            value={formData.DocumentType}
+            onChange={(e) => {
+              setFormData({ ...formData, DocumentType: e.target.value });
+            }}
+            disabled={docLocked}
+            choiceValuePairs={types.map((type) => [type.Type, type.Type])}
+          />
+          <FormDatePicker id="DateIssued" value={formData.DateIssued} onChange={handleInputChange} disabled={docLocked} />
+        </FormRow>
+        <FormRow segments={3}>
+          <FormSelect
+            label="IssuedBy"
+            id="IssuedBy"
+            value={formData.IssuedBy}
+            onChange={(e) => {
+              setFormData({ ...formData, IssuedBy: e.target.value });
+            }}
+            disabled={docLocked}
+            choiceValuePairs={users.map((user) => [getFullName(user), user.Username])}
+          />
+          <FormSelect
+            label="ReceivedBy"
+            id="ReceivedBy"
+            value={formData.ReceivedBy}
+            onChange={(e) => {
+              setFormData({ ...formData, ReceivedBy: e.target.value });
+            }}
+            disabled={docLocked}
+            choiceValuePairs={users.map((user) => [getFullName(user), user.Username])}
+          />
+          <FormFileUpload id="Link" onChange={handleFileChange} disabled={docLocked} />
+        </FormRow>
+      </FormSubheadered>
       <SubmitButton text="Update Property" />
     </PaimsForm>
   );

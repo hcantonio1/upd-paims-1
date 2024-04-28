@@ -27,7 +27,7 @@ const FormRow = ({ children, segments, test }) => {
       </>
     );
 
-  return <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1, mb: 2 }}>{childrens}</Stack>;
+  return <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1 }}>{childrens}</Stack>;
 };
 
 export default FormRow;
