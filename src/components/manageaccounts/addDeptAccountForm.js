@@ -17,9 +17,13 @@ const AddDeptAccountForm = () => {
 
   useEffect(() => {
     if (formData["confirm-password"]) {
-      verifyConfirmPassField();
+      const pass1 = formData.password;
+      const pass2 = formData["confirm-password"];
+      const matches = pass1 === pass2;
+      setConfirmPassChanged(true);
+      setPasswordsMatch(matches);
     }
-  }, [formData.password, formData["confirm-password"]]);
+  }, [formData]);
 
   const buttonClick = (e) => {
     setCollapsed(!collapsed);
@@ -46,14 +50,6 @@ const AddDeptAccountForm = () => {
       return;
     }
     createDepartmentAccount(formData);
-  };
-
-  const verifyConfirmPassField = () => {
-    const pass1 = formData.password;
-    const pass2 = formData["confirm-password"];
-    const matches = pass1 === pass2;
-    setConfirmPassChanged(true);
-    setPasswordsMatch(matches);
   };
 
   const form = (
