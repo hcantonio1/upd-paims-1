@@ -15,6 +15,7 @@ const AddDeptAccountForm = () => {
   const [passwordsMatch, setPasswordsMatch] = useState(false);
   const [confirmPassChanged, setConfirmPassChanged] = useState(false);
 
+  // useEffect extracted variables
   const passwordField = formData.password;
   const confirmPasswordField = formData["confirm-password"];
   useEffect(() => {
