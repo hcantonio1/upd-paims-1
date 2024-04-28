@@ -3,63 +3,9 @@ import { useState } from "react";
 import { StaticImage } from "gatsby-plugin-image";
 import { navigate } from "gatsby";
 import { handleLogin } from "../../services/auth";
-import { makeStyles } from "@material-ui/core";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, TextField } from "@mui/material";
 
 import * as styles from "../../styles/login.module.css";
-const useStyles = makeStyles({
-  greenRectangle: {
-    width: "100%",
-    height: 20,
-    backgroundColor: "#014421",
-  },
-
-  yellowRectangle: {
-    width: "100%",
-    height: 5,
-    backgroundColor: "#dea80f",
-  },
-
-  loginSecRoot: {
-    backgroundColor: "#7b1113",
-  },
-
-  whiteBox: {
-    backgroundColor: "#ffffff",
-    height: 350,
-    width: 500,
-    marginTop: 90,
-    borderRadius: "30px",
-  },
-
-  titleText: {
-    fontWeight: "bold",
-  },
-
-  textFieldContainer: {},
-
-  emailField: {
-    width: 300,
-    marginLeft: 80,
-    marginBottom: 10,
-    border: "none",
-    appearance: "none",
-    background: "#f2f2f2",
-    padding: 20,
-    borderRadius: 60,
-    fontSize: 15,
-  },
-
-  loginButton: {
-    backgroundColor: "#014421",
-    color: "#ffffff",
-    marginLeft: 80,
-    width: 340,
-    borderRadius: 60,
-    padding: 10,
-    marginTop: 30,
-  },
-});
 
 const Login = () => {
   const [userCred, setUserCred] = useState({ email: "", password: "" });
@@ -72,8 +18,6 @@ const Login = () => {
   const handleUpdate = (e) => {
     setUserCred({ ...userCred, [e.target.name]: e.target.value });
   };
-
-  const classes = useStyles();
 
   return (
     <Box
@@ -102,11 +46,7 @@ const Login = () => {
           <Typography variant="h6"></Typography>
 
           {/* PAIMS text */}
-          <Typography
-            className={classes.titleText}
-            variant="h6"
-            sx={{ fontWeight: "bold" }}
-          >
+          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
             Properties Accountabilities and Inventory Management System
           </Typography>
         </Box>
@@ -119,25 +59,42 @@ const Login = () => {
       </Box>
 
       {/* green bar  */}
-      <Box className={classes.greenRectangle} />
+      <Box
+        sx={{
+          width: "100%",
+          height: 20,
+          bgcolor: "#014421",
+        }}
+      />
 
       {/* yellow bar  */}
-      <Box className={classes.yellowRectangle} />
+      <Box
+        sx={{
+          width: "100%",
+          height: 5,
+          bgcolor: "#dea80f",
+        }}
+      />
 
       {/* email and password section  */}
       <Box
         display="flex"
         flexDirection="row"
-        className={classes.loginSecRoot}
         justifyContent="center"
-        sx={{ height: "100%" }}
+        sx={{ height: "100%", bgcolor: "#7b1113" }}
       >
         {/* white box  */}
         <Box
           display="flex"
           flexDirection="column"
           justifyContent="center"
-          className={classes.whiteBox}
+          sx={{
+            bgcolor: "#ffffff",
+            height: 350,
+            width: 500,
+            mt: 9,
+            borderRadius: 7,
+          }}
         >
           <form
             method="post"
@@ -146,23 +103,30 @@ const Login = () => {
               navigate(`/app/home`);
             }}
           >
-            <Box display="flex" flexDirection="column" justifyContent="center">
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              sx={{ gap: 1 }}
+            >
               {/* username field  */}
-              <input
+              <TextField
+                sx={{ mx: "auto", width: "70%" }}
                 type="text"
-                placeholder="Username"
                 name="email"
+                label="Email"
                 onChange={handleUpdate}
-                className={classes.emailField}
+                variant="outlined"
               />
 
               {/* password field  */}
-              <input
-                type="password"
-                placeholder="Password"
+              <TextField
+                sx={{ mx: "auto", width: "70%" }}
+                type="text"
                 name="password"
+                label="Password"
                 onChange={handleUpdate}
-                className={classes.emailField}
+                variant="outlined"
               />
 
               {/* login button  */}
