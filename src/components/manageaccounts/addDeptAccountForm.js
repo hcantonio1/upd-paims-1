@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-} from "@mui/material";
-import { Box, TextField } from "@mui/material";
+import { Box, TextField, Button, FormControl, InputLabel, MenuItem, Paper, Select } from "@mui/material";
 import { createDepartmentAccount } from "../../services/admin_funcs";
 
 const AddDeptAccountForm = () => {
@@ -71,65 +63,20 @@ const AddDeptAccountForm = () => {
           <h2>Create Account</h2>
           <FormControl sx={{ width: 1 / 2 }}>
             <InputLabel id="select-role">Role</InputLabel>
-            <Select
-              labelId="select-role"
-              id="role"
-              value={formData.role}
-              label="Role"
-              onChange={handleSelectRole}
-            >
+            <Select labelId="select-role" id="role" value={formData.role} label="Role" onChange={handleSelectRole}>
               <MenuItem value="Encoder">Encoder</MenuItem>
               <MenuItem value="Trustee">Trustee</MenuItem>
             </Select>
           </FormControl>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              width: 1 / 2,
-              gap: 2,
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <TextField1
-              sx={{ width: 1 / 2 }}
-              id="firstname"
-              label="First Name"
-              onChange={handleInputChange}
-            />
-            <TextField1
-              sx={{ width: 1 / 2 }}
-              id="lastname"
-              label="Last Name"
-              onChange={handleInputChange}
-            />
+          <Box sx={{ display: "flex", flexDirection: "row", width: 1 / 2, gap: 2 }} noValidate autoComplete="off">
+            <TextField1 sx={{ width: 1 / 2 }} id="firstname" label="First Name" onChange={handleInputChange} />
+            <TextField1 sx={{ width: 1 / 2 }} id="lastname" label="Last Name" onChange={handleInputChange} />
           </Box>
           <Box width="50%">
-            <TextField1
-              sx={{ width: 1 }}
-              id="email"
-              label="Email"
-              onChange={handleInputChange}
-            />
+            <TextField1 sx={{ width: 1 }} id="email" label="Email" onChange={handleInputChange} />
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              width: 1 / 2,
-              gap: 2,
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <TextField1
-              sx={{ width: 1 / 2 }}
-              id="password"
-              label="Password"
-              type="password"
-              onChange={handleInputChange}
-            />
+          <Box sx={{ display: "flex", flexDirection: "row", width: 1 / 2, gap: 2 }} noValidate autoComplete="off">
+            <TextField1 sx={{ width: 1 / 2 }} id="password" label="Password" type="password" onChange={handleInputChange} />
             <TextField1
               sx={{ width: 1 / 2 }}
               id="confirm-password"
@@ -137,29 +84,11 @@ const AddDeptAccountForm = () => {
               type="password"
               onChange={handleInputChange}
               error={!passwordsMatch && confirmPassChanged}
-              helperText={
-                confirmPassChanged
-                  ? passwordsMatch
-                    ? "Passwords match"
-                    : "Passwords must match"
-                  : ""
-              }
-              color={
-                confirmPassChanged
-                  ? passwordsMatch
-                    ? "success"
-                    : "error"
-                  : "primary"
-              }
+              helperText={confirmPassChanged ? (passwordsMatch ? "Passwords match" : "Passwords must match") : ""}
+              color={confirmPassChanged ? (passwordsMatch ? "success" : "error") : "primary"}
             />
           </Box>
-          <Button
-            sx={{ width: 1 / 2 }}
-            type="submit"
-            variant="contained"
-            size="small"
-            color="success"
-          >
+          <Button sx={{ width: 1 / 2 }} type="submit" variant="contained" size="small" color="success">
             Register {formData.role}
           </Button>
         </Box>
