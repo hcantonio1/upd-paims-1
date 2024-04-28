@@ -3,16 +3,7 @@ import { StaticImage } from "gatsby-plugin-image";
 import { navigate } from "gatsby";
 import { isLoggedIn, logout } from "../../services/auth";
 import * as styles from "../../styles/header.module.css";
-import {
-  Typography,
-  // Box,
-  AppBar,
-  Toolbar,
-  // makeStyles,
-  Grid,
-  // Button,
-} from "@material-ui/core";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 const Header = () => {
   const handleLogout = (event) => {
@@ -58,7 +49,6 @@ const Header = () => {
             <Button
               onClick={handleLogout}
               variant="contained"
-              // className={classes.logoutButton}
               sx={{
                 margin: 4,
                 bgColor: "#014421",
