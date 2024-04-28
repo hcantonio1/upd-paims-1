@@ -1,22 +1,18 @@
-// Step 1: Import React
 import * as React from "react";
 import Layout from "../common/layout";
-import { makeStyles } from "@material-ui/core";
 import { Box, Button, Stack } from "@mui/material";
 
 const SubmitPage = () => {
-  const useStyles = makeStyles({
-    root: {
-      padding: 1,
-      margin: 10,
-    },
-  });
-
-  const classes = useStyles();
-
   return (
     <Layout pageTitle="SUBMIT A FORM">
-      <Box display="flex" flexDirection="column" className={classes.root}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        sx={{
+          padding: 1,
+          margin: 1,
+        }}
+      >
         <main>
           <Stack
             padding={1}

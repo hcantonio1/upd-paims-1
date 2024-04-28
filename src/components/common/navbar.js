@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "gatsby";
 import {
   makeStyles,
-  Drawer,
   ListItem,
   List,
   ListItemIcon,
   ListItemText,
-  Paper,
-  Collapse,
 } from "@material-ui/core";
 import {
   HomeRounded,
