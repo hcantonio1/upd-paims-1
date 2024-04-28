@@ -1,11 +1,11 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 
-const FormHeader = ({ title }) => {
+const FormHeader = ({ header }) => {
   return (
     <Box sx={{ backgroundColor: "#e5e5e5", padding: 1 }}>
       <Typography variant="h9" fontWeight={"bold"}>
-        {title}
+        {header}
       </Typography>
     </Box>
   );
