@@ -1,11 +1,13 @@
 import * as React from "react";
-import Layout from "../common/layout";
 import { useState, useEffect } from "react";
 import { db, storage } from "../../../firebase-config";
-import { doc, setDoc, Timestamp, getDoc, collection, getDocs } from "firebase/firestore";
+import { doc, setDoc, Timestamp, getDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-// import { CloudUpload } from "@material-ui/icons";
+import { Box } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
+import Layout from "../common/layout";
 import PaimsForm from "../paimsform/paimsForm";
 import FormSubheadered from "../paimsform/formSubheadered";
 import FormRow from "../paimsform/formRow";
@@ -14,15 +16,16 @@ import { AggregatedFormSelect } from "../paimsform/formSelect";
 import SubmitButton from "../paimsform/submitButton";
 import FormDatePicker from "../paimsform/formDatePicker";
 import FormFileUpload from "../paimsform/formFileUpload";
-import { Box } from "@mui/material";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
+import { autoFillDocumentData, autoFillSupplierData } from "./formautofill";
+import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "./fetchdropdowndata";
+import { handleInsertDoc } from "./handleInsertDoc";
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
     DocumentID: "",
     DocumentType: "",
-    DateIssued: "",
+    DateIssued: null,
     IssuedBy: "",
     ReceivedBy: "",
     Link: "",
@@ -65,65 +68,14 @@ const InsertRecord = () => {
   const [orderLocked, setOrderLocked] = useState(false);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const userCollection = collection(db, "user");
-        const snapshot = await getDocs(userCollection);
-        const users = snapshot.docs.map((doc) => doc.data());
-        setUsers(users);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
+    const fetchdropdowndata = async () => {
+      setUsers(await fetchDeptUsers());
+      setCategories(await fetchCategories());
+      setLocations(await fetchDeptLocations());
+      setStatuses(await fetchStatuses());
+      setTypes(await fetchTypes());
     };
-
-    const fetchCategories = async () => {
-      try {
-        const categoryCollection = collection(db, "item_category");
-        const snapshot = await getDocs(categoryCollection);
-        const categories = snapshot.docs.map((doc) => doc.data());
-        setCategories(categories);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    const fetchLocations = async () => {
-      try {
-        const locationCollection = collection(db, "item_location");
-        const snapshot = await getDocs(locationCollection);
-        const locations = snapshot.docs.map((doc) => doc.data());
-        setLocations(locations);
-      } catch (error) {
-        console.error("Error fetching locations:", error);
-      }
-    };
-
-    const fetchStatuses = async () => {
-      try {
-        const statusCollection = collection(db, "status");
-        const snapshot = await getDocs(statusCollection);
-        const statuses = snapshot.docs.map((doc) => doc.data());
-        setStatuses(statuses);
-      } catch (error) {
-        console.error("Error fetching statuses:", error);
-      }
-    };
-    const fetchTypes = async () => {
-      try {
-        const typeCollection = collection(db, "doctype");
-        const snapshot = await getDocs(typeCollection);
-        const types = snapshot.docs.map((doc) => doc.data());
-        setTypes(types);
-      } catch (error) {
-        console.error("Error fetching types:", error);
-      }
-    };
-
-    fetchUsers();
-    fetchCategories();
-    fetchLocations();
-    fetchStatuses();
-    fetchTypes();
+    fetchdropdowndata();
   }, []);
 
   const getFullName = (user) => {
@@ -237,61 +189,23 @@ const InsertRecord = () => {
     }
   };
 
-  const handleInsertDoc = async (e) => {
-    e.preventDefault();
-
-    if (inputData.IssuedBy === inputData.ReceivedBy) {
-      alert("IssuedBy and ReceivedBy cannot be the same user.");
-      return;
-    }
-
-    try {
-      console.log("Uploading file to Firebase Storage");
-      const fileRef = ref(storage, "DCS/" + inputData.Link.name);
-      await uploadBytes(fileRef, inputData.Link);
-      const fileUrl = await getDownloadURL(fileRef);
-      console.log("File uploaded successfully:", fileUrl);
-      await setDoc(doc(db, "item_document", inputData.DocumentID), {
-        DateIssued: Timestamp.fromDate(new Date(inputData.DateIssued)),
-        DocumentID: inputData.DocumentID,
-        DocumentType: inputData.DocumentType,
-        IssuedBy: inputData.IssuedBy,
-        Link: fileUrl,
-        ReceivedBy: inputData.ReceivedBy,
-      });
-      alert("Successfully inserted!");
-      window.location.reload();
-    } catch (error) {
-      console.error("Error inserting document:", error);
-      alert("Failed to insert record.");
-    }
-  };
-
   const handleInputChange = (e, index) => {
-    if (e.target.name !== "") {
-      // probably a PointerEvent due to MUI Select
-      setInputData({
-        ...inputData,
-        [e.target.name]: e.target.value,
-      });
-    } else {
-      // regular onChange event
-      setInputData({
-        ...inputData,
-        [e.target.id]: e.target.value,
-      });
-    }
+    const { name, value } = e.target;
+    setInputData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
 
-    if (e.target.id === "DocumentID") {
-      fetchDocumentData(e.target.value);
+    if (e.target.name === "DocumentID") {
+      autoFillDocumentData(e.target.value, setDocLocked, setInputData);
     }
-    if (e.target.id === "SupplierID") {
-      fetchSupplierData(e.target.value);
+    if (e.target.name === "SupplierID") {
+      autoFillSupplierData(e.target.value, setSupLocked, setInputData);
     }
-    if (e.target.id === "PropertyID") {
+    if (e.target.name === `PropertyID_${index}`) {
       fetchPropertyData(e.target.value);
     }
-    //if (e.target.id === "PurchaseOrderID") {
+    //if (e.target.name === `PurchaseOrderID_${index}`) {
     //  fetchOrderData(e.target.value);
     //}
   };
@@ -299,78 +213,9 @@ const InsertRecord = () => {
   const setPurchaseDate = (value, index) => {
     setInputData((prevData) => ({
       ...prevData,
-      PurchaseDate: value,
+      [`PurchaseDate_${index}`]: value,
     }));
   };
-
-  const fetchSupplierData = async (supplierId) => {
-    try {
-      const supRef = doc(db, "supplier", supplierId);
-      const supSnap = await getDoc(supRef);
-
-      if (supSnap.exists()) {
-        const supData = supSnap.data();
-        setSupLocked(true);
-        setInputData((prevData) => ({
-          ...prevData,
-          City: supData.City,
-          State: supData.State,
-          StreetName: supData.StreetName,
-          SupplierContact: supData.SupplierContact,
-          SupplierName: supData.SupplierName,
-          UnitNumber: parseInt(supData.UnitNumber),
-        }));
-      }
-      if (!supSnap.exists()) {
-        setSupLocked(false);
-        setInputData((prevData) => ({
-          ...prevData,
-          City: "",
-          State: "",
-          StreetName: "",
-          SupplierContact: "",
-          SupplierName: "",
-          UnitNumber: "",
-        }));
-      }
-    } catch (error) {
-      console.error("Error fetching supplier:", error);
-    }
-  };
-
-  {
-    /*const fetchOrderData = async (orderId) => {
-    try {
-      const orderRef = doc(db, "purchase_order", orderId);
-      const orderSnap = await getDoc(orderRef);
-
-      if (orderSnap.exists()) {
-        const orderData = orderSnap.data();
-        console.log(`TotalCost_${index}`);
-        setOrderLocked(true);
-        setInputData((prevData) => ({
-          ...prevData,
-          PurchaseDate: orderData.PurchaseDate.toDate()
-            .toISOString()
-            .split("T")[0],
-          SupplierID: parseInt(orderData.SupplierID),
-          TotalCost: parseInt(orderData.TotalCost),
-        }));
-      }
-      if (!orderSnap.exists()) {
-        setOrderLocked(false);
-        setInputData((prevData) => ({
-          ...prevData,
-          PurchaseDate: "",
-          SupplierID: "",
-          TotalCost: "",
-        }));
-      }
-    } catch (error) {
-      console.error("Error fetching purchase order:", error);
-    }
-  }; */
-  }
 
   const fetchPropertyData = async (propId) => {
     try {
@@ -383,37 +228,6 @@ const InsertRecord = () => {
       }
     } catch (error) {
       console.error("Error fetching property:", error);
-    }
-  };
-
-  const fetchDocumentData = async (documentId) => {
-    try {
-      const docRef = doc(db, "item_document", documentId);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const docData = docSnap.data();
-        setDocLocked(true);
-        setInputData((prevData) => ({
-          ...prevData,
-          DocumentType: docData.DocumentType,
-          DateIssued: docData.DateIssued.toDate().toISOString().split("T")[0],
-          IssuedBy: docData.IssuedBy,
-          ReceivedBy: docData.ReceivedBy,
-        }));
-      }
-      if (!docSnap.exists()) {
-        setDocLocked(false);
-        setInputData((prevData) => ({
-          ...prevData,
-          DocumentType: "",
-          DateIssued: "",
-          IssuedBy: "",
-          ReceivedBy: "",
-        }));
-      }
-    } catch (error) {
-      console.error("Error fetching document:", error);
     }
   };
 
@@ -459,12 +273,7 @@ const InsertRecord = () => {
           required
           readOnly={orderLocked}
         />
-        <FormDatePicker id="DateIssued" label="Purchase Date" value={inputData.PurchaseDate} onChange={setPurchaseDate} />
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <label htmlFor="PurchaseDate" style={{ display: "inline-block", width: "150px", verticalAlign: "top" }}>
-            <DatePicker label="Purchase Date" id="PurchaseDate" inputFormat="YYYY-MM-DD" value={inputData.PurchaseDate} onChange={setPurchaseDate} />
-          </label>
-        </LocalizationProvider>
+        <FormDatePicker label="Purchase Date" id="PurchaseDate" value={inputData.PurchaseDate} onChange={setPurchaseDate} />
       </FormRow>
     </FormSubheadered>
   );
@@ -489,7 +298,7 @@ const InsertRecord = () => {
       <FormRow segments={3}>
         <SmallTextField id="DocumentID" label="Document Name" value={inputData.DocumentID} onChange={handleInputChange} required />
         <AggregatedFormSelect label="Type" id="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} options={types} required />
-        <FormDatePicker id="DateIssued" value={inputData.DateIssued} onChange={handleInputChange} readOnly={docLocked} />
+        <FormDatePicker id="DateIssued" label="Date Issued" value={inputData.DateIssued} onChange={handleInputChange} readOnly={docLocked} />
       </FormRow>
       <FormRow segments={3}>
         <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} disabled={docLocked} options={users} optionnamegetter={getFullName} />
@@ -500,20 +309,27 @@ const InsertRecord = () => {
   );
 
   return (
-    <Layout pageTitle="INSERT">
-      <Box sx={{ padding: 2, margin: 1 }}>
-        <main>
-          <PaimsForm header="Insert a New Record into the Database" onSubmit={handleInsert}>
-            {itemSubheadered}
-            {poSubheadered}
-            {docSubheadered}
-            <SubmitButton text="Only Submit Document" onClick={handleInsertDoc} />
-            {supplierSubheadered}
-            <SubmitButton text="Submit All & Insert Property" />
-          </PaimsForm>
-        </main>
-      </Box>
-    </Layout>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Layout pageTitle="INSERT">
+        <Box sx={{ padding: 2, margin: 1 }}>
+          <main>
+            <PaimsForm header="Insert a New Record into the Database" onSubmit={handleInsert}>
+              {itemSubheadered}
+              {poSubheadered}
+              {docSubheadered}
+              <SubmitButton
+                text="Only Submit Document"
+                onClick={(e) => {
+                  handleInsertDoc(e, inputData);
+                }}
+              />
+              {supplierSubheadered}
+              <SubmitButton text="Submit All & Insert Property" />
+            </PaimsForm>
+          </main>
+        </Box>
+      </Layout>
+    </LocalizationProvider>
   );
 };
 
