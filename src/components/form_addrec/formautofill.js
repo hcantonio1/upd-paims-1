@@ -1,5 +1,5 @@
 // we autofill document and supplier fields
-
+import { db } from "../../../firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 
 export const autoFillDocumentData = async (DocumentID, setDocLocked, setInputData) => {

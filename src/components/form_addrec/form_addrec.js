@@ -10,6 +10,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import SelectTextField from "../common/selectTextField";
+import { autoFillDocumentData, autoFillSupplierData } from "./formautofill";
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
@@ -268,10 +269,10 @@ const InsertRecord = () => {
     }));
 
     if (e.target.name === "DocumentID") {
-      fetchDocumentData(e.target.value);
+      autoFillDocumentData(e.target.value, setDocLocked, setInputData);
     }
     if (e.target.name === "SupplierID") {
-      fetchSupplierData(e.target.value);
+      autoFillSupplierData(e.target.value, setSupLocked, setInputData);
     }
     if (e.target.name === `PropertyID_${index}`) {
       fetchPropertyData(e.target.value);
