@@ -26,7 +26,6 @@ export default FormSelect;
 export const AggregatedFormSelect = (props) => {
   const { id, label, options, optionnamegetter: getOptionName } = props;
   const smallLabel = label.charAt(0).toLowerCase() + label.slice(1);
-  const inputLabelLabel = `select-${smallLabel}`;
 
   // only works when these IDs are the keys of the formData!!
   const choicevaluepairs =

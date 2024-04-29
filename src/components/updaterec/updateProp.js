@@ -3,14 +3,14 @@ import { doc, updateDoc, getDoc, getDocs, collection, setDoc, Timestamp } from "
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../../../firebase-config";
 
-import PaimsForm from "../paimsform/PaimsForm";
-import FormSubheadered from "../paimsform/FormSubheadered";
-import FormRow from "../paimsform/FormRow";
-import SmallTextField from "../paimsform/SmallTextField";
-import FormSelect from "../paimsform/FormSelect";
-import SubmitButton from "../paimsform/SubmitButton";
-import FormDatePicker from "../paimsform/FormDatePicker";
-import FormFileUpload from "../paimsform/FormFileUpload";
+import PaimsForm from "../paimsform/paimsForm";
+import FormSubheadered from "../paimsform/formSubheadered";
+import FormRow from "../paimsform/formRow";
+import SmallTextField from "../paimsform/smallTextField";
+import FormSelect from "../paimsform/formSelect";
+import SubmitButton from "../paimsform/submitButton";
+import FormDatePicker from "../paimsform/formDatePicker";
+import FormFileUpload from "../paimsform/formFileUpload";
 
 const UpdateProp = () => {
   const [formData, setFormData] = useState({

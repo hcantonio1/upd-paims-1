@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Layout from "../common/layout";
+import Layout from "../common/layout.js";
 import { Box } from "@mui/material";
 import { db } from "../../../firebase-config.js";
 import { onSnapshot, collection } from "firebase/firestore";

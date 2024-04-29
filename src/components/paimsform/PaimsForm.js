@@ -1,6 +1,6 @@
 import React from "react";
 import { Box } from "@mui/material";
-import FormHeader from "./FormHeader";
+import FormHeader from "./formHeader";
 
 /* TOP-DOWN DESIGN APPROACH: make PaimsForm first
  * props expectation (user story)

@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 
-import PaimsForm from "../paimsform/PaimsForm";
-import FormSubheadered from "../paimsform/FormSubheadered";
-import FormRow from "../paimsform/FormRow";
-import SmallTextField from "../paimsform/SmallTextField";
-import SubmitButton from "../paimsform/SubmitButton";
+import PaimsForm from "../paimsform/paimsForm";
+import FormSubheadered from "../paimsform/formSubheadered";
+import FormRow from "../paimsform/formRow";
+import SmallTextField from "../paimsform/smallTextField";
+import SubmitButton from "../paimsform/submitButton";
 
 /* In the future, add a heading "Select Existing Supplier" dropdown component before the first heading, "Supplier Details" */
 
