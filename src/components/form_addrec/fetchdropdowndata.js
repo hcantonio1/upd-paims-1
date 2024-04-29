@@ -1,13 +1,13 @@
 import { db } from "../../../firebase-config";
 import { collection, getDocs } from "firebase/firestore";
 
-export const fetchDeptUsers = async (dept) => {
+export const fetchDeptUsers = async () => {
   try {
     const userCollection = collection(db, "user");
     const snapshot = await getDocs(userCollection);
     const users = snapshot.docs.map((doc) => doc.data());
-    const myUsers = users.filter((data) => data.Department === dept);
-    return myUsers;
+    // const myUsers = users.filter((data) => data.Department === dept);
+    return users;
   } catch (error) {
     console.error("Error fetching users:", error);
   }

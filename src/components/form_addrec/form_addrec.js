@@ -2,7 +2,7 @@ import * as React from "react";
 import Layout from "../common/layout";
 import { useState, useEffect } from "react";
 import { db, storage } from "../../../firebase-config";
-import { doc, setDoc, Timestamp, getDoc, collection, getDocs } from "firebase/firestore";
+import { doc, setDoc, Timestamp, getDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Typography, Divider, Box, Button, Stack, TextField } from "@mui/material";
 // import { CloudUpload } from "@material-ui/icons";
@@ -10,8 +10,10 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import SelectTextField from "../common/selectTextField";
+
 import { autoFillDocumentData, autoFillSupplierData } from "./formautofill";
 import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "./fetchdropdowndata";
+import { handleInsertDoc } from "./handleInsertDoc";
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
@@ -175,36 +177,6 @@ const InsertRecord = () => {
           window.location.reload();
         })
       );
-    } catch (error) {
-      console.error("Error inserting document:", error);
-      alert("Failed to insert record.");
-    }
-  };
-
-  const handleInsertDoc = async (e) => {
-    e.preventDefault();
-
-    if (inputData.IssuedBy === inputData.ReceivedBy) {
-      alert("IssuedBy and ReceivedBy cannot be the same user.");
-      return;
-    }
-
-    try {
-      console.log("Uploading file to Firebase Storage");
-      const fileRef = ref(storage, "DCS/" + inputData.Link.name);
-      await uploadBytes(fileRef, inputData.Link);
-      const fileUrl = await getDownloadURL(fileRef);
-      console.log("File uploaded successfully:", fileUrl);
-      await setDoc(doc(db, "item_document", inputData.DocumentID), {
-        DateIssued: Timestamp.fromDate(new Date(inputData.DateIssued)),
-        DocumentID: inputData.DocumentID,
-        DocumentType: inputData.DocumentType,
-        IssuedBy: inputData.IssuedBy,
-        Link: fileUrl,
-        ReceivedBy: inputData.ReceivedBy,
-      });
-      alert("Successfully inserted!");
-      window.location.reload();
     } catch (error) {
       console.error("Error inserting document:", error);
       alert("Failed to insert record.");
@@ -543,7 +515,14 @@ const InsertRecord = () => {
 
                 <Stack padding={1} direction="row" alignItems="flex-start" justifyContent="flex-end">
                   <Stack item>
-                    <Button type="submit" variant="contained" onClick={handleInsertDoc} sx={{ backgroundColor: "#014421", m: 1 }}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      onClick={(e) => {
+                        handleInsertDoc(e, inputData);
+                      }}
+                      sx={{ backgroundColor: "#014421", m: 1 }}
+                    >
                       Submit Document
                     </Button>
                   </Stack>
