@@ -11,6 +11,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import SelectTextField from "../common/selectTextField";
 import { autoFillDocumentData, autoFillSupplierData } from "./formautofill";
+import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "./fetchdropdowndata";
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
@@ -59,65 +60,14 @@ const InsertRecord = () => {
   const [orderLocked, setOrderLocked] = useState(false);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const userCollection = collection(db, "user");
-        const snapshot = await getDocs(userCollection);
-        const users = snapshot.docs.map((doc) => doc.data());
-        setUsers(users);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
+    const fetchdropdowndata = async () => {
+      setUsers(await fetchDeptUsers());
+      setCategories(await fetchCategories());
+      setLocations(await fetchDeptLocations());
+      setStatuses(await fetchStatuses());
+      setTypes(await fetchTypes());
     };
-
-    const fetchCategories = async () => {
-      try {
-        const categoryCollection = collection(db, "item_category");
-        const snapshot = await getDocs(categoryCollection);
-        const categories = snapshot.docs.map((doc) => doc.data());
-        setCategories(categories);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    const fetchLocations = async () => {
-      try {
-        const locationCollection = collection(db, "item_location");
-        const snapshot = await getDocs(locationCollection);
-        const locations = snapshot.docs.map((doc) => doc.data());
-        setLocations(locations);
-      } catch (error) {
-        console.error("Error fetching locations:", error);
-      }
-    };
-
-    const fetchStatuses = async () => {
-      try {
-        const statusCollection = collection(db, "status");
-        const snapshot = await getDocs(statusCollection);
-        const statuses = snapshot.docs.map((doc) => doc.data());
-        setStatuses(statuses);
-      } catch (error) {
-        console.error("Error fetching statuses:", error);
-      }
-    };
-    const fetchTypes = async () => {
-      try {
-        const typeCollection = collection(db, "doctype");
-        const snapshot = await getDocs(typeCollection);
-        const types = snapshot.docs.map((doc) => doc.data());
-        setTypes(types);
-      } catch (error) {
-        console.error("Error fetching types:", error);
-      }
-    };
-
-    fetchUsers();
-    fetchCategories();
-    fetchLocations();
-    fetchStatuses();
-    fetchTypes();
+    fetchdropdowndata();
   }, []);
 
   const getFullName = (user) => {

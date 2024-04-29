@@ -1,7 +1,7 @@
 import { db } from "../../../firebase-config";
 import { collection, getDocs } from "firebase/firestore";
 
-export const fetchDeptAccounts = async (dept) => {
+export const fetchDeptUsers = async (dept) => {
   try {
     const userCollection = collection(db, "user");
     const snapshot = await getDocs(userCollection);
