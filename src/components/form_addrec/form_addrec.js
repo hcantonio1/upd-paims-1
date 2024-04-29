@@ -289,41 +289,6 @@ const InsertRecord = () => {
     }));
   };
 
-  const fetchSupplierData = async (supplierId) => {
-    try {
-      const supRef = doc(db, "supplier", supplierId);
-      const supSnap = await getDoc(supRef);
-
-      if (supSnap.exists()) {
-        const supData = supSnap.data();
-        setSupLocked(true);
-        setInputData((prevData) => ({
-          ...prevData,
-          City: supData.City,
-          State: supData.State,
-          StreetName: supData.StreetName,
-          SupplierContact: supData.SupplierContact,
-          SupplierName: supData.SupplierName,
-          UnitNumber: parseInt(supData.UnitNumber),
-        }));
-      }
-      if (!supSnap.exists()) {
-        setSupLocked(false);
-        setInputData((prevData) => ({
-          ...prevData,
-          City: "",
-          State: "",
-          StreetName: "",
-          SupplierContact: "",
-          SupplierName: "",
-          UnitNumber: "",
-        }));
-      }
-    } catch (error) {
-      console.error("Error fetching supplier:", error);
-    }
-  };
-
   {
     /*const fetchOrderData = async (orderId) => {
     try {
@@ -369,37 +334,6 @@ const InsertRecord = () => {
       }
     } catch (error) {
       console.error("Error fetching property:", error);
-    }
-  };
-
-  const fetchDocumentData = async (documentId) => {
-    try {
-      const docRef = doc(db, "item_document", documentId);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const docData = docSnap.data();
-        setDocLocked(true);
-        setInputData((prevData) => ({
-          ...prevData,
-          DocumentType: docData.DocumentType,
-          DateIssued: docData.DateIssued.toDate().toISOString().split("T")[0],
-          IssuedBy: docData.IssuedBy,
-          ReceivedBy: docData.ReceivedBy,
-        }));
-      }
-      if (!docSnap.exists()) {
-        setDocLocked(false);
-        setInputData((prevData) => ({
-          ...prevData,
-          DocumentType: "",
-          DateIssued: "",
-          IssuedBy: "",
-          ReceivedBy: "",
-        }));
-      }
-    } catch (error) {
-      console.error("Error fetching document:", error);
     }
   };
 
