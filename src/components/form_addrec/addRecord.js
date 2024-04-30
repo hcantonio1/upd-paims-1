@@ -10,9 +10,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import Layout from "../common/layout";
-import PaimsForm from "../paimsform/paimsForm";
-import FormSubheadered from "../paimsform/formSubheadered";
-import FormRow from "../paimsform/formRow";
+import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import { AggregatedFormSelect } from "../paimsform/formSelect";
 import SubmitButton from "../paimsform/submitButton";

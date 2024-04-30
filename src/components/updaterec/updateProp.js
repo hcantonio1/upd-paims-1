@@ -3,9 +3,7 @@ import { doc, updateDoc, getDoc, getDocs, collection, setDoc, Timestamp } from "
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../../../firebase-config";
 
-import PaimsForm from "../paimsform/paimsForm";
-import FormSubheadered from "../paimsform/formSubheadered";
-import FormRow from "../paimsform/formRow";
+import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import FormSelect from "../paimsform/formSelect";
 import SubmitButton from "../paimsform/submitButton";

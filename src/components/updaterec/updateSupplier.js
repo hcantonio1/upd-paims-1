@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 
-import PaimsForm from "../paimsform/paimsForm";
-import FormSubheadered from "../paimsform/formSubheadered";
-import FormRow from "../paimsform/formRow";
+import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import SubmitButton from "../paimsform/submitButton";
 
