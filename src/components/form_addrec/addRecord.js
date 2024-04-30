@@ -198,6 +198,8 @@ const InsertRecord = () => {
       const index = propRowToDisplay;
       setPropertyRows([...propertyRows.slice(0, index), ...propertyRows.slice(index + 1)]);
       setRowHandlers([...rowHandlers.slice(0, index), ...rowHandlers.slice(index + 1)]);
+
+      // propertyRows, probably has not been modified yet at this point
       setPropRowToDisplay(Math.min(propertyRows.length - 1, index));
     };
     const delRow = <IconButton variant="contained" children={<Close />} color="error" onClick={delPropRowFunc} />;
@@ -221,9 +223,9 @@ const InsertRecord = () => {
                 <Typography width="50%" variant="h9" fontWeight={"bold"}>
                   Property {propRowToDisplay + 1}
                 </Typography>
-                <Box width="50%" display="flex" flexDirection="row" justifyContent="end">
+                {/* <Box width="50%" display="flex" flexDirection="row" justifyContent="end">
                   <DeletePropRowButton />
-                </Box>
+                </Box> */}
               </Box>
               {propertyRows.map((propRowData, index) => {
                 const propUI = (
