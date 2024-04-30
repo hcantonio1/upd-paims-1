@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 import { db, storage } from "../../../firebase-config";
 import { doc, setDoc, Timestamp, getDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { Box, Button, Paper } from "@mui/material";
+import { Box, Button, IconButton, Paper } from "@mui/material";
 // import { CloudUploadIcon, CloseIcon } from "@mui/icons-material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Close, Add, West, East } from "@mui/icons-material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
@@ -21,7 +21,7 @@ import FormFileUpload from "../paimsform/formFileUpload";
 
 import { autoFillDocumentData, autoFillSupplierData } from "./formautofill";
 import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "./fetchdropdowndata";
-import { handleInsertDoc } from "./handleInsertDoc";
+import { insertDocument, handleSubmit } from "./handleinsert1";
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
@@ -88,65 +88,6 @@ const InsertRecord = () => {
     return `${location.Building} ${location.RoomNumber}`;
   };
 
-  const handleInsert = async (e) => {
-    e.preventDefault();
-
-    if (inputData.IssuedBy === inputData.ReceivedBy) {
-      alert("IssuedBy and ReceivedBy cannot be the same user.");
-      return;
-    }
-
-    try {
-      await setDoc(doc(db, "supplier", inputData.SupplierID), {
-        City: inputData.City,
-        State: inputData.State,
-        StreetName: inputData.StreetName,
-        SupplierContact: inputData.SupplierContact.toString(),
-        SupplierID: parseInt(inputData.SupplierID),
-        SupplierName: inputData.SupplierName,
-        UnitNumber: parseInt(inputData.UnitNumber),
-      });
-      console.log("Uploading file to Firebase Storage");
-      const fileRef = ref(storage, "DCS/" + inputData.Link.name);
-      await uploadBytes(fileRef, inputData.Link);
-      const fileUrl = await getDownloadURL(fileRef);
-      console.log("File uploaded successfully:", fileUrl);
-      await setDoc(doc(db, "item_document", inputData.DocumentID), {
-        DateIssued: Timestamp.fromDate(new Date(inputData.DateIssued)),
-        DocumentID: inputData.DocumentID,
-        DocumentType: inputData.DocumentType,
-        IssuedBy: inputData.IssuedBy,
-        Link: fileUrl,
-        ReceivedBy: inputData.ReceivedBy,
-      });
-      var docObject = {};
-      docObject[inputData.TrusteeID] = inputData.DocumentID;
-      await setDoc(doc(db, "property", inputData.PropertyID), {
-        CategoryID: parseInt(inputData.CategoryID),
-        DocumentID: docObject,
-        isArchived: 0,
-        LocationID: parseInt(inputData.LocationID),
-        PropertyID: parseInt(inputData.PropertyID),
-        PropertyName: inputData.PropertyName,
-        TrusteeID: parseInt(inputData.TrusteeID),
-        StatusID: parseInt(inputData.StatusID),
-        SupplierID: parseInt(inputData.SupplierID),
-        PurchaseOrderID: parseInt(inputData.PurchaseOrderID),
-      });
-      await setDoc(doc(db, "purchase_order", inputData.PurchaseOrderID), {
-        PurchaseDate: Timestamp.fromDate(new Date(inputData.PurchaseDate)),
-        PurchaseOrderID: parseInt(inputData.PurchaseOrderID),
-        SupplierID: parseInt(inputData.SupplierID),
-        TotalCost: parseInt(inputData.TotalCost),
-      });
-      alert("Successfully inserted!");
-      window.location.reload();
-    } catch (error) {
-      console.error("Error inserting document:", error);
-      alert("Failed to insert record.");
-    }
-  };
-
   const handleInputChange = (e, index) => {
     // console.log(e);
     if (e.target.name !== "") {
@@ -209,7 +150,19 @@ const InsertRecord = () => {
   const itemSubheadered = (
     <FormSubheadered subheader="Item Details">
       <FormRow segments={3}>
-        <SmallTextField id="PropertyID" label="Property ID" value={inputData.PropertyID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
+        <SmallTextField
+          id="PropertyID"
+          label="Property ID"
+          value={inputData.PropertyID}
+          onChange={handleInputChange}
+          type="string"
+          inputProps={{
+            inputMode: "numeric",
+            pattern: "[0-9]*",
+          }}
+          title="Numbers only."
+          required
+        />
         <SmallTextField id="PropertyName" label="Property Name" value={inputData.PropertyName} onChange={handleInputChange} />
       </FormRow>
       <FormRow segments={4}>
@@ -301,24 +254,24 @@ const InsertRecord = () => {
       <Layout pageTitle="INSERT">
         <Box sx={{ padding: 2, margin: 1 }}>
           <main>
-            <PaimsForm header="Insert a New Record into the Database" onSubmit={handleInsert}>
+            <PaimsForm header="Insert a New Record into the Database" onSubmit={(e) => handleSubmit(e, inputData)}>
               {docSubheadered}
               <SubmitButton
                 text="Only Submit Document"
                 onClick={(e) => {
-                  handleInsertDoc(e, inputData);
+                  insertDocument(e, inputData);
                 }}
               />
               <Paper sx={{ p: 2, backgroundColor: "#f3f3f3" }}>
                 <Box display="flex" flexDirection="row" justifyContent="end">
-                  <Button sx={{ borderRadius: 28 }} component="label" variant="contained" startIcon={<CloseIcon />} />
+                  <IconButton children={<Close />} variant="contained" color="error" />
                 </Box>
                 {itemSubheadered}
                 {poSubheadered}
                 {supplierSubheadered}
                 <Box display="flex" flexDirection="row" justifyContent="end">
-                  <Button sx={{ borderRadius: 28 }} component="label" variant="contained" startIcon={<CloseIcon />} />
-                  <Button sx={{ borderRadius: 28 }} component="label" variant="contained" startIcon={<CloseIcon />} />
+                  <IconButton variant="contained" children={<West />} color="primary" />
+                  <IconButton variant="contained" children={<Add />} color="primary" />
                 </Box>
               </Paper>
               <SubmitButton text="Submit All & Insert Property" />
