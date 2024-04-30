@@ -1,18 +1,23 @@
-import React from "react";
-import { Add, Close, West } from "@mui/icons-material";
-import { Box, IconButton, Paper } from "@mui/material";
-import SmallTextField from "../paimsform/smallTextField";
+import React, { useState } from "react";
 import { FormSubheadered, FormRow } from "../paimsform/paimsForm";
+import SmallTextField from "../paimsform/smallTextField";
+import FormDatePicker from "../paimsform/formDatePicker";
+import { AggregatedFormSelect } from "../paimsform/formSelect";
 
-const PropertyRow = (props) => {
-  const propRowData = props.propRowData;
+const PropertyRow = ({ rownum, propRowData, handleChange, ...rest }) => {
+  const [supLocked, setSupLocked] = useState(false);
+  const [orderLocked, setOrderLocked] = useState(false);
+
+  const handleInputChange = handleChange;
+  const { users, categories, statuses, locations } = rest.dropdowndata;
+
   const itemSubheadered = (
     <FormSubheadered subheader="Item Details">
       <FormRow segments={3}>
         <SmallTextField
-          id="PropertyID"
+          id={`PropertyID_${rownum}`}
           label="Property ID"
-          value={propRowData.PropertyID}
+          value={propRowData[`PropertyID_${rownum}`]}
           onChange={handleInputChange}
           type="string"
           inputProps={{
@@ -22,13 +27,13 @@ const PropertyRow = (props) => {
           title="Numbers only."
           required
         />
-        <SmallTextField id="PropertyName" label="Property Name" value={propRowData.PropertyName} onChange={handleInputChange} />
+        <SmallTextField id={`PropertyName_${rownum}`} label="Property Name" value={propRowData[`PropertyName_${rownum}`]} onChange={handleInputChange} />
       </FormRow>
       <FormRow segments={4}>
-        <AggregatedFormSelect id="TrusteeID" label="Trustee" value={propRowData.TrusteeID} onChange={handleInputChange} options={users} optionnamegetter={getFullName} />
-        <AggregatedFormSelect id="CategoryID" label="Category" value={propRowData.CategoryID} onChange={handleInputChange} options={categories} />
-        <AggregatedFormSelect id="StatusID" label="Status" value={propRowData.StatusID} onChange={handleInputChange} options={statuses} />
-        <AggregatedFormSelect id="LocationID" label="Location" value={propRowData.LocationID} onChange={handleInputChange} options={locations} optionnamegetter={getFullLoc} />
+        <AggregatedFormSelect id={`TrusteeID_${rownum}`} label="Trustee" value={propRowData[`TrusteeID_${rownum}`]} onChange={handleInputChange} options={users} optionnamegetter={getFullName} />
+        <AggregatedFormSelect id={`CategoryID_${rownum}`} label="Category" value={propRowData[`CategoryID_${rownum}`]} onChange={handleInputChange} options={categories} />
+        <AggregatedFormSelect id={`StatusID_${rownum}`} label="Status" value={propRowData[`StatusID_${rownum}`]} onChange={handleInputChange} options={statuses} />
+        <AggregatedFormSelect id={`LocationID_${rownum}`} label="Location" value={propRowData[`LocationID_${rownum}`]} onChange={handleInputChange} options={locations} optionnamegetter={getFullLoc} />
       </FormRow>
     </FormSubheadered>
   );
@@ -36,11 +41,11 @@ const PropertyRow = (props) => {
   const poSubheadered = (
     <FormSubheadered subheader="Purchase Order">
       <FormRow segments={4}>
-        <SmallTextField id="PurchaseOrderID" label="Purchase Order ID" value={propRowData.PurchaseOrderID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
+        <SmallTextField id={`PurchaseOrderID_${rownum}`} label="Purchase Order ID" value={propRowData[`PurchaseOrderID_${rownum}`]} onChange={handleInputChange} required />
         <SmallTextField
-          id="TotalCost"
+          id={`TotalCost_${rownum}`}
           label="Total Cost"
-          value={propRowData.TotalCost}
+          value={propRowData[`TotalCost_${rownum}`]}
           onChange={handleInputChange}
           inputProps={{
             inputMode: "numeric",
@@ -54,8 +59,8 @@ const PropertyRow = (props) => {
         />
         <FormDatePicker
           label="Purchase Date"
-          id="PurchaseDate"
-          value={propRowData.PurchaseDate}
+          id={`PurchaseDate_${rownum}`}
+          value={propRowData[`PurchaseDate_${rownum}`]}
           //   onChange={(val) => {
           //     setInputData({
           //       ...inputData,
@@ -69,33 +74,34 @@ const PropertyRow = (props) => {
   const supplierSubheadered = (
     <FormSubheadered subheader="Supplier Details">
       <FormRow segments={3}>
-        <SmallTextField id="SupplierID" label="Supplier ID" value={propRowData.SupplierID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
-        <SmallTextField id="SupplierName" label="Supplier Name" value={propRowData.SupplierName} onChange={handleInputChange} readOnly={supLocked} required />
-        <SmallTextField id="SupplierContact" label="Contact Number" value={propRowData.SupplierContact} onChange={handleInputChange} readOnly={supLocked} required />
+        <SmallTextField id={`SupplierID_${rownum}`} label="Supplier ID" value={propRowData[`SupplierID_${rownum}`]} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
+        <SmallTextField id={`SupplierName_${rownum}`} label="Supplier Name" value={propRowData[`SupplierName_${rownum}`]} onChange={handleInputChange} readOnly={supLocked} required />
+        <SmallTextField id={`SupplierContact_${rownum}`} label="Contact Number" value={propRowData[`SupplierContact_${rownum}`]} onChange={handleInputChange} readOnly={supLocked} required />
       </FormRow>
       <FormRow segments={4}>
-        <SmallTextField id="UnitNumber" label="Unit Number" value={propRowData.UnitNumber} onChange={handleInputChange} readOnly={supLocked} />
-        <SmallTextField id="StreetName" label="Street Name" value={propRowData.StreetName} onChange={handleInputChange} readOnly={supLocked} />
-        <SmallTextField id="City" label="City" value={propRowData.City} onChange={handleInputChange} readOnly={supLocked} />
-        <SmallTextField id="State" label="State" value={propRowData.State} onChange={handleInputChange} readOnly={supLocked} />
+        <SmallTextField id={`UnitNumber_${rownum}`} label="Unit Number" value={propRowData[`UnitNumber_${rownum}`]} onChange={handleInputChange} readOnly={supLocked} />
+        <SmallTextField id={`StreetName_${rownum}`} label="Street Name" value={propRowData[`StreetName_${rownum}`]} onChange={handleInputChange} readOnly={supLocked} />
+        <SmallTextField id={`City_${rownum}`} label="City" value={propRowData[`City_${rownum}`]} onChange={handleInputChange} readOnly={supLocked} />
+        <SmallTextField id={`State_${rownum}`} label="State" value={propRowData[`State_${rownum}`]} onChange={handleInputChange} readOnly={supLocked} />
       </FormRow>
     </FormSubheadered>
   );
 
   return (
-    <Paper sx={{ p: 2, backgroundColor: "#f3f3f3" }}>
-      <Box display="flex" flexDirection="row" justifyContent="end">
-        <IconButton children={<Close />} variant="contained" color="error" />
-      </Box>
+    <>
       {itemSubheadered}
       {poSubheadered}
       {supplierSubheadered}
-      <Box display="flex" flexDirection="row" justifyContent="end">
-        <IconButton variant="contained" children={<West />} color="primary" />
-        <IconButton variant="contained" children={<Add />} color="primary" />
-      </Box>
-    </Paper>
+    </>
   );
 };
 
 export default PropertyRow;
+
+const getFullName = (user) => {
+  return `${user.FirstName} ${user.LastName}`;
+};
+
+const getFullLoc = (location) => {
+  return `${location.Building} ${location.RoomNumber}`;
+};

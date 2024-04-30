@@ -25,20 +25,21 @@ export default FormSelect;
 // this aggregation could be unmaintainable in the future
 export const AggregatedFormSelect = (props) => {
   const { id, label, options, optionnamegetter: getOptionName } = props;
+  const raw_id = id.split("_")[0];
 
   // only works when these IDs are the keys of the formData!!
   const choicevaluepairs =
-    id === "TrusteeID"
+    raw_id === "TrusteeID"
       ? options.map((option) => [getOptionName(option), option.UserID])
-      : id === "StatusID"
+      : raw_id === "StatusID"
       ? options.map((option) => [option.StatusName, option.StatusID])
-      : id === "CategoryID"
+      : raw_id === "CategoryID"
       ? options.map((option) => [option.CategoryName, option.CategoryID])
-      : id === "LocationID"
+      : raw_id === "LocationID"
       ? options.map((option) => [getOptionName(option), option.LocationID])
-      : id === "DocumentType"
+      : raw_id === "DocumentType"
       ? options.map((option) => [option.Type, option.Type])
-      : ["IssuedBy", "ReceivedBy"].includes(id)
+      : ["IssuedBy", "ReceivedBy"].includes(raw_id)
       ? options.map((option) => [getOptionName(option), option.Username])
       : null;
 

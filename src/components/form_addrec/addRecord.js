@@ -1,13 +1,12 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { db, storage } from "../../../firebase-config";
-import { doc, setDoc, Timestamp, getDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { Box, Button, IconButton, Paper } from "@mui/material";
-// import { CloudUploadIcon, CloseIcon } from "@mui/icons-material";
+import { db } from "../../../firebase-config";
+import { doc, getDoc } from "firebase/firestore";
+import { Box, Typography, IconButton, Paper } from "@mui/material";
 import { Close, Add, West, East } from "@mui/icons-material";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { autoFillDocumentData, autoFillSupplierData } from "./formautofill";
+import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "./fetchdropdowndata";
+import { insertDocument, handleSubmit } from "./handleinsert1";
 
 import Layout from "../common/layout";
 import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
@@ -17,10 +16,34 @@ import SubmitButton from "../paimsform/submitButton";
 import FormDatePicker from "../paimsform/formDatePicker";
 import FormFileUpload from "../paimsform/formFileUpload";
 
-import { autoFillDocumentData, autoFillSupplierData } from "./formautofill";
-import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "./fetchdropdowndata";
-import { insertDocument, handleSubmit } from "./handleinsert1";
+import PropertyRow from "./propertyRow";
 
+const PROPERTY_ROW_FIELDS = {
+  CategoryID: "",
+  LocationID: "",
+  PropertyID: "",
+  PropertyName: "",
+  TrusteeID: "",
+  StatusID: "",
+  SupplierID: "",
+  PurchaseDate: null,
+  PurchaseOrderID: "",
+  TotalCost: "",
+  City: "",
+  State: "",
+  StreetName: "",
+  SupplierContact: "",
+  SupplierName: "",
+  UnitNumber: "",
+};
+
+const getFullName = (user) => {
+  return `${user.FirstName} ${user.LastName}`;
+};
+
+const getFullLoc = (location) => {
+  return `${location.Building} ${location.RoomNumber}`;
+};
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({
     DocumentID: "",
@@ -47,25 +70,60 @@ const InsertRecord = () => {
     UnitNumber: "",
   });
 
-  const [itemDetailsCount, setItemDetailsCount] = useState([1]);
-
-  const handleAddItem = () => {
-    setItemDetailsCount([...itemDetailsCount, 1]);
-  };
-
-  const handleRemoveItem = () => {
-    const newArray = itemDetailsCount.slice(0, -1);
-    setItemDetailsCount(newArray);
-  };
+  // const [propRowStates, setPropRowStates] = useState([{ ...PROPERTY_ROW_FIELDS }]);
+  // const [propRowHandlers, setPropRowHandlers] = useState([]); // ??? how to put handleInputChange here
 
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [locations, setLocations] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [types, setTypes] = useState([]);
-  const [supLocked, setSupLocked] = useState(false);
+
   const [docLocked, setDocLocked] = useState(false);
+  const [supLocked, setSupLocked] = useState(false);
   const [orderLocked, setOrderLocked] = useState(false);
+
+  const [propertyRows, setPropertyRows] = useState([]);
+  const [rowHandlers, setRowHandlers] = useState([]);
+  const [propRowToDisplay, setPropRowToDisplay] = useState(0);
+
+  const addPropertyRow = () => {
+    const rownum = propertyRows.length;
+    const propRowData = {};
+    for (const key in PROPERTY_ROW_FIELDS) {
+      const newkey = `${key}_${rownum}`;
+      propRowData[newkey] = PROPERTY_ROW_FIELDS[key];
+    }
+    // const dropdownData = { users, statuses, categories, locations, types };
+
+    const rowChangeHandler = (e) => {
+      if (e.target.name !== "") {
+        // probably a PointerEvent due to MUI Select
+        propRowData[e.target.name] = e.target.value;
+        setPropertyRows([...propertyRows.slice(0, rownum), propRowData, ...propertyRows.slice(rownum)]);
+      } else {
+        // regular onChange event
+        propRowData[e.target.id] = e.target.value;
+        setPropertyRows([...propertyRows.slice(0, rownum), propRowData, ...propertyRows.slice(rownum)]);
+      }
+
+      // if (e.target.id === "DocumentID") {
+      //   autoFillDocumentData(e.target.value, setDocLocked, setInputData);
+      // }
+      // if (e.target.id === "SupplierID") {
+      //   autoFillSupplierData(e.target.value, setSupLocked, setInputData);
+      // }
+      // if (e.target.id === "PropertyID") {
+      //   fetchPropertyData(e.target.value);
+      // }
+      //if (e.target.id === `PurchaseOrderID_${index}`) {
+      //  fetchOrderData(e.target.value);
+      //}
+    };
+
+    setPropertyRows([...propertyRows, propRowData]);
+    setRowHandlers([...rowHandlers, rowChangeHandler]);
+  };
 
   useEffect(() => {
     const fetchdropdowndata = async () => {
@@ -75,19 +133,18 @@ const InsertRecord = () => {
       setStatuses(await fetchStatuses());
       setTypes(await fetchTypes());
     };
-    fetchdropdowndata();
+
+    const makeFirstPropertyRow = async () => {
+      await fetchdropdowndata();
+      // console.log("aaaaaaaa", typeof users);
+      addPropertyRow();
+      // addPropertyRow();
+    };
+
+    makeFirstPropertyRow();
   }, []);
 
-  const getFullName = (user) => {
-    return `${user.FirstName} ${user.LastName}`;
-  };
-
-  const getFullLoc = (location) => {
-    return `${location.Building} ${location.RoomNumber}`;
-  };
-
   const handleInputChange = (e, index) => {
-    // console.log(e);
     if (e.target.name !== "") {
       // probably a PointerEvent due to MUI Select
       setInputData({
@@ -114,13 +171,6 @@ const InsertRecord = () => {
     //if (e.target.id === `PurchaseOrderID_${index}`) {
     //  fetchOrderData(e.target.value);
     //}
-  };
-
-  const setPurchaseDate = (value, index) => {
-    setInputData((prevData) => ({
-      ...prevData,
-      PurchaseDate: value,
-    }));
   };
 
   const fetchPropertyData = async (propId) => {
@@ -247,6 +297,30 @@ const InsertRecord = () => {
     </FormSubheadered>
   );
 
+  const NextPropRow = () => {
+    const addProp = (
+      <IconButton
+        variant="contained"
+        children={<Add />}
+        color="primary"
+        onClick={(e) => {
+          addPropertyRow();
+          setPropRowToDisplay(propRowToDisplay + 1);
+        }}
+      />
+    );
+    const right = (
+      <IconButton
+        variant="contained"
+        children={<East />}
+        color="primary"
+        onClick={(e) => {
+          setPropRowToDisplay(propRowToDisplay + 1);
+        }}
+      />
+    );
+    return propRowToDisplay === propertyRows.length - 1 ? addProp : right;
+  };
   return (
     <Layout pageTitle="INSERT">
       <Box sx={{ padding: 2, margin: 1 }}>
@@ -260,15 +334,33 @@ const InsertRecord = () => {
               }}
             />
             <Paper sx={{ p: 2, backgroundColor: "#f3f3f3" }}>
-              <Box display="flex" flexDirection="row" justifyContent="end">
-                <IconButton children={<Close />} variant="contained" color="error" />
+              <Box display="flex" flexDirection="row">
+                <Typography width="50%" variant="h9" fontWeight={"bold"}>
+                  Property {propRowToDisplay + 1}
+                </Typography>
+                <Box width="50%" display="flex" flexDirection="row" justifyContent="end">
+                  <IconButton children={<Close />} variant="contained" color="error" />
+                </Box>
               </Box>
-              {itemSubheadered}
+              {/* {itemSubheadered}
               {poSubheadered}
-              {supplierSubheadered}
+              {supplierSubheadered} */}
+              {propertyRows.map((propRowData, index) => {
+                const hide = <></>;
+                const propUI = <PropertyRow rownum={index} propRowData={propRowData} handleChange={rowHandlers[index]} dropdowndata={{ users, statuses, categories, locations, types }} />;
+                const res = <div key={`PropertyRow_${index}`}>{index === propRowToDisplay ? propUI : hide}</div>;
+                return res;
+              })}
               <Box display="flex" flexDirection="row" justifyContent="end">
-                <IconButton variant="contained" children={<West />} color="primary" />
-                <IconButton variant="contained" children={<Add />} color="primary" />
+                <IconButton
+                  variant="contained"
+                  children={<West />}
+                  color="primary"
+                  onClick={(e) => {
+                    setPropRowToDisplay(Math.max(0, propRowToDisplay - 1));
+                  }}
+                />
+                <NextPropRow />
               </Box>
             </Paper>
             <SubmitButton text="Submit All & Insert Property" />
