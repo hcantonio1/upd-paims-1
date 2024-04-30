@@ -3,7 +3,9 @@ import { useState, useEffect } from "react";
 import { db, storage } from "../../../firebase-config";
 import { doc, setDoc, Timestamp, getDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { Box } from "@mui/material";
+import { Box, Button, Paper } from "@mui/material";
+// import { CloudUploadIcon, CloseIcon } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
@@ -95,94 +97,50 @@ const InsertRecord = () => {
     }
 
     try {
-      await Promise.all(
-        itemDetailsCount.map(async (_, index) => {
-          const itemData = {
-            ...inputData,
-            // Update property values based on the index
-            PropertyID: inputData[`PropertyID_${index}`],
-            PropertyName: inputData[`PropertyName_${index}`],
-            TrusteeID: inputData[`TrusteeID_${index}`],
-            CategoryID: inputData[`CategoryID_${index}`],
-            StatusID: inputData[`StatusID_${index}`],
-            LocationID: inputData[`LocationID_${index}`],
-            PurchaseOrderID: inputData[`PurchaseOrderID_${index}`],
-            TotalCost: inputData[`TotalCost_${index}`],
-            PurchaseDate: inputData[`PurchaseDate_${index}`],
-          };
-          if (itemData.DocumentType === "ICS" && parseInt(itemData.TotalCost) > 49999) {
-            alert("ICS cannot have total cost over PHP49,999.");
-            return;
-          }
-          if (itemData.DocumentType === "PAR" && parseInt(itemData.TotalCost) < 50000) {
-            alert("PAR cannot have total cost below PHP50,000.");
-            return;
-          }
-          await setDoc(doc(db, "supplier", inputData.SupplierID), {
-            City: inputData.City,
-            State: inputData.State,
-            StreetName: inputData.StreetName,
-            SupplierContact: inputData.SupplierContact.toString(),
-            SupplierID: parseInt(inputData.SupplierID),
-            SupplierName: inputData.SupplierName,
-            UnitNumber: parseInt(inputData.UnitNumber),
-          });
-          console.log("Inserted to supplier!");
-          console.log("Uploading file to Firebase Storage");
-          const fileRef = ref(storage, "DCS/" + inputData.Link.name);
-          await uploadBytes(fileRef, inputData.Link);
-          const fileUrl = await getDownloadURL(fileRef);
-          console.log("File uploaded successfully:", fileUrl);
-          await setDoc(doc(db, "item_document", inputData.DocumentID), {
-            DateIssued: Timestamp.fromDate(new Date(inputData.DateIssued)),
-            DocumentID: inputData.DocumentID,
-            DocumentType: inputData.DocumentType,
-            IssuedBy: inputData.IssuedBy,
-            Link: fileUrl,
-            ReceivedBy: inputData.ReceivedBy,
-          });
-          var parObject = {};
-          var icsObject = {};
-          var iirupObject = {};
-          var archiveStat = 0;
-          if (inputData.DocumentType === "IIRUP") {
-            iirupObject[1] = inputData.DocumentID;
-            archiveStat = 1;
-          } else if (inputData.DocumentType === "PAR") {
-            parObject[1] = inputData.DocumentID;
-          } else {
-            icsObject[1] = inputData.DocumentID;
-          }
-          await setDoc(doc(db, "property", itemData.PropertyID), {
-            CategoryID: parseInt(itemData.CategoryID),
-            parID: parObject,
-            iirupID: iirupObject,
-            icsID: icsObject,
-            isArchived: archiveStat,
-            isApproved: 0,
-            LocationID: parseInt(itemData.LocationID),
-            PropertyID: parseInt(itemData.PropertyID),
-            PropertyName: itemData.PropertyName,
-            TrusteeID: parseInt(itemData.TrusteeID),
-            StatusID: parseInt(itemData.StatusID),
-            SupplierID: parseInt(itemData.SupplierID),
-            PurchaseOrderID: parseInt(itemData.PurchaseOrderID),
-            VerNum: 1,
-          });
-          console.log("Inserted to property!");
-          console.log("PurchaseDate:", itemData.PurchaseDate);
-          console.log("DateIssued:", Timestamp.fromDate(new Date(itemData.DateIssued)));
-          await setDoc(doc(db, "purchase_order", itemData.PurchaseOrderID), {
-            PurchaseDate: Timestamp.fromDate(new Date(itemData.PurchaseDate)),
-            PurchaseOrderID: parseInt(itemData.PurchaseOrderID),
-            SupplierID: parseInt(itemData.SupplierID),
-            TotalCost: parseInt(itemData.TotalCost),
-          });
-          console.log("Inserted to purchase_order!");
-          alert("Successfully inserted!");
-          window.location.reload();
-        })
-      );
+      await setDoc(doc(db, "supplier", inputData.SupplierID), {
+        City: inputData.City,
+        State: inputData.State,
+        StreetName: inputData.StreetName,
+        SupplierContact: inputData.SupplierContact.toString(),
+        SupplierID: parseInt(inputData.SupplierID),
+        SupplierName: inputData.SupplierName,
+        UnitNumber: parseInt(inputData.UnitNumber),
+      });
+      console.log("Uploading file to Firebase Storage");
+      const fileRef = ref(storage, "DCS/" + inputData.Link.name);
+      await uploadBytes(fileRef, inputData.Link);
+      const fileUrl = await getDownloadURL(fileRef);
+      console.log("File uploaded successfully:", fileUrl);
+      await setDoc(doc(db, "item_document", inputData.DocumentID), {
+        DateIssued: Timestamp.fromDate(new Date(inputData.DateIssued)),
+        DocumentID: inputData.DocumentID,
+        DocumentType: inputData.DocumentType,
+        IssuedBy: inputData.IssuedBy,
+        Link: fileUrl,
+        ReceivedBy: inputData.ReceivedBy,
+      });
+      var docObject = {};
+      docObject[inputData.TrusteeID] = inputData.DocumentID;
+      await setDoc(doc(db, "property", inputData.PropertyID), {
+        CategoryID: parseInt(inputData.CategoryID),
+        DocumentID: docObject,
+        isArchived: 0,
+        LocationID: parseInt(inputData.LocationID),
+        PropertyID: parseInt(inputData.PropertyID),
+        PropertyName: inputData.PropertyName,
+        TrusteeID: parseInt(inputData.TrusteeID),
+        StatusID: parseInt(inputData.StatusID),
+        SupplierID: parseInt(inputData.SupplierID),
+        PurchaseOrderID: parseInt(inputData.PurchaseOrderID),
+      });
+      await setDoc(doc(db, "purchase_order", inputData.PurchaseOrderID), {
+        PurchaseDate: Timestamp.fromDate(new Date(inputData.PurchaseDate)),
+        PurchaseOrderID: parseInt(inputData.PurchaseOrderID),
+        SupplierID: parseInt(inputData.SupplierID),
+        TotalCost: parseInt(inputData.TotalCost),
+      });
+      alert("Successfully inserted!");
+      window.location.reload();
     } catch (error) {
       console.error("Error inserting document:", error);
       alert("Failed to insert record.");
@@ -351,9 +309,18 @@ const InsertRecord = () => {
                   handleInsertDoc(e, inputData);
                 }}
               />
-              {itemSubheadered}
-              {poSubheadered}
-              {supplierSubheadered}
+              <Paper sx={{ p: 2, backgroundColor: "#f3f3f3" }}>
+                <Box display="flex" flexDirection="row" justifyContent="end">
+                  <Button sx={{ borderRadius: 28 }} component="label" variant="contained" startIcon={<CloseIcon />} />
+                </Box>
+                {itemSubheadered}
+                {poSubheadered}
+                {supplierSubheadered}
+                <Box display="flex" flexDirection="row" justifyContent="end">
+                  <Button sx={{ borderRadius: 28 }} component="label" variant="contained" startIcon={<CloseIcon />} />
+                  <Button sx={{ borderRadius: 28 }} component="label" variant="contained" startIcon={<CloseIcon />} />
+                </Box>
+              </Paper>
               <SubmitButton text="Submit All & Insert Property" />
             </PaimsForm>
           </main>

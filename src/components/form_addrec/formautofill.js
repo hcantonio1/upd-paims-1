@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 
 export const autoFillDocumentData = async (DocumentID, setDocLocked, setInputData) => {
   const fetchResult = await fetchDocumentData(DocumentID);
-  console.log(DocumentID, typeof fetchResult);
   if (!!fetchResult) {
     const docData = fetchResult.data();
     setDocLocked(true);
