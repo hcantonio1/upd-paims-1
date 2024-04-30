@@ -162,29 +162,11 @@ const InsertRecord = () => {
     if (e.target.id === "DocumentID") {
       autoFillDocumentData(e.target.value, setDocLocked, setInputData);
     }
-    if (e.target.id === "SupplierID") {
-      autoFillSupplierData(e.target.value, setSupLocked, setInputData);
-    }
-    if (e.target.id === "PropertyID") {
-      fetchPropertyData(e.target.value);
-    }
-    //if (e.target.id === `PurchaseOrderID_${index}`) {
-    //  fetchOrderData(e.target.value);
-    //}
-  };
 
-  const fetchPropertyData = async (propId) => {
-    try {
-      const propRef = doc(db, "property", propId);
-      const propSnap = await getDoc(propRef);
-
-      if (propSnap.exists()) {
-        alert("A property with this ID already exists!");
-        return;
-      }
-    } catch (error) {
-      console.error("Error fetching property:", error);
-    }
+    // if (e.target.id === "PropertyID") {
+    //   // verify if Property already exists
+    //   fetchPropertyData(e.target.value);
+    // }
   };
 
   const handleFileChange = (e) => {
@@ -194,82 +176,6 @@ const InsertRecord = () => {
       Link: file,
     });
   };
-
-  const itemSubheadered = (
-    <FormSubheadered subheader="Item Details">
-      <FormRow segments={3}>
-        <SmallTextField
-          id="PropertyID"
-          label="Property ID"
-          value={inputData.PropertyID}
-          onChange={handleInputChange}
-          type="string"
-          inputProps={{
-            inputMode: "numeric",
-            pattern: "[0-9]*",
-          }}
-          title="Numbers only."
-          required
-        />
-        <SmallTextField id="PropertyName" label="Property Name" value={inputData.PropertyName} onChange={handleInputChange} />
-      </FormRow>
-      <FormRow segments={4}>
-        <AggregatedFormSelect id="TrusteeID" label="Trustee" value={inputData.TrusteeID} onChange={handleInputChange} options={users} optionnamegetter={getFullName} />
-        <AggregatedFormSelect id="CategoryID" label="Category" value={inputData.CategoryID} onChange={handleInputChange} options={categories} />
-        <AggregatedFormSelect id="StatusID" label="Status" value={inputData.StatusID} onChange={handleInputChange} options={statuses} />
-        <AggregatedFormSelect id="LocationID" label="Location" value={inputData.LocationID} onChange={handleInputChange} options={locations} optionnamegetter={getFullLoc} />
-      </FormRow>
-    </FormSubheadered>
-  );
-
-  const poSubheadered = (
-    <FormSubheadered subheader="Purchase Order">
-      <FormRow segments={4}>
-        <SmallTextField id="PurchaseOrderID" label="Purchase Order ID" value={inputData.PurchaseOrderID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
-        <SmallTextField
-          id="TotalCost"
-          label="Total Cost"
-          value={inputData.TotalCost}
-          onChange={handleInputChange}
-          inputProps={{
-            inputMode: "numeric",
-            pattern: "[0-9]*",
-            min: "0",
-            step: "any",
-          }}
-          title="Please enter a positive number."
-          required
-          readOnly={orderLocked}
-        />
-        <FormDatePicker
-          label="Purchase Date"
-          id="PurchaseDate"
-          value={inputData.PurchaseDate}
-          onChange={(val) => {
-            setInputData({
-              ...inputData,
-              PurchaseDate: val,
-            });
-          }}
-        />
-      </FormRow>
-    </FormSubheadered>
-  );
-  const supplierSubheadered = (
-    <FormSubheadered subheader="Supplier Details">
-      <FormRow segments={3}>
-        <SmallTextField id="SupplierID" label="Supplier ID" value={inputData.SupplierID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
-        <SmallTextField id="SupplierName" label="Supplier Name" value={inputData.SupplierName} onChange={handleInputChange} readOnly={supLocked} required />
-        <SmallTextField id="SupplierContact" label="Contact Number" value={inputData.SupplierContact} onChange={handleInputChange} readOnly={supLocked} required />
-      </FormRow>
-      <FormRow segments={4}>
-        <SmallTextField id="UnitNumber" label="Unit Number" value={inputData.UnitNumber} onChange={handleInputChange} readOnly={supLocked} />
-        <SmallTextField id="StreetName" label="Street Name" value={inputData.StreetName} onChange={handleInputChange} readOnly={supLocked} />
-        <SmallTextField id="City" label="City" value={inputData.City} onChange={handleInputChange} readOnly={supLocked} />
-        <SmallTextField id="State" label="State" value={inputData.State} onChange={handleInputChange} readOnly={supLocked} />
-      </FormRow>
-    </FormSubheadered>
-  );
 
   const docSubheadered = (
     <FormSubheadered subheader="Document Details">
@@ -297,30 +203,38 @@ const InsertRecord = () => {
     </FormSubheadered>
   );
 
-  const NextPropRow = () => {
-    const addProp = (
-      <IconButton
-        variant="contained"
-        children={<Add />}
-        color="primary"
-        onClick={(e) => {
-          addPropertyRow();
-          setPropRowToDisplay(propRowToDisplay + 1);
-        }}
-      />
-    );
-    const right = (
-      <IconButton
-        variant="contained"
-        children={<East />}
-        color="primary"
-        onClick={(e) => {
-          setPropRowToDisplay(propRowToDisplay + 1);
-        }}
-      />
-    );
-    return propRowToDisplay === propertyRows.length - 1 ? addProp : right;
+  const NextPropRowButton = () => {
+    const addRowFunc = (e) => {
+      addPropertyRow();
+      setPropRowToDisplay(propRowToDisplay + 1);
+    };
+    const nextRowFunc = (e) => {
+      setPropRowToDisplay(propRowToDisplay + 1);
+    };
+    const addRow = <IconButton variant="contained" children={<Add />} color="primary" onClick={addRowFunc} />;
+    const nextRow = <IconButton variant="contained" children={<East />} color="primary" onClick={nextRowFunc} />;
+    return propRowToDisplay === propertyRows.length - 1 ? addRow : nextRow;
   };
+
+  const PrevPropRowButton = () => {
+    const prevRowFunc = (e) => {
+      setPropRowToDisplay(Math.max(0, propRowToDisplay - 1));
+    };
+    const prevRow = <IconButton variant="contained" children={<West />} color="primary" onClick={prevRowFunc} />;
+    return propRowToDisplay === 0 ? <></> : prevRow;
+  };
+
+  const DeletePropRowButton = () => {
+    const delPropRowFunc = (e) => {
+      const index = propRowToDisplay;
+      setPropertyRows([...propertyRows.slice(0, index), ...propertyRows.slice(index)]);
+      setRowHandlers([...rowHandlers.slice(0, index), ...rowHandlers.slice(index)]);
+      setPropRowToDisplay(Math.min(propertyRows.length - 1, index));
+    };
+    const delRow = <IconButton variant="contained" children={<Close />} color="error" onClick={delPropRowFunc} />;
+    return propertyRows.length > 1 ? delRow : <></>;
+  };
+
   return (
     <Layout pageTitle="INSERT">
       <Box sx={{ padding: 2, margin: 1 }}>
@@ -334,17 +248,14 @@ const InsertRecord = () => {
               }}
             />
             <Paper sx={{ p: 2, backgroundColor: "#f3f3f3" }}>
-              <Box display="flex" flexDirection="row">
+              <Box display="flex" flexDirection="row" height={36}>
                 <Typography width="50%" variant="h9" fontWeight={"bold"}>
                   Property {propRowToDisplay + 1}
                 </Typography>
                 <Box width="50%" display="flex" flexDirection="row" justifyContent="end">
-                  <IconButton children={<Close />} variant="contained" color="error" />
+                  <DeletePropRowButton />
                 </Box>
               </Box>
-              {/* {itemSubheadered}
-              {poSubheadered}
-              {supplierSubheadered} */}
               {propertyRows.map((propRowData, index) => {
                 const hide = <></>;
                 const propUI = <PropertyRow rownum={index} propRowData={propRowData} handleChange={rowHandlers[index]} dropdowndata={{ users, statuses, categories, locations, types }} />;
@@ -352,15 +263,8 @@ const InsertRecord = () => {
                 return res;
               })}
               <Box display="flex" flexDirection="row" justifyContent="end">
-                <IconButton
-                  variant="contained"
-                  children={<West />}
-                  color="primary"
-                  onClick={(e) => {
-                    setPropRowToDisplay(Math.max(0, propRowToDisplay - 1));
-                  }}
-                />
-                <NextPropRow />
+                <PrevPropRowButton />
+                <NextPropRowButton />
               </Box>
             </Paper>
             <SubmitButton text="Submit All & Insert Property" />

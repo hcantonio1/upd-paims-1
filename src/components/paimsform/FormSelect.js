@@ -24,7 +24,7 @@ export default FormSelect;
 
 // this aggregation could be unmaintainable in the future
 export const AggregatedFormSelect = (props) => {
-  const { id, label, options, optionnamegetter: getOptionName } = props;
+  const { id, options, optionnamegetter: getOptionName } = props;
   const raw_id = id.split("_")[0];
 
   // only works when these IDs are the keys of the formData!!
