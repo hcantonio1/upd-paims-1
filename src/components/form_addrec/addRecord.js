@@ -108,9 +108,9 @@ const InsertRecord = () => {
 
     const makeFirstPropertyRow = async () => {
       await fetchdropdowndata();
-      // console.log("aaaaaaaa", typeof users);
-      addPropertyRow();
-      // addPropertyRow();
+      if (propertyRows.length === 0) {
+        addPropertyRow();
+      }
     };
 
     makeFirstPropertyRow();
@@ -181,7 +181,7 @@ const InsertRecord = () => {
       setPropRowToDisplay(propRowToDisplay + 1);
     };
     const nextRowFunc = (e) => {
-      setPropRowToDisplay(propRowToDisplay + 1);
+      setPropRowToDisplay(Math.min(propertyRows.length - 1, propRowToDisplay + 1));
     };
     const addRow = <IconButton variant="contained" children={<Add />} color="primary" onClick={addRowFunc} />;
     const nextRow = <IconButton variant="contained" children={<East />} color="primary" onClick={nextRowFunc} />;
@@ -198,9 +198,10 @@ const InsertRecord = () => {
 
   const DeletePropRowButton = () => {
     const delPropRowFunc = (e) => {
+      return;
       const index = propRowToDisplay;
-      setPropertyRows([...propertyRows.slice(0, index), ...propertyRows.slice(index)]);
-      setRowHandlers([...rowHandlers.slice(0, index), ...rowHandlers.slice(index)]);
+      setPropertyRows([...propertyRows.slice(0, index), ...propertyRows.slice(index + 1)]);
+      setRowHandlers([...rowHandlers.slice(0, index), ...rowHandlers.slice(index + 1)]);
       setPropRowToDisplay(Math.min(propertyRows.length - 1, index));
     };
     const delRow = <IconButton variant="contained" children={<Close />} color="error" onClick={delPropRowFunc} />;
