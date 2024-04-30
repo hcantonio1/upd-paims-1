@@ -1,6 +1,6 @@
 import React from "react";
-import { Box } from "@mui/material";
-import FormHeader from "./formHeader";
+import { Box, Divider, Stack, Typography } from "@mui/material";
+// import FormHeader from "./formHeader";
 
 /* TOP-DOWN DESIGN APPROACH: make PaimsForm first
  * props expectation (user story)
@@ -40,7 +40,7 @@ import FormHeader from "./formHeader";
 //   </>
 // );
 
-const PaimsForm = ({ header, children, onSubmit }) => {
+export const PaimsForm = ({ header, children, onSubmit }) => {
   return (
     <form onSubmit={onSubmit}>
       <Box display="flex" flexDirection="column">
@@ -51,4 +51,47 @@ const PaimsForm = ({ header, children, onSubmit }) => {
   );
 };
 
-export default PaimsForm;
+export const FormHeader = ({ header }) => {
+  return (
+    <Box sx={{ backgroundColor: "#e5e5e5", padding: 1 }}>
+      <Typography variant="h9" fontWeight={"bold"}>
+        {header}
+      </Typography>
+    </Box>
+  );
+};
+
+export const FormSubheadered = ({ children, subheader }) => {
+  return (
+    <Box display="flex" flexDirection="column" sx={{ gap: 1, mb: 1 }}>
+      <Typography variant="h9" fontWeight={"bold"}>
+        {subheader}
+      </Typography>
+      <Divider></Divider>
+      {children}
+    </Box>
+  );
+};
+
+// API: children, segments
+export const FormRow = ({ children, segments, test }) => {
+  const segmentWidth = 1 / segments;
+  const childrens =
+    children.constructor !== Array ? (
+      <Stack sx={{ width: segmentWidth }} key={`${children.id}_column1`}>
+        {children}
+      </Stack>
+    ) : (
+      <>
+        {children.map((child, index) => {
+          return (
+            <Stack sx={{ width: segmentWidth }} key={`${child.id}_column${index}`}>
+              {child}
+            </Stack>
+          );
+        })}
+      </>
+    );
+
+  return <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1 }}>{childrens}</Stack>;
+};
