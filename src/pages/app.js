@@ -12,6 +12,7 @@ import AddRecordPage from "../components/form_addrec/addRecord";
 import UpdateRecordPage from "../components/updaterec/updaterec";
 import ManageAccounts from "../components/manageaccounts/manageaccounts";
 import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const App = () => (
   <LocalizationProvider dateAdapter={AdapterDayjs}>

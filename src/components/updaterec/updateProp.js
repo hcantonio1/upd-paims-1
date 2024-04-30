@@ -21,7 +21,7 @@ const UpdateProp = () => {
     icsID: {},
     SpecDoc: "",
     DocumentType: "",
-    DateIssued: "",
+    DateIssued: null,
     IssuedBy: "",
     Link: "",
     ReceivedBy: "",
@@ -255,7 +255,17 @@ const UpdateProp = () => {
         <FormRow segments={3}>
           <SmallTextField id="SpecDoc" label="Document Name" value={formData.SpecDoc} onChange={handleInputChange} required />
           <FormSelect label="Type" id="DocumentType" value={formData.DocumentType} onChange={handleInputChange} disabled={docLocked} choicevaluepairs={types.map((type) => [type.Type, type.Type])} />
-          <FormDatePicker id="DateIssued" value={formData.DateIssued} onChange={handleInputChange} disabled={docLocked} />
+          <FormDatePicker
+            id="DateIssued"
+            value={formData.DateIssued}
+            onChange={(val) => {
+              setFormData({
+                ...formData,
+                DateIssued: val,
+              });
+            }}
+            disabled={docLocked}
+          />
         </FormRow>
         <FormRow segments={3}>
           <FormSelect
