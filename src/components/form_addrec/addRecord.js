@@ -4,7 +4,7 @@ import { Box, Typography, IconButton, Paper } from "@mui/material";
 import { Close, Add, West, East } from "@mui/icons-material";
 import { autoFillDocumentData, autoFillSupplierData } from "./formautofill";
 import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "./fetchdropdowndata";
-import { insertDocument, handleSubmit } from "./handleinsert1";
+import { insertDocument, handleSubmit } from "./handleinsert";
 
 import Layout from "../common/layout";
 import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
@@ -43,33 +43,7 @@ const getFullLoc = (location) => {
   return `${location.Building} ${location.RoomNumber}`;
 };
 const InsertRecord = () => {
-  const [inputData, setInputData] = useState({
-    DocumentID: "",
-    DocumentType: "",
-    DateIssued: null,
-    IssuedBy: "",
-    ReceivedBy: "",
-    Link: "",
-    CategoryID: "",
-    LocationID: "",
-    PropertyID: "",
-    PropertyName: "",
-    TrusteeID: "",
-    StatusID: "",
-    SupplierID: "",
-    PurchaseDate: null,
-    PurchaseOrderID: "",
-    TotalCost: "",
-    City: "",
-    State: "",
-    StreetName: "",
-    SupplierContact: "",
-    SupplierName: "",
-    UnitNumber: "",
-  });
-
-  // const [propRowStates, setPropRowStates] = useState([{ ...PROPERTY_ROW_FIELDS }]);
-  // const [propRowHandlers, setPropRowHandlers] = useState([]); // ??? how to put handleInputChange here
+  const [docData, setDocData] = useState({ DocumentID: "", DocumentType: "", DateIssued: null, IssuedBy: "", ReceivedBy: "", Link: "" });
 
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -106,10 +80,10 @@ const InsertRecord = () => {
       }
 
       // if (e.target.id === "DocumentID") {
-      //   autoFillDocumentData(e.target.value, setDocLocked, setInputData);
+      //   autoFillDocumentData(e.target.value, setDocLocked, setdocData);
       // }
       // if (e.target.id === "SupplierID") {
-      //   autoFillSupplierData(e.target.value, setSupLocked, setInputData);
+      //   autoFillSupplierData(e.target.value, setSupLocked, setdocData);
       // }
       // if (e.target.id === "PropertyID") {
       //   fetchPropertyData(e.target.value);
@@ -145,20 +119,20 @@ const InsertRecord = () => {
   const handleInputChange = (e, index) => {
     if (e.target.name !== "") {
       // probably a PointerEvent due to MUI Select
-      setInputData({
-        ...inputData,
+      setDocData({
+        ...docData,
         [e.target.name]: e.target.value,
       });
     } else {
       // regular onChange event
-      setInputData({
-        ...inputData,
+      setDocData({
+        ...docData,
         [e.target.id]: e.target.value,
       });
     }
 
     if (e.target.id === "DocumentID") {
-      autoFillDocumentData(e.target.value, setDocLocked, setInputData);
+      autoFillDocumentData(e.target.value, setDocLocked, setDocData);
     }
 
     // if (e.target.id === "PropertyID") {
@@ -169,8 +143,8 @@ const InsertRecord = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setInputData({
-      ...inputData,
+    setDocData({
+      ...docData,
       Link: file,
     });
   };
@@ -178,15 +152,15 @@ const InsertRecord = () => {
   const docSubheadered = (
     <FormSubheadered subheader="Document Details">
       <FormRow segments={3}>
-        <SmallTextField id="DocumentID" label="Document Name" value={inputData.DocumentID} onChange={handleInputChange} required />
-        <AggregatedFormSelect label="Type" id="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} options={types} readOnly={docLocked} required />
+        <SmallTextField id="DocumentID" label="Document Name" value={docData.DocumentID} onChange={handleInputChange} required />
+        <AggregatedFormSelect label="Type" id="DocumentType" value={docData.DocumentType} onChange={handleInputChange} options={types} readOnly={docLocked} required />
         <FormDatePicker
           id="DateIssued"
           label="Date Issued"
-          value={inputData.DateIssued}
+          value={docData.DateIssued}
           onChange={(val) =>
-            setInputData({
-              ...inputData,
+            setDocData({
+              ...docData,
               DateIssued: val,
             })
           }
@@ -194,8 +168,8 @@ const InsertRecord = () => {
         />
       </FormRow>
       <FormRow segments={3}>
-        <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} disabled={docLocked} options={users} optionnamegetter={getFullName} />
-        <AggregatedFormSelect label="ReceivedBy" id="ReceivedBy" value={inputData.ReceivedBy} onChange={handleInputChange} disabled={docLocked} options={users} optionnamegetter={getFullName} />
+        <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={docData.IssuedBy} onChange={handleInputChange} disabled={docLocked} options={users} optionnamegetter={getFullName} />
+        <AggregatedFormSelect label="ReceivedBy" id="ReceivedBy" value={docData.ReceivedBy} onChange={handleInputChange} disabled={docLocked} options={users} optionnamegetter={getFullName} />
         <FormFileUpload id="Link" onChange={handleFileChange} disabled={docLocked} />
       </FormRow>
     </FormSubheadered>
@@ -237,12 +211,12 @@ const InsertRecord = () => {
     <Layout pageTitle="INSERT">
       <Box sx={{ padding: 2, margin: 1 }}>
         <main>
-          <PaimsForm header="Insert a New Record into the Database" onSubmit={(e) => handleSubmit(e, inputData)}>
+          <PaimsForm header="Insert a New Record into the Database" onSubmit={(e) => {}}>
             {docSubheadered}
             <SubmitButton
               text="Only Submit Document"
               onClick={(e) => {
-                insertDocument(e, inputData);
+                insertDocument(e, docData);
               }}
             />
             <Paper sx={{ p: 2, backgroundColor: "#f3f3f3" }}>

@@ -4,6 +4,7 @@ import { ref, getDownloadURL, uploadBytes } from "@firebase/storage";
 
 export const handleSubmit = async (e, inputData) => {
   e.preventDefault();
+  return;
 
   const { DocumentID, DocumentType, DateIssued, IssuedBy, ReceivedBy, Link, ...propRowData } = inputData;
   console.log(propRowData);
@@ -60,32 +61,28 @@ const insertPropRow = async (e, propRowData, documentID) => {
   }
 };
 
-export const insertDocument = async (e, inputData) => {
+export const insertDocument = async (e, documentData) => {
   e.preventDefault();
-
-  if (inputData.IssuedBy === inputData.ReceivedBy) {
-    alert("IssuedBy and ReceivedBy cannot be the same user.");
-    return;
-  }
-
   try {
     console.log("Uploading file to Firebase Storage");
-    const fileRef = ref(storage, "DCS/" + inputData.Link.name);
-    await uploadBytes(fileRef, inputData.Link);
+
+    const fileRef = ref(storage, "DCS/" + documentData.Link.name);
+    await uploadBytes(fileRef, documentData.Link);
     const fileUrl = await getDownloadURL(fileRef);
     console.log("File uploaded successfully:", fileUrl);
-    await setDoc(doc(db, "item_document", inputData.DocumentID), {
-      DateIssued: Timestamp.fromDate(new Date(inputData.DateIssued)),
-      DocumentID: inputData.DocumentID,
-      DocumentType: inputData.DocumentType,
-      IssuedBy: inputData.IssuedBy,
+
+    await setDoc(doc(db, "item_document", documentData.DocumentID), {
+      DateIssued: Timestamp.fromDate(new Date(documentData.DateIssued)),
+      DocumentID: documentData.DocumentID,
+      DocumentType: documentData.DocumentType,
+      IssuedBy: documentData.IssuedBy,
       Link: fileUrl,
-      ReceivedBy: inputData.ReceivedBy,
+      ReceivedBy: documentData.ReceivedBy,
     });
     alert("Successfully inserted!");
     window.location.reload();
   } catch (error) {
     console.error("Error inserting document:", error);
-    alert("Failed to insert record.");
+    alert("Failed to insert document.");
   }
 };
