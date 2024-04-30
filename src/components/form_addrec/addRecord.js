@@ -190,22 +190,31 @@ const InsertRecord = () => {
   };
 
   const handleInputChange = (e, index) => {
-    const { name, value } = e.target;
-    setInputData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    // console.log(e);
+    if (e.target.name !== "") {
+      // probably a PointerEvent due to MUI Select
+      setInputData({
+        ...inputData,
+        [e.target.name]: e.target.value,
+      });
+    } else {
+      // regular onChange event
+      setInputData({
+        ...inputData,
+        [e.target.id]: e.target.value,
+      });
+    }
 
-    if (e.target.name === "DocumentID") {
+    if (e.target.id === "DocumentID") {
       autoFillDocumentData(e.target.value, setDocLocked, setInputData);
     }
-    if (e.target.name === "SupplierID") {
+    if (e.target.id === "SupplierID") {
       autoFillSupplierData(e.target.value, setSupLocked, setInputData);
     }
-    if (e.target.name === `PropertyID_${index}`) {
+    if (e.target.id === "PropertyID") {
       fetchPropertyData(e.target.value);
     }
-    //if (e.target.name === `PurchaseOrderID_${index}`) {
+    //if (e.target.id === `PurchaseOrderID_${index}`) {
     //  fetchOrderData(e.target.value);
     //}
   };
@@ -213,7 +222,7 @@ const InsertRecord = () => {
   const setPurchaseDate = (value, index) => {
     setInputData((prevData) => ({
       ...prevData,
-      [`PurchaseDate_${index}`]: value,
+      PurchaseDate: value,
     }));
   };
 
@@ -273,7 +282,17 @@ const InsertRecord = () => {
           required
           readOnly={orderLocked}
         />
-        <FormDatePicker label="Purchase Date" id="PurchaseDate" value={inputData.PurchaseDate} onChange={setPurchaseDate} />
+        <FormDatePicker
+          label="Purchase Date"
+          id="PurchaseDate"
+          value={inputData.PurchaseDate}
+          onChange={(val) => {
+            setInputData({
+              ...inputData,
+              PurchaseDate: val,
+            });
+          }}
+        />
       </FormRow>
     </FormSubheadered>
   );
@@ -281,14 +300,14 @@ const InsertRecord = () => {
     <FormSubheadered subheader="Supplier Details">
       <FormRow segments={3}>
         <SmallTextField id="SupplierID" label="Supplier ID" value={inputData.SupplierID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
-        <SmallTextField id="SupplierName" label="Supplier Name" value={inputData.SupplierName} onChange={handleInputChange} required />
-        <SmallTextField id="SupplierContact" label="Contact Number" value={inputData.SupplierContact} onChange={handleInputChange} required />
+        <SmallTextField id="SupplierName" label="Supplier Name" value={inputData.SupplierName} onChange={handleInputChange} readOnly={supLocked} required />
+        <SmallTextField id="SupplierContact" label="Contact Number" value={inputData.SupplierContact} onChange={handleInputChange} readOnly={supLocked} required />
       </FormRow>
       <FormRow segments={4}>
-        <SmallTextField id="UnitNumber" label="Unit Number" value={inputData.UnitNumber} onChange={handleInputChange} />
-        <SmallTextField id="StreetName" label="Street Name" value={inputData.StreetName} onChange={handleInputChange} />
-        <SmallTextField id="City" label="City" value={inputData.City} onChange={handleInputChange} />
-        <SmallTextField id="State" label="State" value={inputData.State} onChange={handleInputChange} />
+        <SmallTextField id="UnitNumber" label="Unit Number" value={inputData.UnitNumber} onChange={handleInputChange} readOnly={supLocked} />
+        <SmallTextField id="StreetName" label="Street Name" value={inputData.StreetName} onChange={handleInputChange} readOnly={supLocked} />
+        <SmallTextField id="City" label="City" value={inputData.City} onChange={handleInputChange} readOnly={supLocked} />
+        <SmallTextField id="State" label="State" value={inputData.State} onChange={handleInputChange} readOnly={supLocked} />
       </FormRow>
     </FormSubheadered>
   );
@@ -297,8 +316,19 @@ const InsertRecord = () => {
     <FormSubheadered subheader="Document Details">
       <FormRow segments={3}>
         <SmallTextField id="DocumentID" label="Document Name" value={inputData.DocumentID} onChange={handleInputChange} required />
-        <AggregatedFormSelect label="Type" id="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} options={types} required />
-        <FormDatePicker id="DateIssued" label="Date Issued" value={inputData.DateIssued} onChange={handleInputChange} readOnly={docLocked} />
+        <AggregatedFormSelect label="Type" id="DocumentType" value={inputData.DocumentType} onChange={handleInputChange} options={types} readOnly={docLocked} required />
+        <FormDatePicker
+          id="DateIssued"
+          label="Date Issued"
+          value={inputData.DateIssued}
+          onChange={(val) =>
+            setInputData({
+              ...inputData,
+              DateIssued: val,
+            })
+          }
+          readOnly={docLocked}
+        />
       </FormRow>
       <FormRow segments={3}>
         <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={inputData.IssuedBy} onChange={handleInputChange} disabled={docLocked} options={users} optionnamegetter={getFullName} />
@@ -314,8 +344,6 @@ const InsertRecord = () => {
         <Box sx={{ padding: 2, margin: 1 }}>
           <main>
             <PaimsForm header="Insert a New Record into the Database" onSubmit={handleInsert}>
-              {itemSubheadered}
-              {poSubheadered}
               {docSubheadered}
               <SubmitButton
                 text="Only Submit Document"
@@ -323,6 +351,8 @@ const InsertRecord = () => {
                   handleInsertDoc(e, inputData);
                 }}
               />
+              {itemSubheadered}
+              {poSubheadered}
               {supplierSubheadered}
               <SubmitButton text="Submit All & Insert Property" />
             </PaimsForm>

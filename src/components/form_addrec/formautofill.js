@@ -1,6 +1,7 @@
 // we autofill document and supplier fields
 import { db } from "../../../firebase-config";
 import { doc, getDoc } from "firebase/firestore";
+import dayjs from "dayjs";
 
 export const autoFillDocumentData = async (DocumentID, setDocLocked, setInputData) => {
   const fetchResult = await fetchDocumentData(DocumentID);
@@ -10,7 +11,7 @@ export const autoFillDocumentData = async (DocumentID, setDocLocked, setInputDat
     setInputData((prevData) => ({
       ...prevData,
       DocumentType: docData.DocumentType,
-      DateIssued: docData.DateIssued.toDate().toISOString().split("T")[0],
+      DateIssued: dayjs(docData.DateIssued.toDate()),
       IssuedBy: docData.IssuedBy,
       ReceivedBy: docData.ReceivedBy,
     }));
