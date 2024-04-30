@@ -248,36 +248,34 @@ const InsertRecord = () => {
   );
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Layout pageTitle="INSERT">
-        <Box sx={{ padding: 2, margin: 1 }}>
-          <main>
-            <PaimsForm header="Insert a New Record into the Database" onSubmit={(e) => handleSubmit(e, inputData)}>
-              {docSubheadered}
-              <SubmitButton
-                text="Only Submit Document"
-                onClick={(e) => {
-                  insertDocument(e, inputData);
-                }}
-              />
-              <Paper sx={{ p: 2, backgroundColor: "#f3f3f3" }}>
-                <Box display="flex" flexDirection="row" justifyContent="end">
-                  <IconButton children={<Close />} variant="contained" color="error" />
-                </Box>
-                {itemSubheadered}
-                {poSubheadered}
-                {supplierSubheadered}
-                <Box display="flex" flexDirection="row" justifyContent="end">
-                  <IconButton variant="contained" children={<West />} color="primary" />
-                  <IconButton variant="contained" children={<Add />} color="primary" />
-                </Box>
-              </Paper>
-              <SubmitButton text="Submit All & Insert Property" />
-            </PaimsForm>
-          </main>
-        </Box>
-      </Layout>
-    </LocalizationProvider>
+    <Layout pageTitle="INSERT">
+      <Box sx={{ padding: 2, margin: 1 }}>
+        <main>
+          <PaimsForm header="Insert a New Record into the Database" onSubmit={(e) => handleSubmit(e, inputData)}>
+            {docSubheadered}
+            <SubmitButton
+              text="Only Submit Document"
+              onClick={(e) => {
+                insertDocument(e, inputData);
+              }}
+            />
+            <Paper sx={{ p: 2, backgroundColor: "#f3f3f3" }}>
+              <Box display="flex" flexDirection="row" justifyContent="end">
+                <IconButton children={<Close />} variant="contained" color="error" />
+              </Box>
+              {itemSubheadered}
+              {poSubheadered}
+              {supplierSubheadered}
+              <Box display="flex" flexDirection="row" justifyContent="end">
+                <IconButton variant="contained" children={<West />} color="primary" />
+                <IconButton variant="contained" children={<Add />} color="primary" />
+              </Box>
+            </Paper>
+            <SubmitButton text="Submit All & Insert Property" />
+          </PaimsForm>
+        </main>
+      </Box>
+    </Layout>
   );
 };
 
