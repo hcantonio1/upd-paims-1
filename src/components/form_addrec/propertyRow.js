@@ -57,17 +57,7 @@ const PropertyRow = ({ rownum, propRowData, handleChange, ...rest }) => {
           required
           readOnly={orderLocked}
         />
-        <FormDatePicker
-          label="Purchase Date"
-          id={`PurchaseDate_${rownum}`}
-          value={propRowData[`PurchaseDate_${rownum}`]}
-          //   onChange={(val) => {
-          //     setInputData({
-          //       ...inputData,
-          //       PurchaseDate: val,
-          //     });
-          //   }}
-        />
+        <FormDatePicker label="Purchase Date" id={`PurchaseDate_${rownum}`} value={propRowData[`PurchaseDate_${rownum}`]} onChange={rest.podatepickerfunc} />
       </FormRow>
     </FormSubheadered>
   );

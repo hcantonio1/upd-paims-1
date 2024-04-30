@@ -1,7 +1,5 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { db } from "../../../firebase-config";
-import { doc, getDoc } from "firebase/firestore";
 import { Box, Typography, IconButton, Paper } from "@mui/material";
 import { Close, Add, West, East } from "@mui/icons-material";
 import { autoFillDocumentData, autoFillSupplierData } from "./formautofill";
@@ -257,9 +255,19 @@ const InsertRecord = () => {
                 </Box>
               </Box>
               {propertyRows.map((propRowData, index) => {
-                const hide = <></>;
-                const propUI = <PropertyRow rownum={index} propRowData={propRowData} handleChange={rowHandlers[index]} dropdowndata={{ users, statuses, categories, locations, types }} />;
-                const res = <div key={`PropertyRow_${index}`}>{index === propRowToDisplay ? propUI : hide}</div>;
+                const propUI = (
+                  <PropertyRow
+                    rownum={index}
+                    propRowData={propRowData}
+                    handleChange={rowHandlers[index]}
+                    dropdowndata={{ users, statuses, categories, locations, types }}
+                    podatepickerfunc={(val) => {
+                      propRowData[`PurchaseDate_${index}`] = val;
+                      setPropertyRows([...propertyRows, propRowData]);
+                    }}
+                  />
+                );
+                const res = <div key={`PropertyRow_${index}`}>{index === propRowToDisplay ? propUI : <></>}</div>;
                 return res;
               })}
               <Box display="flex" flexDirection="row" justifyContent="end">
