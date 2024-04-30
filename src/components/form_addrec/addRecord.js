@@ -66,7 +66,6 @@ const InsertRecord = () => {
       const newkey = `${key}_${rownum}`;
       propRowData[newkey] = PROPERTY_ROW_FIELDS[key];
     }
-    // const dropdownData = { users, statuses, categories, locations, types };
 
     const rowChangeHandler = (e) => {
       if (e.target.name !== "") {
@@ -79,9 +78,6 @@ const InsertRecord = () => {
         setPropertyRows([...propertyRows.slice(0, rownum), propRowData, ...propertyRows.slice(rownum)]);
       }
 
-      // if (e.target.id === "DocumentID") {
-      //   autoFillDocumentData(e.target.value, setDocLocked, setdocData);
-      // }
       // if (e.target.id === "SupplierID") {
       //   autoFillSupplierData(e.target.value, setSupLocked, setdocData);
       // }
@@ -116,7 +112,7 @@ const InsertRecord = () => {
     makeFirstPropertyRow();
   }, []);
 
-  const handleInputChange = (e, index) => {
+  const handleInputChange = (e) => {
     if (e.target.name !== "") {
       // probably a PointerEvent due to MUI Select
       setDocData({
@@ -238,7 +234,7 @@ const InsertRecord = () => {
                     dropdowndata={{ users, statuses, categories, locations, types }}
                     podatepickerfunc={(val) => {
                       propRowData[`PurchaseDate_${index}`] = val;
-                      setPropertyRows([...propertyRows, propRowData]);
+                      setPropertyRows([...propertyRows.slice(0, index), propRowData, ...propertyRows.slice(index + 1)]);
                     }}
                   />
                 );
