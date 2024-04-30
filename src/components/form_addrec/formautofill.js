@@ -5,8 +5,9 @@ import dayjs from "dayjs";
 
 export const autoFillDocumentData = async (DocumentID, setDocLocked, setInputData) => {
   const fetchResult = await fetchDocumentData(DocumentID);
-  if (fetchResult !== false) {
-    const docData = fetchResult;
+  console.log(DocumentID, typeof fetchResult);
+  if (!!fetchResult) {
+    const docData = fetchResult.data();
     setDocLocked(true);
     setInputData((prevData) => ({
       ...prevData,
@@ -15,10 +16,9 @@ export const autoFillDocumentData = async (DocumentID, setDocLocked, setInputDat
       IssuedBy: docData.IssuedBy,
       ReceivedBy: docData.ReceivedBy,
     }));
+    return;
   }
-  if (fetchResult === false) {
-    setDocLocked(false);
-  }
+  setDocLocked(false);
 };
 
 const fetchDocumentData = async (DocumentID) => {
@@ -26,7 +26,7 @@ const fetchDocumentData = async (DocumentID) => {
     const docRef = doc(db, "item_document", DocumentID);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      return docSnap.data();
+      return docSnap;
     }
     return false;
   } catch (error) {
@@ -36,8 +36,8 @@ const fetchDocumentData = async (DocumentID) => {
 
 export const autoFillSupplierData = async (SupplierID, setSupLocked, setInputData) => {
   const fetchResult = await fetchSupplierData(SupplierID);
-  if (fetchResult !== false) {
-    const supData = fetchResult;
+  if (!!fetchResult) {
+    const supData = fetchResult.data();
     setSupLocked(true);
     setInputData((prevData) => ({
       ...prevData,
@@ -48,10 +48,9 @@ export const autoFillSupplierData = async (SupplierID, setSupLocked, setInputDat
       SupplierName: supData.SupplierName,
       UnitNumber: parseInt(supData.UnitNumber),
     }));
+    return;
   }
-  if (fetchResult === false) {
-    setSupLocked(false);
-  }
+  setSupLocked(false);
 };
 
 const fetchSupplierData = async (SupplierID) => {
@@ -59,7 +58,7 @@ const fetchSupplierData = async (SupplierID) => {
     const supRef = doc(db, "supplier", SupplierID);
     const supSnap = await getDoc(supRef);
     if (supSnap.exists()) {
-      return supSnap.data();
+      return supSnap;
     }
     return false;
   } catch (error) {
