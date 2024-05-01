@@ -10,6 +10,7 @@ import { AggregatedFormSelect } from "../paimsform/formSelect";
 import SubmitButton from "../paimsform/submitButton";
 import FormDatePicker from "../paimsform/formDatePicker";
 import FormFileUpload from "../paimsform/formFileUpload";
+import { autofillDocumentData } from "../../fetchutils/formautofill";
 
 const UpdateProp = () => {
   const [formData, setFormData] = useState({
@@ -64,7 +65,7 @@ const UpdateProp = () => {
       fetchPropData(e.target.value);
     }
     if (e.target.id === "SpecDoc") {
-      fetchDocumentData(e.target.value);
+      autofillDocumentData(e.target.value, setFormData);
     }
   };
 
@@ -93,38 +94,6 @@ const UpdateProp = () => {
       }
     } catch (error) {
       console.error("Error fetching property:", error);
-    }
-  };
-
-  const fetchDocumentData = async (documentId) => {
-    try {
-      const docRef = doc(db, "item_document", documentId);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        const docData = docSnap.data();
-        console.log(docData.ReceivedBy);
-        setDocLocked(true);
-        setFormData((prevData) => ({
-          ...prevData,
-          DocumentType: docData.DocumentType,
-          DateIssued: docData.DateIssued.toDate().toISOString().split("T")[0],
-          IssuedBy: docData.IssuedBy,
-          ReceivedBy: docData.ReceivedBy,
-        }));
-      }
-      if (!docSnap.exists()) {
-        setDocLocked(false);
-        setFormData((prevData) => ({
-          ...prevData,
-          DocumentType: "",
-          DateIssued: "",
-          IssuedBy: "",
-          ReceivedBy: "",
-        }));
-      }
-    } catch (error) {
-      console.error("Error fetching document:", error);
     }
   };
 
