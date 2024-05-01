@@ -39,6 +39,7 @@ const InsertRecord = () => {
     SupplierContact: "",
     SupplierName: "",
     UnitNumber: "",
+    Documents: {},
   });
 
   const [itemDetailsCount, setItemDetailsCount] = useState([1]);
@@ -135,23 +136,14 @@ const InsertRecord = () => {
             Link: fileUrl,
             ReceivedBy: inputData.ReceivedBy,
           });
-          var parObject = {};
-          var icsObject = {};
-          var iirupObject = {};
           var archiveStat = 0;
           if (inputData.DocumentType === "IIRUP") {
-            iirupObject[1] = inputData.DocumentID;
             archiveStat = 1;
-          } else if (inputData.DocumentType === "PAR") {
-            parObject[1] = inputData.DocumentID;
-          } else {
-            icsObject[1] = inputData.DocumentID;
           }
+          const verNum = "a";
           await setDoc(doc(db, "property", itemData.PropertyID), {
             CategoryID: parseInt(itemData.CategoryID),
-            parID: parObject,
-            iirupID: iirupObject,
-            icsID: icsObject,
+            Documents: {verNum : inputData.DocumentID},
             isArchived: archiveStat,
             isApproved: 0,
             LocationID: parseInt(itemData.LocationID),
@@ -161,7 +153,7 @@ const InsertRecord = () => {
             StatusID: parseInt(itemData.StatusID),
             SupplierID: parseInt(itemData.SupplierID),
             PurchaseOrderID: parseInt(itemData.PurchaseOrderID),
-            VerNum: 1,
+            VerNum: verNum,
           });
           console.log("Inserted to property!");
           console.log("PurchaseDate:", itemData.PurchaseDate);
