@@ -12,6 +12,10 @@ import FormDatePicker from "../paimsform/formDatePicker";
 import { FormFileUpload } from "../paimsform/formFileUpload";
 import { autofillDocumentData, autofillPropertyData } from "../../fetchutils/formautofill";
 
+function nextChar(c) {
+  return String.fromCharCode(c.charCodeAt(0) + 1);
+}
+
 const UpdateProp = () => {
   const [formData, setFormData] = useState({
     StatusID: "",
@@ -76,23 +80,16 @@ const UpdateProp = () => {
     }
 
     try {
-      var iirupUpdate = {};
-      var parUpdate = {};
-      var icsUpdate = {};
-      var newVar = formData.VerNum + 1;
+      var docUpdate = {};
+      var newVar = nextChar(formData.VerNum);
+      console.log(formData.SpecDoc);
+      docUpdate[`Documents.${newVar}`] = formData.SpecDoc;
       var archiveStat = 0;
       if (formData.DocumentType === "IIRUP") {
-        iirupUpdate[`iirupID.${newVar}`] = formData.SpecDoc;
         archiveStat = 1;
-      } else if (formData.DocumentType === "PAR") {
-        parUpdate[`parID.${newVar}`] = formData.SpecDoc;
-      } else {
-        icsUpdate[`icsID.${newVar}`] = formData.SpecDoc;
       }
       const propertyRef = doc(db, "property", formData.PropertyID);
-      updateDoc(propertyRef, icsUpdate);
-      updateDoc(propertyRef, parUpdate);
-      updateDoc(propertyRef, iirupUpdate);
+      await updateDoc(propertyRef, docUpdate);
 
       console.log("Uploading file to Firebase Storage");
       const fileRef = ref(storage, "DCS/" + formData.Link.name);
