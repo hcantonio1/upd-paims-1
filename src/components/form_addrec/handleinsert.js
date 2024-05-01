@@ -63,10 +63,10 @@ const insertPropRow = async (e, propRowData, documentID) => {
     });
 
     var docObject = {};
-    docObject[propRowData.TrusteeID] = documentID;
+    docObject["a"] = documentID;
     await setDoc(doc(db, "property", propRowData.PropertyID), {
       CategoryID: parseInt(propRowData.CategoryID),
-      DocumentID: docObject,
+      Documents: docObject,
       isArchived: 0,
       isApproved: 0,
       LocationID: parseInt(propRowData.LocationID),
@@ -76,6 +76,7 @@ const insertPropRow = async (e, propRowData, documentID) => {
       StatusID: parseInt(propRowData.StatusID),
       SupplierID: parseInt(propRowData.SupplierID),
       PurchaseOrderID: parseInt(propRowData.PurchaseOrderID),
+      VerNum: "a",
     });
     await setDoc(doc(db, "purchase_order", propRowData.PurchaseOrderID), {
       PurchaseDate: Timestamp.fromDate(new Date(propRowData.PurchaseDate)),
