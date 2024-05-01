@@ -3,7 +3,7 @@ import { navigate } from "gatsby";
 import { isLoggedIn, getUser } from "../../services/auth";
 
 const PrivateRoute = ({ component: Component, location, ...rest }) => {
-  const [userRole, setUserRole] = useState(getUser().role);
+  const userRole = getUser().role;
 
   if (!isLoggedIn() && location.pathname !== `/app/login`) {
     navigate("/app/login");
@@ -16,10 +16,7 @@ const PrivateRoute = ({ component: Component, location, ...rest }) => {
 
   const specialRoles = ["Supervisor", "Admin", "Dev"];
   const specialPaths = ["/app/manageaccounts/"];
-  if (
-    !specialRoles.includes(userRole) &&
-    specialPaths.includes(location.pathname)
-  ) {
+  if (!specialRoles.includes(userRole) && specialPaths.includes(location.pathname)) {
     navigate("/app/home");
     alert(`Access denied. ${location.pathname}`);
     return null;
