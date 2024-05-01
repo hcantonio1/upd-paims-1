@@ -12,7 +12,7 @@ import SmallTextField from "../paimsform/smallTextField";
 import { AggregatedFormSelect } from "../paimsform/formSelect";
 import SubmitButton from "../paimsform/submitButton";
 import FormDatePicker from "../paimsform/formDatePicker";
-import FormFileUpload from "../paimsform/formFileUpload";
+import { FormFileUpload } from "../paimsform/formFileUpload";
 
 import PropertyRow from "./propertyRow";
 
@@ -91,6 +91,7 @@ const InsertRecord = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setDocData({ ...docData, Link: file });
+    console.log(file);
   };
 
   const handlePropRowChange = (e, index) => {
@@ -164,11 +165,10 @@ const InsertRecord = () => {
 
   const DeletePropRowButton = () => {
     const delPropRowFunc = (e) => {
-      return;
-      const newPropertyRows = [...propertyRows];
-      newPropertyRows.splice(propRowToDisplay, 1);
-      setPropertyRows(newPropertyRows);
-      setPropRowToDisplay(Math.min(propertyRows.length - 1, propRowToDisplay));
+      // const newPropertyRows = [...propertyRows];
+      // newPropertyRows.splice(propRowToDisplay, 1);
+      // setPropertyRows(newPropertyRows);
+      // setPropRowToDisplay(Math.min(propertyRows.length - 1, propRowToDisplay));
     };
     const delRow = <IconButton variant="contained" children={<Close />} color="error" onClick={delPropRowFunc} />;
     return propertyRows.length > 1 ? delRow : <></>;
@@ -179,7 +179,7 @@ const InsertRecord = () => {
       <Box sx={{ padding: 2, margin: 1 }}>
         <main>
           <PaimsForm
-            header="Insert a New Record into the Database"
+            header="Encode a Document into the Database"
             onSubmit={(e) => {
               handleSubmit(e, docData, propertyRows);
             }}

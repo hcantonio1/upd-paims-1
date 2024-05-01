@@ -9,7 +9,7 @@ import SmallTextField from "../paimsform/smallTextField";
 import { AggregatedFormSelect } from "../paimsform/formSelect";
 import SubmitButton from "../paimsform/submitButton";
 import FormDatePicker from "../paimsform/formDatePicker";
-import FormFileUpload from "../paimsform/formFileUpload";
+import { FormFileUpload } from "../paimsform/formFileUpload";
 import { autofillDocumentData, autofillPropertyData } from "../../fetchutils/formautofill";
 
 const UpdateProp = () => {
@@ -47,24 +47,14 @@ const UpdateProp = () => {
   }, []);
 
   const handleInputChange = (e) => {
-    if (e.target.name !== "") {
-      // probably a PointerEvent due to MUI Select
-      setFormData({
-        ...formData,
-        [e.target.name]: e.target.value,
-      });
-    } else {
-      // regular onChange event
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.value,
-      });
-    }
+    // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
+    const formDataKey = e.target.name !== "" ? e.target.name : e.target.id;
+    setFormData({ ...formData, [formDataKey]: e.target.value });
 
-    if (e.target.id === "PropertyID") {
+    if (formDataKey === "PropertyID") {
       autofillPropertyData(e.target.value, setFormData);
     }
-    if (e.target.id === "SpecDoc") {
+    if (formDataKey === "SpecDoc") {
       autofillDocumentData(e.target.value, setFormData);
     }
   };
