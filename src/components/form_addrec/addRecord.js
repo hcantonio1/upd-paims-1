@@ -35,6 +35,15 @@ const PROPERTY_ROW_FIELDS = {
   UnitNumber: "",
 };
 
+const indexedPropRowFields = (index) => {
+  const propRowData = {};
+  for (const key in PROPERTY_ROW_FIELDS) {
+    const newkey = `${key}_${index}`;
+    propRowData[newkey] = PROPERTY_ROW_FIELDS[key];
+  }
+  return propRowData;
+};
+
 const getFullName = (user) => {
   return `${user.FirstName} ${user.LastName}`;
 };
@@ -55,42 +64,15 @@ const InsertRecord = () => {
   const [supLocked, setSupLocked] = useState(false);
   const [orderLocked, setOrderLocked] = useState(false);
 
-  const [propertyRows, setPropertyRows] = useState([]);
-  const [rowHandlers, setRowHandlers] = useState([]);
+  const [propertyRows, setPropertyRows] = useState([indexedPropRowFields(0)]);
+  // const [rowHandlers, setRowHandlers] = useState([]);
   const [propRowToDisplay, setPropRowToDisplay] = useState(0);
 
   const addPropertyRow = () => {
     const rownum = propertyRows.length;
-    const propRowData = {};
-    for (const key in PROPERTY_ROW_FIELDS) {
-      const newkey = `${key}_${rownum}`;
-      propRowData[newkey] = PROPERTY_ROW_FIELDS[key];
-    }
-
-    const rowChangeHandler = (e) => {
-      if (e.target.name !== "") {
-        // probably a PointerEvent due to MUI Select
-        propRowData[e.target.name] = e.target.value;
-        setPropertyRows([...propertyRows.slice(0, rownum), propRowData, ...propertyRows.slice(rownum)]);
-      } else {
-        // regular onChange event
-        propRowData[e.target.id] = e.target.value;
-        setPropertyRows([...propertyRows.slice(0, rownum), propRowData, ...propertyRows.slice(rownum)]);
-      }
-
-      // if (e.target.id === "SupplierID") {
-      //   autoFillSupplierData(e.target.value, setSupLocked, setdocData);
-      // }
-      // if (e.target.id === "PropertyID") {
-      //   fetchPropertyData(e.target.value);
-      // }
-      //if (e.target.id === `PurchaseOrderID_${index}`) {
-      //  fetchOrderData(e.target.value);
-      //}
-    };
-
+    const propRowData = indexedPropRowFields(rownum);
     setPropertyRows([...propertyRows, propRowData]);
-    setRowHandlers([...rowHandlers, rowChangeHandler]);
+    setPropRowToDisplay(propRowToDisplay + 1);
   };
 
   useEffect(() => {
@@ -102,54 +84,38 @@ const InsertRecord = () => {
       setTypes(await fetchTypes());
     };
 
-    const makeFirstPropertyRow = async () => {
-      await fetchdropdowndata();
-      if (propertyRows.length === 0) {
-        addPropertyRow();
-      }
-    };
-
-    makeFirstPropertyRow();
+    fetchdropdowndata();
   }, []);
 
-  const handleInputChange = (e) => {
-    if (e.target.name !== "") {
-      // probably a PointerEvent due to MUI Select
-      setDocData({
-        ...docData,
-        [e.target.name]: e.target.value,
-      });
-    } else {
-      // regular onChange event
-      setDocData({
-        ...docData,
-        [e.target.id]: e.target.value,
-      });
-    }
+  const handleDocChange = (e) => {
+    // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
+    const docDataKey = e.target.name !== "" ? e.target.name : e.target.id;
+    setDocData({ ...docData, [docDataKey]: e.target.value });
 
-    if (e.target.id === "DocumentID") {
+    if (docDataKey === "DocumentID") {
       autoFillDocumentData(e.target.value, setDocLocked, setDocData);
     }
-
-    // if (e.target.id === "PropertyID") {
-    //   // verify if Property already exists
-    //   fetchPropertyData(e.target.value);
-    // }
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setDocData({
-      ...docData,
-      Link: file,
-    });
+    setDocData({ ...docData, Link: file });
+  };
+
+  const handlePropRowChange = (e, index) => {
+    const newPropertyRows = [...propertyRows];
+
+    // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
+    const propRowKey = e.target.name !== "" ? e.target.name : e.target.id;
+    newPropertyRows[index][propRowKey] = e.target.value;
+    setPropertyRows(newPropertyRows);
   };
 
   const docSubheadered = (
     <FormSubheadered subheader="Document Details">
       <FormRow segments={3}>
-        <SmallTextField id="DocumentID" label="Document Name" value={docData.DocumentID} onChange={handleInputChange} required />
-        <AggregatedFormSelect label="Type" id="DocumentType" value={docData.DocumentType} onChange={handleInputChange} options={types} readOnly={docLocked} required />
+        <SmallTextField id="DocumentID" label="Document Name" value={docData.DocumentID} onChange={handleDocChange} required />
+        <AggregatedFormSelect label="Type" id="DocumentType" value={docData.DocumentType} onChange={handleDocChange} options={types} readOnly={docLocked} required />
         <FormDatePicker
           id="DateIssued"
           label="Date Issued"
@@ -164,8 +130,8 @@ const InsertRecord = () => {
         />
       </FormRow>
       <FormRow segments={3}>
-        <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={docData.IssuedBy} onChange={handleInputChange} disabled={docLocked} options={users} optionnamegetter={getFullName} />
-        <AggregatedFormSelect label="ReceivedBy" id="ReceivedBy" value={docData.ReceivedBy} onChange={handleInputChange} disabled={docLocked} options={users} optionnamegetter={getFullName} />
+        <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={docData.IssuedBy} onChange={handleDocChange} disabled={docLocked} options={users} optionnamegetter={getFullName} />
+        <AggregatedFormSelect label="ReceivedBy" id="ReceivedBy" value={docData.ReceivedBy} onChange={handleDocChange} disabled={docLocked} options={users} optionnamegetter={getFullName} />
         <FormFileUpload id="Link" onChange={handleFileChange} disabled={docLocked} />
       </FormRow>
     </FormSubheadered>
@@ -197,7 +163,7 @@ const InsertRecord = () => {
       return;
       const index = propRowToDisplay;
       setPropertyRows([...propertyRows.slice(0, index), ...propertyRows.slice(index + 1)]);
-      setRowHandlers([...rowHandlers.slice(0, index), ...rowHandlers.slice(index + 1)]);
+      // setRowHandlers([...rowHandlers.slice(0, index), ...rowHandlers.slice(index + 1)]);
 
       // propertyRows, probably has not been modified yet at this point
       setPropRowToDisplay(Math.min(propertyRows.length - 1, index));
@@ -223,20 +189,22 @@ const InsertRecord = () => {
                 <Typography width="50%" variant="h9" fontWeight={"bold"}>
                   Property {propRowToDisplay + 1}
                 </Typography>
-                {/* <Box width="50%" display="flex" flexDirection="row" justifyContent="end">
+                <Box width="50%" display="flex" flexDirection="row" justifyContent="end">
                   <DeletePropRowButton />
-                </Box> */}
+                </Box>
               </Box>
               {propertyRows.map((propRowData, index) => {
                 const propUI = (
                   <PropertyRow
                     rownum={index}
                     propRowData={propRowData}
-                    handleChange={rowHandlers[index]}
+                    handleChange={(e) => {
+                      handlePropRowChange(e, index);
+                    }}
                     dropdowndata={{ users, statuses, categories, locations, types }}
                     podatepickerfunc={(val) => {
-                      propRowData[`PurchaseDate_${index}`] = val;
-                      setPropertyRows([...propertyRows.slice(0, index), propRowData, ...propertyRows.slice(index + 1)]);
+                      // propRowData[`PurchaseDate_${index}`] = val;
+                      // setPropertyRows([...propertyRows.slice(0, index), propRowData, ...propertyRows.slice(index + 1)]);
                     }}
                   />
                 );
