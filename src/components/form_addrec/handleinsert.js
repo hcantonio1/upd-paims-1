@@ -2,15 +2,17 @@ import { db, storage } from "../../../firebase-config";
 import { Timestamp, doc, setDoc } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes } from "@firebase/storage";
 
-export const handleSubmit = async (e, inputData) => {
+export const handleSubmit = async (e, docData, propertyRows) => {
   e.preventDefault();
-  return;
 
-  const { DocumentID, DocumentType, DateIssued, IssuedBy, ReceivedBy, Link, ...propRowData } = inputData;
-  console.log(propRowData);
+  console.log("I received document:", docData);
+  console.log(`I received properties[${propertyRows.length}]:`, propertyRows);
 
-  await insertPropRow(e, propRowData, inputData.DocumentID);
-  await insertDocument(e, inputData);
+  // const { DocumentID, DocumentType, DateIssued, IssuedBy, ReceivedBy, Link, ...propRowData } = inputData;
+  // console.log(propRowData);
+
+  // await insertPropRow(e, propRowData, inputData.DocumentID);
+  // await insertDocument(e, inputData);
 };
 
 const insertPropRow = async (e, propRowData, documentID) => {

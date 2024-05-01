@@ -4,9 +4,8 @@ import SmallTextField from "../paimsform/smallTextField";
 import FormDatePicker from "../paimsform/formDatePicker";
 import { AggregatedFormSelect } from "../paimsform/formSelect";
 
-const PropertyRow = ({ rownum, propRowData, handleChange, ...rest }) => {
-  const [supLocked, setSupLocked] = useState(false);
-  const [orderLocked, setOrderLocked] = useState(false);
+const PropertyRow = ({ rownum, propRowData, handleChange, locks, ...rest }) => {
+  const { supLocked, orderLocked } = locks;
 
   const handleInputChange = handleChange;
   const { users, categories, statuses, locations } = rest.dropdowndata;

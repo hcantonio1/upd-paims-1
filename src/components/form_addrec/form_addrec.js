@@ -13,7 +13,7 @@ import SelectTextField from "../common/selectTextField";
 
 import { autoFillDocumentData, autoFillSupplierData } from "./formautofill";
 import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "./fetchdropdowndata";
-import { insertDocument as handleInsertDoc } from "./handleinsert1";
+import { insertDocument as handleInsertDoc } from "./handleinsert";
 
 const InsertRecord = () => {
   const [inputData, setInputData] = useState({

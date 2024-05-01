@@ -52,19 +52,17 @@ const InsertRecord = () => {
   const [locations, setLocations] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [types, setTypes] = useState([]);
-
   const [docLocked, setDocLocked] = useState(false);
-  const [supLocked, setSupLocked] = useState(false);
-  const [orderLocked, setOrderLocked] = useState(false);
 
   const [propertyRows, setPropertyRows] = useState([indexedPropRowFields(0)]);
-  // const [rowHandlers, setRowHandlers] = useState([]);
   const [propRowToDisplay, setPropRowToDisplay] = useState(0);
+  const [propRowLocks, setPropRowLocks] = useState([{ orderLocked: false, supLocked: false }]);
 
   const addPropertyRow = () => {
     const rownum = propertyRows.length;
     const propRowData = indexedPropRowFields(rownum);
     setPropertyRows([...propertyRows, propRowData]);
+    setPropRowLocks([...propRowLocks, { orderLocked: false, supLocked: false }]);
     setPropRowToDisplay(propRowToDisplay + 1);
   };
 
@@ -102,6 +100,19 @@ const InsertRecord = () => {
     const propRowKey = e.target.name !== "" ? e.target.name : e.target.id;
     newPropertyRows[index][propRowKey] = e.target.value;
     setPropertyRows(newPropertyRows);
+
+    const [keyType, _] = propRowKey.split("_");
+    if (keyType === "SupplierID") {
+      autoFillSupplierData(index, e.target.value, setPropRowLocks, setPropertyRows);
+    }
+
+    // if (e.target.name === `PropertyID_${index}`) {
+    //   // RETURN IF PROPERTY ID ALREADY EXISTS
+    //   fetchPropertyData(e.target.value);
+    // }
+    //if (e.target.name === `PurchaseOrderID_${index}`) {
+    //  fetchOrderData(e.target.value);
+    //}
   };
 
   const docSubheadered = (
@@ -167,7 +178,12 @@ const InsertRecord = () => {
     <Layout pageTitle="INSERT">
       <Box sx={{ padding: 2, margin: 1 }}>
         <main>
-          <PaimsForm header="Insert a New Record into the Database" onSubmit={(e) => {}}>
+          <PaimsForm
+            header="Insert a New Record into the Database"
+            onSubmit={(e) => {
+              handleSubmit(e, docData, propertyRows);
+            }}
+          >
             {docSubheadered}
             <SubmitButton
               text="Only Submit Document"
@@ -190,6 +206,7 @@ const InsertRecord = () => {
                   <PropertyRow
                     rownum={index}
                     propRowData={propRowData}
+                    locks={propRowLocks[index]}
                     handleChange={(e) => {
                       handlePropRowChange(e, index);
                     }}
@@ -209,7 +226,7 @@ const InsertRecord = () => {
                 <NextPropRowButton />
               </Box>
             </Paper>
-            <SubmitButton text="Submit All & Insert Property" />
+            <SubmitButton text="Insert All Properties" />
           </PaimsForm>
         </main>
       </Box>

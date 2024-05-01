@@ -1,7 +1,7 @@
 import React from "react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
-const FormSelect = (props) => {
+export const FormSelect = (props) => {
   const { id, label, choicevaluepairs } = props;
   const smallLabel = label.charAt(0).toLowerCase() + label.slice(1);
   const inputLabelLabel = `select-${smallLabel}`;
@@ -19,8 +19,6 @@ const FormSelect = (props) => {
     </FormControl>
   );
 };
-
-export default FormSelect;
 
 // this aggregation could be unmaintainable in the future
 export const AggregatedFormSelect = (props) => {
