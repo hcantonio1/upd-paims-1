@@ -1,13 +1,13 @@
 // we autofill document and supplier fields
-import { db } from "../../../firebase-config";
+import { db } from "../../firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 import dayjs from "dayjs";
 
-export const autoFillDocumentData = async (DocumentID, setDocLocked, setDocData) => {
+export const autofillDocumentData = async (DocumentID, setDocData, setDocLocked = null) => {
   const fetchResult = await fetchDocumentData(DocumentID);
   if (!!fetchResult) {
     const docData = fetchResult.data();
-    setDocLocked(true);
+    if (setDocLocked != null) setDocLocked(true);
     setDocData((prevData) => ({
       ...prevData,
       DocumentType: docData.DocumentType,
@@ -17,10 +17,11 @@ export const autoFillDocumentData = async (DocumentID, setDocLocked, setDocData)
     }));
     return;
   }
-  setDocLocked(false);
+  if (setDocLocked != null) setDocLocked(false);
 };
 
 const fetchDocumentData = async (DocumentID) => {
+  if (DocumentID === "") return;
   try {
     const docRef = doc(db, "item_document", DocumentID);
     const docSnap = await getDoc(docRef);
@@ -33,7 +34,26 @@ const fetchDocumentData = async (DocumentID) => {
   }
 };
 
-export const autoFillSupplierData = async (rownum, SupplierID, setPropRowLocks, setPropertyRows) => {
+export const autofillSupplierData = async (supplierID, setFormData, setSupLocked = null) => {
+  const fetchResult = await fetchSupplierData(supplierID);
+  if (!!fetchResult) {
+    const supData = fetchResult.data();
+    if (setSupLocked != null) setSupLocked(true);
+    setFormData((prevData) => ({
+      ...prevData,
+      City: supData.City,
+      State: supData.State,
+      StreetName: supData.StreetName,
+      SupplierContact: supData.SupplierContact,
+      SupplierName: supData.SupplierName,
+      UnitNumber: parseInt(supData.UnitNumber),
+    }));
+    return;
+  }
+  if (setSupLocked != null) setSupLocked(false);
+};
+
+export const autofillPropRowSupp = async (rownum, SupplierID, setPropRowLocks, setPropertyRows) => {
   const fetchResult = await fetchSupplierData(SupplierID);
   if (!!fetchResult) {
     const supData = fetchResult.data();
@@ -65,6 +85,7 @@ export const autoFillSupplierData = async (rownum, SupplierID, setPropRowLocks, 
 };
 
 const fetchSupplierData = async (SupplierID) => {
+  if (SupplierID === "") return;
   try {
     const supRef = doc(db, "supplier", SupplierID);
     const supSnap = await getDoc(supRef);

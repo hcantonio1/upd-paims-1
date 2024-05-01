@@ -11,8 +11,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import SelectTextField from "../common/selectTextField";
 
-import { autoFillDocumentData, autoFillSupplierData } from "./formautofill";
-import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "./fetchdropdowndata";
+import { autofillDocumentData, autofillSupplierData } from "../../formutils/formautofill";
+import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "../../formutils/fetchdropdowndata";
 import { insertDocument as handleInsertDoc } from "./handleinsert";
 
 const InsertRecord = () => {
@@ -191,10 +191,10 @@ const InsertRecord = () => {
     }));
 
     if (e.target.name === "DocumentID") {
-      autoFillDocumentData(e.target.value, setDocLocked, setInputData);
+      autofillDocumentData(e.target.value, setInputData, setDocLocked);
     }
     if (e.target.name === "SupplierID") {
-      autoFillSupplierData(e.target.value, setSupLocked, setInputData);
+      autofillPropRowSupp(e.target.value, setInputData, setSupLocked);
     }
     if (e.target.name === `PropertyID_${index}`) {
       fetchPropertyData(e.target.value);

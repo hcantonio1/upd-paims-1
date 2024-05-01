@@ -2,8 +2,8 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { Box, Typography, IconButton, Paper } from "@mui/material";
 import { Close, Add, West, East } from "@mui/icons-material";
-import { autoFillDocumentData, autoFillSupplierData } from "./formautofill";
-import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "./fetchdropdowndata";
+import { autofillDocumentData, autofillPropRowSupp } from "../../fetchutils/formautofill";
+import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "../../fetchutils/fetchdropdowndata";
 import { insertDocument, handleSubmit } from "./handleinsert";
 
 import Layout from "../common/layout";
@@ -84,7 +84,7 @@ const InsertRecord = () => {
     setDocData({ ...docData, [docDataKey]: e.target.value });
 
     if (docDataKey === "DocumentID") {
-      autoFillDocumentData(e.target.value, setDocLocked, setDocData);
+      autofillDocumentData(e.target.value, setDocData, setDocLocked);
     }
   };
 
@@ -103,7 +103,7 @@ const InsertRecord = () => {
 
     const keyType = propRowKey.split("_")[0];
     if (keyType === "SupplierID") {
-      autoFillSupplierData(index, e.target.value, setPropRowLocks, setPropertyRows);
+      autofillPropRowSupp(index, e.target.value, setPropRowLocks, setPropertyRows);
     }
 
     // if (e.target.name === `PropertyID_${index}`) {

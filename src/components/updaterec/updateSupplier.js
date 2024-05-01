@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 
 import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import SubmitButton from "../paimsform/submitButton";
+import { autofillSupplierData } from "../../fetchutils/formautofill";
 
 /* In the future, add a heading "Select Existing Supplier" dropdown component before the first heading, "Supplier Details" */
 
@@ -26,41 +27,7 @@ const UpdateSupplier = () => {
     });
 
     if (e.target.id === "SupplierID") {
-      fetchSupplierData(e.target.value);
-    }
-  };
-
-  const fetchSupplierData = async (supplierID) => {
-    try {
-      const supRef = doc(db, "supplier", supplierID);
-      const supSnap = await getDoc(supRef);
-
-      if (supSnap.exists()) {
-        const supData = supSnap.data();
-        console.log(supData);
-        setFormData((prevData) => ({
-          ...prevData,
-          City: supData.City,
-          State: supData.State,
-          StreetName: supData.StreetName,
-          SupplierContact: supData.SupplierContact,
-          SupplierName: supData.SupplierName,
-          UnitNumber: parseInt(supData.UnitNumber),
-        }));
-      }
-      if (!supSnap.exists()) {
-        setFormData((prevData) => ({
-          ...prevData,
-          City: "",
-          State: "",
-          StreetName: "",
-          SupplierContact: "",
-          SupplierName: "",
-          UnitNumber: "",
-        }));
-      }
-    } catch (error) {
-      console.error("Error fetching supplier:", error);
+      autofillSupplierData(e.target.value, setFormData);
     }
   };
 
