@@ -101,7 +101,7 @@ const InsertRecord = () => {
     newPropertyRows[index][propRowKey] = e.target.value;
     setPropertyRows(newPropertyRows);
 
-    const [keyType, _] = propRowKey.split("_");
+    const keyType = propRowKey.split("_")[0];
     if (keyType === "SupplierID") {
       autoFillSupplierData(index, e.target.value, setPropRowLocks, setPropertyRows);
     }

@@ -2,17 +2,45 @@ import { db, storage } from "../../../firebase-config";
 import { Timestamp, doc, setDoc } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes } from "@firebase/storage";
 
-export const handleSubmit = async (e, docData, propertyRows) => {
+const unindexPropRowFields = (propRowData) => {
+  const newPropRowData = {};
+  for (const key in propRowData) {
+    const newkey = key.split("_")[0];
+    newPropRowData[newkey] = propRowData[key];
+  }
+  return newPropRowData;
+};
+
+export const handleSubmit = (e, docData, propertyRows) => {
   e.preventDefault();
 
   console.log("I received document:", docData);
   console.log(`I received properties[${propertyRows.length}]:`, propertyRows);
 
+  const propPromises = propertyRows.map((propRowData, index) => {
+    propRowData = unindexPropRowFields(propRowData);
+    const p = async () => {
+      try {
+        await insertPropRow(e, propRowData, docData.DocumentID);
+      } catch (error) {
+        console.log(`Error inserting Property ${index}.`);
+        alert(`Property ${index} (and succeeding properties) were not inserted.`);
+      }
+    };
+    return p();
+  });
+
+  Promise.all([insertDocument(e, docData), ...propPromises])
+    .then(() => {
+      alert("Successfully inserted all properties!");
+      window.location.reload();
+    })
+    .catch((error) => {
+      console.log("Some properties were not inserted.", error);
+    });
+
   // const { DocumentID, DocumentType, DateIssued, IssuedBy, ReceivedBy, Link, ...propRowData } = inputData;
   // console.log(propRowData);
-
-  // await insertPropRow(e, propRowData, inputData.DocumentID);
-  // await insertDocument(e, inputData);
 };
 
 const insertPropRow = async (e, propRowData, documentID) => {
@@ -55,11 +83,11 @@ const insertPropRow = async (e, propRowData, documentID) => {
       SupplierID: parseInt(propRowData.SupplierID),
       TotalCost: parseInt(propRowData.TotalCost),
     });
-    alert("Successfully inserted!");
-    window.location.reload();
+    // alert("Successfully inserted!");
+    // window.location.reload();
   } catch (error) {
     console.error("Error inserting document:", error);
-    alert("Failed to insert record.");
+    // alert("Failed to insert record.");
   }
 };
 
@@ -82,7 +110,7 @@ export const insertDocument = async (e, documentData) => {
       ReceivedBy: documentData.ReceivedBy,
     });
     alert("Successfully inserted!");
-    window.location.reload();
+    // window.location.reload();
   } catch (error) {
     console.error("Error inserting document:", error);
     alert("Failed to insert document.");
