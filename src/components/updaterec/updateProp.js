@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { doc, updateDoc, getDoc, setDoc, Timestamp } from "firebase/firestore";
+import { doc, updateDoc, setDoc, Timestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../../../firebase-config";
 import { fetchDeptLocations, fetchDeptUsers, fetchStatuses, fetchTypes } from "../../fetchutils/fetchdropdowndata";
@@ -10,7 +10,7 @@ import { AggregatedFormSelect } from "../paimsform/formSelect";
 import SubmitButton from "../paimsform/submitButton";
 import FormDatePicker from "../paimsform/formDatePicker";
 import FormFileUpload from "../paimsform/formFileUpload";
-import { autofillDocumentData } from "../../fetchutils/formautofill";
+import { autofillDocumentData, autofillPropertyData } from "../../fetchutils/formautofill";
 
 const UpdateProp = () => {
   const [formData, setFormData] = useState({
@@ -62,38 +62,10 @@ const UpdateProp = () => {
     }
 
     if (e.target.id === "PropertyID") {
-      fetchPropData(e.target.value);
+      autofillPropertyData(e.target.value, setFormData);
     }
     if (e.target.id === "SpecDoc") {
       autofillDocumentData(e.target.value, setFormData);
-    }
-  };
-
-  const fetchPropData = async (propID) => {
-    try {
-      const propRef = doc(db, "property", propID);
-      const propSnap = await getDoc(propRef);
-      if (propSnap.exists()) {
-        const propData = propSnap.data();
-        setFormData((prevData) => ({
-          ...prevData,
-          LocationID: parseInt(propData.LocationID),
-          StatusID: parseInt(propData.StatusID),
-          TrusteeID: parseInt(propData.TrusteeID),
-          VerNum: propData.VerNum,
-        }));
-      }
-      if (!propSnap.exists()) {
-        setFormData((prevData) => ({
-          ...prevData,
-          LocationID: "",
-          StatusID: "",
-          TrusteeID: "",
-          VerNum: "",
-        }));
-      }
-    } catch (error) {
-      console.error("Error fetching property:", error);
     }
   };
 

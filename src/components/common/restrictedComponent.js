@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import { getUser } from "../../services/auth";
 
 const RestrictedComponent = ({ children, restrictedRoles }) => {

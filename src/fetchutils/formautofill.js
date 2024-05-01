@@ -1,4 +1,4 @@
-// we autofill document and supplier fields
+// we autofill document and supplier fields, and also property fields in updaterec.js
 import { db } from "../../firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 import dayjs from "dayjs";
@@ -95,5 +95,36 @@ const fetchSupplierData = async (SupplierID) => {
     return false;
   } catch (error) {
     console.error("Error fetching supplier:", error);
+  }
+};
+
+export const autofillPropertyData = async (PropertyID, setFormData, setPropLocked = null) => {
+  const fetchResult = await fetchPropertyData(PropertyID);
+  if (!!fetchResult) {
+    const propData = fetchResult.data();
+    if (setPropLocked != null) setPropLocked(true);
+    setFormData((prevData) => ({
+      ...prevData,
+      LocationID: parseInt(propData.LocationID),
+      StatusID: parseInt(propData.StatusID),
+      TrusteeID: parseInt(propData.TrusteeID),
+      VerNum: propData.VerNum,
+    }));
+    return;
+  }
+  if (setPropLocked != null) setPropLocked(false);
+};
+
+const fetchPropertyData = async (PropertyID) => {
+  if (PropertyID === "") return;
+  try {
+    const propRef = doc(db, "property", PropertyID);
+    const propSnap = await getDoc(propRef);
+    if (propSnap.exists()) {
+      return propSnap;
+    }
+    return false;
+  } catch (error) {
+    console.error("Error fetching property:", error);
   }
 };
