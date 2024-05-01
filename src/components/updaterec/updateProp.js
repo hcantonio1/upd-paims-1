@@ -152,7 +152,7 @@ const UpdateProp = () => {
         <FormRow segments={3}>
           <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={formData.IssuedBy} onChange={handleInputChange} disabled={docLocked} options={users} />
           <AggregatedFormSelect label="ReceivedBy" id="ReceivedBy" value={formData.ReceivedBy} onChange={handleInputChange} disabled={docLocked} options={users} />
-          <FormFileUpload id="Link" onChange={handleFileChange} disabled={docLocked} />
+          <FormFileUpload id="Link" filename={formData.Link?.name} onChange={handleFileChange} disabled={docLocked} />
         </FormRow>
       </FormSubheadered>
       <SubmitButton text="Update Property" />
