@@ -44,13 +44,6 @@ const indexedPropRowFields = (index) => {
   return propRowData;
 };
 
-const getFullName = (user) => {
-  return `${user.FirstName} ${user.LastName}`;
-};
-
-const getFullLoc = (location) => {
-  return `${location.Building} ${location.RoomNumber}`;
-};
 const InsertRecord = () => {
   const [docData, setDocData] = useState({ DocumentID: "", DocumentType: "", DateIssued: null, IssuedBy: "", ReceivedBy: "", Link: "" });
 
@@ -130,8 +123,8 @@ const InsertRecord = () => {
         />
       </FormRow>
       <FormRow segments={3}>
-        <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={docData.IssuedBy} onChange={handleDocChange} disabled={docLocked} options={users} optionnamegetter={getFullName} />
-        <AggregatedFormSelect label="ReceivedBy" id="ReceivedBy" value={docData.ReceivedBy} onChange={handleDocChange} disabled={docLocked} options={users} optionnamegetter={getFullName} />
+        <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={docData.IssuedBy} onChange={handleDocChange} disabled={docLocked} options={users} />
+        <AggregatedFormSelect label="ReceivedBy" id="ReceivedBy" value={docData.ReceivedBy} onChange={handleDocChange} disabled={docLocked} options={users} />
         <FormFileUpload id="Link" onChange={handleFileChange} disabled={docLocked} />
       </FormRow>
     </FormSubheadered>
@@ -161,12 +154,10 @@ const InsertRecord = () => {
   const DeletePropRowButton = () => {
     const delPropRowFunc = (e) => {
       return;
-      const index = propRowToDisplay;
-      setPropertyRows([...propertyRows.slice(0, index), ...propertyRows.slice(index + 1)]);
-      // setRowHandlers([...rowHandlers.slice(0, index), ...rowHandlers.slice(index + 1)]);
-
-      // propertyRows, probably has not been modified yet at this point
-      setPropRowToDisplay(Math.min(propertyRows.length - 1, index));
+      const newPropertyRows = [...propertyRows];
+      newPropertyRows.splice(propRowToDisplay, 1);
+      setPropertyRows(newPropertyRows);
+      setPropRowToDisplay(Math.min(propertyRows.length - 1, propRowToDisplay));
     };
     const delRow = <IconButton variant="contained" children={<Close />} color="error" onClick={delPropRowFunc} />;
     return propertyRows.length > 1 ? delRow : <></>;
@@ -183,6 +174,7 @@ const InsertRecord = () => {
               onClick={(e) => {
                 insertDocument(e, docData);
               }}
+              disabled={docLocked}
             />
             <Paper sx={{ p: 2, backgroundColor: "#f3f3f3" }}>
               <Box display="flex" flexDirection="row" height={36}>
@@ -203,8 +195,9 @@ const InsertRecord = () => {
                     }}
                     dropdowndata={{ users, statuses, categories, locations, types }}
                     podatepickerfunc={(val) => {
-                      // propRowData[`PurchaseDate_${index}`] = val;
-                      // setPropertyRows([...propertyRows.slice(0, index), propRowData, ...propertyRows.slice(index + 1)]);
+                      const newPropertyRows = [...propertyRows];
+                      newPropertyRows[index][`PurchaseDate_${index}`] = val;
+                      setPropertyRows(newPropertyRows);
                     }}
                   />
                 );

@@ -30,10 +30,10 @@ const PropertyRow = ({ rownum, propRowData, handleChange, ...rest }) => {
         <SmallTextField id={`PropertyName_${rownum}`} label="Property Name" value={propRowData[`PropertyName_${rownum}`]} onChange={handleInputChange} />
       </FormRow>
       <FormRow segments={4}>
-        <AggregatedFormSelect id={`TrusteeID_${rownum}`} label="Trustee" value={propRowData[`TrusteeID_${rownum}`]} onChange={handleInputChange} options={users} optionnamegetter={getFullName} />
+        <AggregatedFormSelect id={`TrusteeID_${rownum}`} label="Trustee" value={propRowData[`TrusteeID_${rownum}`]} onChange={handleInputChange} options={users} />
         <AggregatedFormSelect id={`CategoryID_${rownum}`} label="Category" value={propRowData[`CategoryID_${rownum}`]} onChange={handleInputChange} options={categories} />
         <AggregatedFormSelect id={`StatusID_${rownum}`} label="Status" value={propRowData[`StatusID_${rownum}`]} onChange={handleInputChange} options={statuses} />
-        <AggregatedFormSelect id={`LocationID_${rownum}`} label="Location" value={propRowData[`LocationID_${rownum}`]} onChange={handleInputChange} options={locations} optionnamegetter={getFullLoc} />
+        <AggregatedFormSelect id={`LocationID_${rownum}`} label="Location" value={propRowData[`LocationID_${rownum}`]} onChange={handleInputChange} options={locations} />
       </FormRow>
     </FormSubheadered>
   );
@@ -87,11 +87,3 @@ const PropertyRow = ({ rownum, propRowData, handleChange, ...rest }) => {
 };
 
 export default PropertyRow;
-
-const getFullName = (user) => {
-  return `${user.FirstName} ${user.LastName}`;
-};
-
-const getFullLoc = (location) => {
-  return `${location.Building} ${location.RoomNumber}`;
-};

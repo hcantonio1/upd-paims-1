@@ -5,7 +5,7 @@ import { db, storage } from "../../../firebase-config";
 
 import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
-import FormSelect from "../paimsform/formSelect";
+import { FormSelect } from "../paimsform/formSelect";
 import SubmitButton from "../paimsform/submitButton";
 import FormDatePicker from "../paimsform/formDatePicker";
 import FormFileUpload from "../paimsform/formFileUpload";
