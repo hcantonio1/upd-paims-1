@@ -14,6 +14,7 @@ export const autofillDocumentData = async (DocumentID, setDocData, setDocLocked 
       DateIssued: dayjs(docData.DateIssued.toDate()),
       IssuedBy: docData.IssuedBy,
       ReceivedBy: docData.ReceivedBy,
+      Link: docData.Link,
     }));
     return;
   }
