@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { doc, updateDoc, getDoc, getDocs, collection, setDoc, Timestamp } from "firebase/firestore";
+import { doc, updateDoc, getDoc, setDoc, Timestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../../../firebase-config";
+import { fetchDeptLocations, fetchDeptUsers, fetchStatuses, fetchTypes } from "../../fetchutils/fetchdropdowndata";
 
 import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
-import { FormSelect } from "../paimsform/formSelect";
+import { AggregatedFormSelect } from "../paimsform/formSelect";
 import SubmitButton from "../paimsform/submitButton";
 import FormDatePicker from "../paimsform/formDatePicker";
 import FormFileUpload from "../paimsform/formFileUpload";
@@ -34,62 +35,15 @@ const UpdateProp = () => {
   const [docLocked, setDocLocked] = useState(false);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const userCollection = collection(db, "user");
-        const snapshot = await getDocs(userCollection);
-        const users = snapshot.docs.map((doc) => doc.data());
-        setUsers(users);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
+    const fetchdropdowndata = async () => {
+      setUsers(await fetchDeptUsers());
+      setLocations(await fetchDeptLocations());
+      setStatuses(await fetchStatuses());
+      setTypes(await fetchTypes());
     };
 
-    const fetchLocations = async () => {
-      try {
-        const locationCollection = collection(db, "item_location");
-        const snapshot = await getDocs(locationCollection);
-        const locations = snapshot.docs.map((doc) => doc.data());
-        setLocations(locations);
-      } catch (error) {
-        console.error("Error fetching locations:", error);
-      }
-    };
-
-    const fetchStatuses = async () => {
-      try {
-        const statusCollection = collection(db, "status");
-        const snapshot = await getDocs(statusCollection);
-        const statuses = snapshot.docs.map((doc) => doc.data());
-        setStatuses(statuses);
-      } catch (error) {
-        console.error("Error fetching statuses:", error);
-      }
-    };
-    const fetchTypes = async () => {
-      try {
-        const typeCollection = collection(db, "doctype");
-        const snapshot = await getDocs(typeCollection);
-        const types = snapshot.docs.map((doc) => doc.data());
-        setTypes(types);
-      } catch (error) {
-        console.error("Error fetching types:", error);
-      }
-    };
-
-    fetchUsers();
-    fetchLocations();
-    fetchStatuses();
-    fetchTypes();
+    fetchdropdowndata();
   }, []);
-
-  const getFullName = (user) => {
-    return `${user.FirstName} ${user.LastName}`;
-  };
-
-  const getFullLoc = (location) => {
-    return `${location.Building} ${location.RoomNumber}`;
-  };
 
   const handleInputChange = (e) => {
     if (e.target.name !== "") {
@@ -244,17 +198,17 @@ const UpdateProp = () => {
       <FormSubheadered subheader="Property Details">
         <FormRow segments={3}>
           <SmallTextField id="PropertyID" label="Property ID" value={formData.PropertyID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
-          <FormSelect label="Trustee" id="TrusteeID" value={formData.TrusteeID} onChange={handleInputChange} choicevaluepairs={users.map((user) => [getFullName(user), user.UserID])} />
+          <AggregatedFormSelect id={`TrusteeID`} label="Trustee" value={formData.TrusteeID} onChange={handleInputChange} options={users} />
         </FormRow>
         <FormRow segments={3}>
-          <FormSelect label="Status" id="StatusID" value={formData.StatusID} onChange={handleInputChange} choicevaluepairs={statuses.map((status) => [status.StatusName, status.StatusID])} />
-          <FormSelect label="Location" id="LocationID" value={formData.LocationID} onChange={handleInputChange} choicevaluepairs={locations.map((loc) => [getFullLoc(loc), loc.LocationID])} />
+          <AggregatedFormSelect id={`StatusID`} label="Status" value={formData.StatusID} onChange={handleInputChange} options={statuses} />
+          <AggregatedFormSelect id={`LocationID`} label="Location" value={formData.LocationID} onChange={handleInputChange} options={locations} />
         </FormRow>
       </FormSubheadered>
       <FormSubheadered subheader="Accompanying Document">
         <FormRow segments={3}>
           <SmallTextField id="SpecDoc" label="Document Name" value={formData.SpecDoc} onChange={handleInputChange} required />
-          <FormSelect label="Type" id="DocumentType" value={formData.DocumentType} onChange={handleInputChange} disabled={docLocked} choicevaluepairs={types.map((type) => [type.Type, type.Type])} />
+          <AggregatedFormSelect label="Type" id="DocumentType" value={formData.DocumentType} onChange={handleInputChange} options={types} disabled={docLocked} />
           <FormDatePicker
             id="DateIssued"
             value={formData.DateIssued}
@@ -268,22 +222,8 @@ const UpdateProp = () => {
           />
         </FormRow>
         <FormRow segments={3}>
-          <FormSelect
-            label="IssuedBy"
-            id="IssuedBy"
-            value={formData.IssuedBy}
-            onChange={handleInputChange}
-            disabled={docLocked}
-            choicevaluepairs={users.map((user) => [getFullName(user), user.Username])}
-          />
-          <FormSelect
-            label="ReceivedBy"
-            id="ReceivedBy"
-            value={formData.ReceivedBy}
-            onChange={handleInputChange}
-            disabled={docLocked}
-            choicevaluepairs={users.map((user) => [getFullName(user), user.Username])}
-          />
+          <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={formData.IssuedBy} onChange={handleInputChange} disabled={docLocked} options={users} />
+          <AggregatedFormSelect label="ReceivedBy" id="ReceivedBy" value={formData.ReceivedBy} onChange={handleInputChange} disabled={docLocked} options={users} />
           <FormFileUpload id="Link" onChange={handleFileChange} disabled={docLocked} />
         </FormRow>
       </FormSubheadered>
