@@ -3,27 +3,15 @@ import { Button } from "@mui/material";
 import React from "react";
 
 export const FormFileUpload = (props) => {
-  const text = props.f ?? "Upload file";
-  const muisample = (
+  const text = props.filename ?? "Upload file";
+  return (
     <>
       <input {...props} type="file" style={{ display: "none" }} />
-      <label htmlFor={props.id} style={{ display: "inline-block", verticalAlign: "top" }}>
-        <Button variant="contained" tabIndex={-1} startIcon={<CloudUpload />}>
+      <label htmlFor={props.id}>
+        <Button component="span" variant="contained" tabIndex={-1} startIcon={<CloudUpload />}>
           {text}
         </Button>
       </label>
-    </>
-  );
-  return <HtmlFormFileUpload {...props}></HtmlFormFileUpload>;
-};
-
-export const HtmlFormFileUpload = (props) => {
-  return (
-    <>
-      <label htmlFor="New File" style={{ display: "inline-block", verticalAlign: "top" }}>
-        New File
-      </label>
-      <input {...props} type="file" style={{ display: "inline-block" }} />
     </>
   );
 };

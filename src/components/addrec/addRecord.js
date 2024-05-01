@@ -137,7 +137,7 @@ const InsertRecord = () => {
       <FormRow segments={3}>
         <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={docData.IssuedBy} onChange={handleDocChange} disabled={docLocked} options={users} />
         <AggregatedFormSelect label="ReceivedBy" id="ReceivedBy" value={docData.ReceivedBy} onChange={handleDocChange} disabled={docLocked} options={users} />
-        <FormFileUpload id="Link" onChange={handleFileChange} disabled={docLocked} />
+        <FormFileUpload id="Link" filename={docData.Link?.name} onChange={handleFileChange} disabled={docLocked} />
       </FormRow>
     </FormSubheadered>
   );
