@@ -45,7 +45,7 @@ const indexedPropRowFields = (index) => {
 };
 
 const InsertRecord = () => {
-  const [docData, setDocData] = useState({ DocumentID: "", DocumentType: "", DateIssued: null, IssuedBy: "", ReceivedBy: "", Link: "" });
+  const [docData, setDocData] = useState({ DocumentID: "", DocumentType: "", DateIssued: null, IssuedBy: "", ReceivedBy: "", Link: "" , holdLink: ""});
 
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -90,7 +90,7 @@ const InsertRecord = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setDocData({ ...docData, Link: file });
+    setDocData({ ...docData, holdLink: file });
     console.log(file);
   };
 
@@ -137,7 +137,7 @@ const InsertRecord = () => {
       <FormRow segments={3}>
         <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={docData.IssuedBy} onChange={handleDocChange} disabled={docLocked} options={users} />
         <AggregatedFormSelect label="ReceivedBy" id="ReceivedBy" value={docData.ReceivedBy} onChange={handleDocChange} disabled={docLocked} options={users} />
-        <FormFileUpload id="Link" filename={docData.Link?.name} onChange={handleFileChange} disabled={docLocked} />
+        <FormFileUpload id="Link" filename={docData.holdLink?.name} onChange={handleFileChange} disabled={docLocked} />
       </FormRow>
     </FormSubheadered>
   );

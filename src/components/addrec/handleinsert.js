@@ -96,11 +96,14 @@ export const insertDocument = async (e, documentData) => {
   e.preventDefault();
   try {
     console.log("Uploading file to Firebase Storage");
-
-    const fileRef = ref(storage, "DCS/" + documentData.Link.name);
-    await uploadBytes(fileRef, documentData.Link);
-    const fileUrl = await getDownloadURL(fileRef);
+    const fileRef = ref(storage, "DCS/" + documentData.holdLink.name);
+    await uploadBytes(fileRef, documentData.holdLink);
+    var fileUrl = await getDownloadURL(fileRef);
     console.log("File uploaded successfully:", fileUrl);
+
+    if (documentData.holdLink.name === undefined) {
+      fileUrl = documentData.Link;
+    }
 
     await setDoc(doc(db, "item_document", documentData.DocumentID), {
       DateIssued: Timestamp.fromDate(new Date(documentData.DateIssued)),
