@@ -1,4 +1,3 @@
-import { navigate } from "gatsby";
 import { auth, db } from "../../firebase-config";
 import {
   signInWithEmailAndPassword,
@@ -11,32 +10,27 @@ import { fetchCommonData } from "./prefetch";
 
 export const isBrowser = () => typeof window !== "undefined";
 
-export const getUser = () =>
-  isBrowser() && sessionStorage.getItem("paimsUser")
-    ? JSON.parse(sessionStorage.getItem("paimsUser"))
-    : {};
+export const getUser = () => (isBrowser() && sessionStorage.getItem("paimsUser") ? JSON.parse(sessionStorage.getItem("paimsUser")) : {});
 
-const setUser = (user) =>
-  sessionStorage.setItem("paimsUser", JSON.stringify(user));
+const setUser = (user) => sessionStorage.setItem("paimsUser", JSON.stringify(user));
 
-export const handleLogin = ({ email, password }) => {
+export const handleLogin = async ({ email, password }) => {
   sessionStorage.clear();
-  signInWithEmailAndPassword(auth, email, password)
-    .then((response) => {
-      sessionStorage.setItem(
-        "Auth Token",
-        response._tokenResponse.refreshToken
-      );
-    })
-    .then(async () => {
-      await setUserData();
-      await fetchCommonData();
-      navigate(`/app/home`);
-    })
-    .catch((error) => {
-      alert("Invalid username or password.");
-      console.log(error);
-    });
+  try {
+    const authToken = await signInWithEmailAndPassword(auth, email, password);
+    sessionStorage.setItem("Auth Token", authToken._tokenResponse.refreshToken);
+  } catch (error) {
+    console.log("Invalid username or password.", error);
+    alert("Invalid username or password.");
+    return;
+  }
+  try {
+    await setUserData();
+    await fetchCommonData();
+  } catch (error) {
+    console.log("Error fetching user data.", error);
+    alert("Error fetching user data.");
+  }
 };
 
 export const isLoggedIn = () => {
