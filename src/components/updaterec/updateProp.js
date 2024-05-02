@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { doc, updateDoc, setDoc, Timestamp } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, updateDoc, setDoc, Timestamp, getDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { db, storage } from "../../../firebase-config";
 import { fetchDeptLocations, fetchDeptUsers, fetchStatuses, fetchTypes } from "../../fetchutils/fetchdropdowndata";
 
@@ -12,8 +12,29 @@ import FormDatePicker from "../paimsform/formDatePicker";
 import { FormFileUpload } from "../paimsform/formFileUpload";
 import { autofillDocumentData, autofillPropertyData } from "../../fetchutils/formautofill";
 
+import { PDFDocument } from 'pdf-lib'
+
 function nextChar(c) {
   return String.fromCharCode(c.charCodeAt(0) + 1);
+}
+
+async function copyPages(url1, url2) {
+  const firstDonorPdfBytes = await fetch(url1).then(res => res.arrayBuffer())
+  const secondDonorPdfBytes = await fetch(url2).then(res => res.arrayBuffer())
+
+  const mergedPdf = await PDFDocument.create();
+
+  const pdfA = await PDFDocument.load(firstDonorPdfBytes)
+  const pdfB = await PDFDocument.load(secondDonorPdfBytes)
+
+  const copiedPagesA = await mergedPdf.copyPages(pdfA, pdfA.getPageIndices());
+  copiedPagesA.forEach((page) => mergedPdf.addPage(page));
+
+  const copiedPagesB = await mergedPdf.copyPages(pdfB, pdfB.getPageIndices());
+  copiedPagesB.forEach((page) => mergedPdf.addPage(page));
+
+  const mergedPdfFile = await mergedPdf.save();
+  return mergedPdfFile;
 }
 
 const UpdateProp = () => {
@@ -32,6 +53,8 @@ const UpdateProp = () => {
     Link: "",
     holdLink: "",
     ReceivedBy: "",
+    Documents: {},
+    VerNum: "",
   });
 
   const [users, setUsers] = useState([]);
@@ -83,7 +106,6 @@ const UpdateProp = () => {
     try {
       var docUpdate = {};
       var newVar = nextChar(formData.VerNum);
-      console.log(formData.SpecDoc);
       docUpdate[`Documents.${newVar}`] = formData.SpecDoc;
       var archiveStat = 0;
       if (formData.DocumentType === "IIRUP") {
@@ -96,10 +118,35 @@ const UpdateProp = () => {
       const fileRef = ref(storage, "DCS/" + formData.holdLink.name);
       await uploadBytes(fileRef, formData.holdLink);
       var fileUrl = await getDownloadURL(fileRef);
-      console.log("File uploaded successfully:", fileUrl);
+      console.log("Temp File uploaded successfully:", fileUrl);
 
       if (formData.holdLink.name === undefined) {
         fileUrl = formData.Link;
+      } else {
+        const prevDoc = (formData.Documents)[formData.VerNum];
+        const prevDocRef = doc(db, "item_document", prevDoc);
+        const prevDocSnap = await getDoc(prevDocRef);
+        console.log("hi3");
+        if (prevDocSnap.exists()) {
+          const prevDocData = prevDocSnap.data();
+          const oldLink = prevDocData.Link;
+          console.log("oldlink:", oldLink);
+          const combinedPdfs = await copyPages(oldLink, fileUrl);
+          console.log("hi4");
+          console.log(combinedPdfs);
+        
+          deleteObject(fileRef).then(() => {
+            console.log("File deleted successfully!");
+          }).catch((error) => {
+            console.log("Error deleting file!");
+          });
+        
+          console.log("Uploading merged file to Firebase Storage");
+          const newFileRef = ref(storage, "DCS/" + formData.holdLink.name);
+          await uploadBytes(newFileRef, combinedPdfs);
+          fileUrl = await getDownloadURL(newFileRef);
+          console.log("Merged file successfully uploaded!");
+        }
       }
 
       await updateDoc(propertyRef, {

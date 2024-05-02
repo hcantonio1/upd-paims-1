@@ -110,6 +110,7 @@ export const autofillPropertyData = async (PropertyID, setFormData, setPropLocke
       StatusID: parseInt(propData.StatusID),
       TrusteeID: parseInt(propData.TrusteeID),
       VerNum: propData.VerNum,
+      Documents: propData.Documents,
     }));
     return;
   }
