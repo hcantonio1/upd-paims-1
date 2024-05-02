@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ListItem, List, ListItemIcon, ListItemText } from "@mui/material";
-import {
-  HomeRounded,
-  Folder,
-  AddCircleOutline,
-  AccountCircleRounded,
-  ExpandLess,
-  ExpandMore,
-} from "@mui/icons-material";
+import { HomeRounded, Folder, AddCircleOutline, AccountCircleRounded, ExpandLess, ExpandMore } from "@mui/icons-material";
 import RestrictedComponent from "./restrictedComponent";
 import { navigate } from "gatsby";
 import { Box } from "@mui/material";
@@ -42,14 +35,12 @@ const Navbar = () => {
       path: "/app/home",
       restrictedRoles: [],
     },
-
     {
       text: "Inventory",
       icon: <Folder />,
       path: "/app/inventory",
       restrictedRoles: [],
     },
-
     {
       text: "Submit Form",
       icon: <AddCircleOutline />,
@@ -73,14 +64,7 @@ const Navbar = () => {
 
   return (
     <nav>
-      <Box
-        display="flex"
-        flexDirection="column"
-        sx={{
-          width: navbarWidth,
-          height: "100%",
-        }}
-      >
+      <Box display="flex" flexDirection="column" sx={{ width: navbarWidth, height: "100%" }}>
         <List>
           {menuItems.map((item) => {
             const itemkey = item.text;
@@ -88,11 +72,7 @@ const Navbar = () => {
               item.text === "Submit Form" ? (
                 // If item.text is "Submit Form", render it as a drop down button
                 <>
-                  <ListItem
-                    button
-                    key={itemkey}
-                    onClick={() => handleDropDown()}
-                  >
+                  <ListItem button key={itemkey} onClick={() => handleDropDown()}>
                     <ListItemIcon>{item.icon}</ListItemIcon>
                     <ListItemText primary={item.text} />
                     {isOpen ? <ExpandLess /> : <ExpandMore />}
@@ -103,16 +83,15 @@ const Navbar = () => {
                       <ListItem
                         button
                         onClick={() => {
-                          navigate("/app/form_addrec/");
+                          navigate("/app/addrec/");
                         }}
                       >
                         <ListItemText primary="Insert Record" />
                       </ListItem>
-
                       <ListItem
                         button
                         onClick={() => {
-                          navigate("/app/form_updaterec/");
+                          navigate("/app/updaterec/");
                         }}
                       >
                         <ListItemText primary="Update Record" />
@@ -123,11 +102,7 @@ const Navbar = () => {
                 </>
               ) : (
                 // If item.text is not "Submit Form", render it as a normal navigation button
-                <ListItem
-                  button
-                  key={itemkey}
-                  onClick={() => navigate(item.path)}
-                >
+                <ListItem button key={itemkey} onClick={() => navigate(item.path)}>
                   <ListItemIcon>{item.icon}</ListItemIcon>
                   <ListItemText primary={item.text} />
                 </ListItem>
@@ -137,10 +112,7 @@ const Navbar = () => {
               return listItem;
             }
             return (
-              <RestrictedComponent
-                key={itemkey}
-                restrictedRoles={item.restrictedRoles}
-              >
+              <RestrictedComponent key={itemkey} restrictedRoles={item.restrictedRoles}>
                 {listItem}
               </RestrictedComponent>
             );

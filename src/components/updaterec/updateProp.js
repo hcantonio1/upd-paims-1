@@ -144,6 +144,7 @@ const UpdateProp = () => {
           <AggregatedFormSelect label="Type" id="DocumentType" value={formData.DocumentType} onChange={handleInputChange} options={types} disabled={docLocked} />
           <FormDatePicker
             id="DateIssued"
+            label="Date Issued"
             value={formData.DateIssued}
             onChange={(val) => {
               setFormData({

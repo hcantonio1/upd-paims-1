@@ -23,8 +23,8 @@ const App = () => (
       <PrivateRoute path="/app/submitform" component={SubmitPage} />
       <PrivateRoute path="/app/about" component={AboutPage} />
       {/* <PrivateRoute path="/app/account" component={Account} /> */}
-      <PrivateRoute path="/app/form_addrec" component={AddRecordPage} />
-      <PrivateRoute path="/app/form_updaterec" component={UpdateRecordPage} />
+      <PrivateRoute path="/app/addrec" component={AddRecordPage} />
+      <PrivateRoute path="/app/updaterec" component={UpdateRecordPage} />
       <PrivateRoute path="/app/manageaccounts" component={ManageAccounts} />
       <Login path="/app/login" />
     </Router>
