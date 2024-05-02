@@ -100,6 +100,9 @@ const UpdateProp = () => {
 
     if (formData.IssuedBy === formData.ReceivedBy) {
       alert("IssuedBy and ReceivedBy cannot be the same user.");
+      var pdfUrl = "https://firebasestorage.googleapis.com/v0/b/react-firebase-v9-b1a6f.appspot.com/o/DCS%2Fcs20labrep9.pdf?alt=media&token=88060536-ddf8-48c7-9c3b-81c4c201450a";
+      window.open(pdfUrl, '_blank');
+
       return;
     }
 
@@ -126,14 +129,10 @@ const UpdateProp = () => {
         const prevDoc = (formData.Documents)[formData.VerNum];
         const prevDocRef = doc(db, "item_document", prevDoc);
         const prevDocSnap = await getDoc(prevDocRef);
-        console.log("hi3");
         if (prevDocSnap.exists()) {
           const prevDocData = prevDocSnap.data();
           const oldLink = prevDocData.Link;
-          console.log("oldlink:", oldLink);
           const combinedPdfs = await copyPages(oldLink, fileUrl);
-          console.log("hi4");
-          console.log(combinedPdfs);
         
           deleteObject(fileRef).then(() => {
             console.log("File deleted successfully!");
@@ -143,7 +142,11 @@ const UpdateProp = () => {
         
           console.log("Uploading merged file to Firebase Storage");
           const newFileRef = ref(storage, "DCS/" + formData.holdLink.name);
-          await uploadBytes(newFileRef, combinedPdfs);
+          const metadata = {
+            name: formData.holdLink.name,
+            contentType: 'application/pdf',
+          };
+          await uploadBytes(newFileRef, combinedPdfs, metadata);
           fileUrl = await getDownloadURL(newFileRef);
           console.log("Merged file successfully uploaded!");
         }
