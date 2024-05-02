@@ -5,13 +5,17 @@ import { navigate } from "gatsby";
 import { handleLogin } from "../../services/auth";
 import { Box, Typography, Button, TextField } from "@mui/material";
 import * as styles from "../../styles/login.module.css";
+import LoadingModal from "./loadingModal";
 
 const Login = () => {
   const [userCred, setUserCred] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    handleLogin(userCred);
+    setIsLoading(true);
+    await handleLogin(userCred);
+    setIsLoading(false);
     navigate(`/app/home`);
   };
 
@@ -21,6 +25,7 @@ const Login = () => {
 
   return (
     <Box display="flex" flexDirection="column" sx={{ height: "100vh" }}>
+      <LoadingModal open={isLoading} />
       {/* title and logo section  */}
       <Box display="flex" flexDirection="row" justifyContent="center">
         <StaticImage className={styles.logo} alt="LogoCOE" src="../../images/coe_logo.png" />
