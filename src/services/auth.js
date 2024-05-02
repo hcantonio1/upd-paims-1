@@ -21,15 +21,14 @@ export const handleLogin = async ({ email, password }) => {
     sessionStorage.setItem("Auth Token", authToken._tokenResponse.refreshToken);
   } catch (error) {
     console.log("Invalid username or password.", error);
-    alert("Invalid username or password.");
-    return;
+    return { error: "Invalid username or password." };
   }
   try {
     await setUserData();
     await fetchCommonData();
   } catch (error) {
     console.log("Error fetching user data.", error);
-    alert("Error fetching user data.");
+    return { error: "Error fetching user data." };
   }
 };
 

@@ -3,20 +3,26 @@ import { useState } from "react";
 import { StaticImage } from "gatsby-plugin-image";
 import { navigate } from "gatsby";
 import { handleLogin } from "../../services/auth";
-import { Box, Typography, Button, TextField } from "@mui/material";
+import { Box, Typography, Button, TextField, Snackbar, Alert } from "@mui/material";
 import * as styles from "../../styles/login.module.css";
 import LoadingModal from "./loadingModal";
 
 const Login = () => {
   const [userCred, setUserCred] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    await handleLogin(userCred);
+    const feedback = await handleLogin(userCred);
     setIsLoading(false);
-    navigate(`/app/home`);
+
+    if (!!feedback) {
+      setHasError(feedback.error);
+    } else {
+      navigate(`/app/home`);
+    }
   };
 
   const handleUpdate = (e) => {
@@ -26,6 +32,17 @@ const Login = () => {
   return (
     <Box display="flex" flexDirection="column" sx={{ height: "100vh" }}>
       <LoadingModal open={isLoading} />
+      <Snackbar
+        open={!!hasError}
+        autoHideDuration={6000}
+        onClose={() => {
+          setHasError("");
+        }}
+      >
+        <Alert severity="error" sx={{ width: "100%" }}>
+          {hasError}
+        </Alert>
+      </Snackbar>
       {/* title and logo section  */}
       <Box display="flex" flexDirection="row" justifyContent="center">
         <StaticImage className={styles.logo} alt="LogoCOE" src="../../images/coe_logo.png" />
