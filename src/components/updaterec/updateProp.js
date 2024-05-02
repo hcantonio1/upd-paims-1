@@ -12,6 +12,10 @@ import FormDatePicker from "../paimsform/formDatePicker";
 import { FormFileUpload } from "../paimsform/formFileUpload";
 import { autofillDocumentData, autofillPropertyData } from "../../fetchutils/formautofill";
 
+function nextChar(c) {
+  return String.fromCharCode(c.charCodeAt(0) + 1);
+}
+
 const UpdateProp = () => {
   const [formData, setFormData] = useState({
     StatusID: "",
@@ -26,6 +30,7 @@ const UpdateProp = () => {
     DateIssued: null,
     IssuedBy: "",
     Link: "",
+    holdLink: "",
     ReceivedBy: "",
   });
 
@@ -63,7 +68,7 @@ const UpdateProp = () => {
     const file = e.target.files[0];
     setFormData({
       ...formData,
-      Link: file,
+      holdLink: file,
     });
   };
 
@@ -76,29 +81,26 @@ const UpdateProp = () => {
     }
 
     try {
-      var iirupUpdate = {};
-      var parUpdate = {};
-      var icsUpdate = {};
-      var newVar = formData.VerNum + 1;
+      var docUpdate = {};
+      var newVar = nextChar(formData.VerNum);
+      console.log(formData.SpecDoc);
+      docUpdate[`Documents.${newVar}`] = formData.SpecDoc;
       var archiveStat = 0;
       if (formData.DocumentType === "IIRUP") {
-        iirupUpdate[`iirupID.${newVar}`] = formData.SpecDoc;
         archiveStat = 1;
-      } else if (formData.DocumentType === "PAR") {
-        parUpdate[`parID.${newVar}`] = formData.SpecDoc;
-      } else {
-        icsUpdate[`icsID.${newVar}`] = formData.SpecDoc;
       }
       const propertyRef = doc(db, "property", formData.PropertyID);
-      updateDoc(propertyRef, icsUpdate);
-      updateDoc(propertyRef, parUpdate);
-      updateDoc(propertyRef, iirupUpdate);
+      await updateDoc(propertyRef, docUpdate);
 
       console.log("Uploading file to Firebase Storage");
-      const fileRef = ref(storage, "DCS/" + formData.Link.name);
-      await uploadBytes(fileRef, formData.Link);
-      const fileUrl = await getDownloadURL(fileRef);
+      const fileRef = ref(storage, "DCS/" + formData.holdLink.name);
+      await uploadBytes(fileRef, formData.holdLink);
+      var fileUrl = await getDownloadURL(fileRef);
       console.log("File uploaded successfully:", fileUrl);
+
+      if (formData.holdLink.name === undefined) {
+        fileUrl = formData.Link;
+      }
 
       await updateDoc(propertyRef, {
         LocationID: parseInt(formData.LocationID),
@@ -155,7 +157,7 @@ const UpdateProp = () => {
         <FormRow segments={3}>
           <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={formData.IssuedBy} onChange={handleInputChange} disabled={docLocked} options={users} />
           <AggregatedFormSelect label="ReceivedBy" id="ReceivedBy" value={formData.ReceivedBy} onChange={handleInputChange} disabled={docLocked} options={users} />
-          <FormFileUpload id="Link" filename={formData.Link?.name} onChange={handleFileChange} disabled={docLocked} />
+          <FormFileUpload id="Link" filename={formData.holdLink?.name} onChange={handleFileChange} disabled={docLocked} />
         </FormRow>
       </FormSubheadered>
       <SubmitButton text="Update Property" />
