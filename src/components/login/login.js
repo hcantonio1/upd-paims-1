@@ -12,6 +12,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     handleLogin(userCred);
+    navigate(`/app/home`);
   };
 
   const handleUpdate = (e) => {
@@ -22,82 +23,61 @@ const Login = () => {
     <Box display="flex" flexDirection="column" sx={{ height: "100vh" }}>
       {/* title and logo section  */}
       <Box display="flex" flexDirection="row" justifyContent="center">
-        {/* logo  */}
-        <StaticImage className={styles.logo} alt="Logo" src="../../images/coe_logo.png" />
-
-        {/* title  */}
+        <StaticImage className={styles.logo} alt="LogoCOE" src="../../images/coe_logo.png" />
         <Box display="flex" flexDirection="column" justifyContent="center">
-          {/* college of engineering text  */}
           <Typography variant="h6" sx={{ textAlign: "center" }}>
             University of the Philippines College of Engineering
           </Typography>
-          <Typography variant="h6"></Typography>
-
-          {/* PAIMS text */}
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
             Properties Accountabilities and Inventory Management System
           </Typography>
         </Box>
-
         <StaticImage className={styles.logo} alt="LogoUPD" src="../../images/upd_logo.png" />
       </Box>
 
-      {/* green bar  */}
-      <Box
-        sx={{
-          width: "100%",
-          height: 20,
-          bgcolor: "#014421",
-        }}
-      />
-
-      {/* yellow bar  */}
-      <Box
-        sx={{
-          width: "100%",
-          height: 5,
-          bgcolor: "#dea80f",
-        }}
-      />
+      {/* green bar and yellow bar  */}
+      <Box sx={{ width: "100%", height: 20, bgcolor: "#014421" }} />
+      <Box sx={{ width: "100%", height: 5, bgcolor: "#dea80f" }} />
 
       {/* email and password section  */}
       <Box display="flex" flexDirection="row" justifyContent="center" sx={{ height: "100%", bgcolor: "#7b1113" }}>
         {/* white box  */}
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          sx={{ bgcolor: "#ffffff", height: 350, width: 500, mt: 9, borderRadius: 7 }}
-        >
-          <form
-            method="post"
-            onSubmit={(event) => {
-              handleSubmit(event);
-              navigate(`/app/home`);
-            }}
-          >
+        <Box display="flex" flexDirection="column" justifyContent="center" sx={{ bgcolor: "#ffffff", height: 350, width: 500, mt: 9, borderRadius: 7 }}>
+          <form method="post" onSubmit={handleSubmit}>
             <Box display="flex" flexDirection="column" justifyContent="center" sx={{ gap: 1 }}>
-              {/* username field  */}
               <TextField
-                sx={{ mx: "auto", width: "70%" }}
                 type="text"
                 name="email"
-                label="Email"
+                label={userCred.email === "" ? "Email" : ""}
                 onChange={handleUpdate}
                 variant="outlined"
                 size="small"
+                sx={{
+                  width: 340,
+                  ml: 10,
+                  background: "#f2f2f2",
+                  borderRadius: 60,
+                  fontSize: 15,
+                  "& fieldset": { border: "none" },
+                }}
+                InputLabelProps={{ focused: false, shrink: false }}
               />
-
-              {/* password field  */}
-
               <TextField
-                sx={{ mx: "auto", width: "70%" }}
                 name="password"
-                label="Password"
+                label={userCred.password === "" ? "Password" : ""}
                 type="password"
                 onChange={handleUpdate}
                 variant="outlined"
                 size="small"
+                sx={{
+                  width: 340,
+                  ml: 10,
+                  background: "#f2f2f2",
+                  borderRadius: 60,
+                  fontSize: 15,
+                  "& fieldset": { border: "none" },
+                }}
+                InputLabelProps={{ focused: false, shrink: false }}
               />
 
               {/* login button  */}
@@ -106,7 +86,7 @@ const Login = () => {
                 value="Log In"
                 variant="contained"
                 sx={{
-                  backgroundColor: "#014421",
+                  bgcolor: "#014421",
                   color: "#ffffff",
                   marginLeft: 10,
                   width: 340,
