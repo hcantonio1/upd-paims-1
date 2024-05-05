@@ -22,7 +22,7 @@ const UpdateSupplier = () => {
     SupplierName: "",
   });
 
-  const [oldData, setOldData] = useState({});
+  const [originalSupplier, setOriginalSupplier] = useState({});
   const [formErrors, setFormErrors] = useState({});
 
   const supplierForUseEffect = formData.SupplierID;
@@ -31,55 +31,44 @@ const UpdateSupplier = () => {
       const supplierAutofillData = await fetchSupplierAutofill(formData.SupplierID);
       if (!!supplierAutofillData) {
         const supData = supplierAutofillData;
-        setFormData((prevData) => ({
-          ...prevData,
-          City: supData.City,
-          State: supData.State,
-          StreetName: supData.StreetName,
-          SupplierContact: supData.SupplierContact,
-          SupplierName: supData.SupplierName,
-          UnitNumber: parseInt(supData.UnitNumber),
-        }));
-        setOldData(supData);
+        setFormData(supData);
+        setOriginalSupplier(supData);
+      } else {
+        // console.log("supplier for use effect", supplierForUseEffect);
+        setOriginalSupplier({});
       }
-      setOldData({});
     };
 
-    autofillSupplierData();
+    if (supplierForUseEffect) {
+      autofillSupplierData();
+    }
   }, [supplierForUseEffect]);
+
+  const { SupplierID, SupplierContact, UnitNumber, StreetName, City, State, SupplierName } = formData;
+  useEffect(() => {
+    gatherFormErrors();
+  }, [SupplierID, SupplierContact, UnitNumber, StreetName, City, State, SupplierName]);
 
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
     });
-
-    // gatherFormErrors();
-    // console.log(formErrors);
   };
 
   const gatherFormErrors = () => {
-    // SupplierContact: "",
-    // UnitNumber: "",
-    // StreetName: "",
-    // City: "",
-    // State: "",
-    // SupplierID: "",
-    // SupplierName: "",
-    const unchanged = _.isEqual(oldData, formData);
-    console.log(formData, oldData);
+    // Unexpected behavior: originalSupplier becomes {} after changing a non-ID field
+    const unchanged = _.isEqual(originalSupplier, formData);
     const contactNumberError = /^\d+$/.test(formData.SupplierContact) ? null : "Numbers only.";
     const unitNumberError = /^\d+$/.test(formData.UnitNumber) ? null : "Numbers only.";
     const newErrors = { ...formErrors, unchanged: unchanged, SupplierContact: contactNumberError, UnitNumber: unitNumberError };
-    const filteredErrors = Object.fromEntries(Object.entries(newErrors).filter(([_, value]) => !!!value));
-    console.log("new errors", newErrors);
-    // console.log(contactNumberError);
+    const filteredErrors = Object.fromEntries(Object.entries(newErrors).filter(([_, value]) => !!value));
     setFormErrors(filteredErrors);
   };
 
-  // const formHasNoErrors = () => {
-  //   return Object.keys(formErrors) === 0;
-  // };
+  const formHasNoErrors = () => {
+    return Object.keys(formErrors) === 0;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
