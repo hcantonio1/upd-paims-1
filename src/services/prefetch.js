@@ -42,29 +42,22 @@ export const commonCollections = [
 const prefetched = {};
 
 const fetchCollData = async ({ name, columnNameOfID, valuesToFetch }) => {
-  console.log(`Fetching ${name}`);
+  // console.log(`Fetching ${name}`);
   try {
     prefetched[name] = {};
     const collSnap = await getDocs(collection(db, name));
     collSnap.docs.forEach((doc) => {
       const data = doc.data();
-      console.log("ok what am i looking at", data);
-
-
+      // console.log("ok what am i looking at", data);
       const key = data[columnNameOfID];
-      console.log("COLUMN", columnNameOfID, "CHECK KEYS", key);
-
+      // console.log("COLUMN", columnNameOfID, "CHECK KEYS", key);
       const values = valuesToFetch.map((column) => {
-        console.log("CHECK COL AGAIN:", column);
         return data[column];
       });
       prefetched[name][key] = values[0];
       if (name === "item_location") {
         prefetched[name][key] = `${values[0]} ${values[1]}`;
       }
-      // if (name === "supplier") {
-      //   prefetched[name] = `${values[0]}`;
-      // }
     });
   } catch (err) {
     console.log(`Error fetching ${name}. ${err}`);
