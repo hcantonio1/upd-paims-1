@@ -10,73 +10,17 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import firebase from "firebase/app";
 import "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
-import { Redirect, Link } from "react-router-dom";
+import { Redirect} from "react-router-dom";
+import Link from '@mui/material/Link';
 
-const propertyDocRef = doc(db, "property", "YOUR_PROPERTY_ID");
 
-const propertiesCollection = collection(db, "property");
 
-// const propertyDocSnapshot = await getDoc(propertyDocRef);
-// if (propertyDocSnapshot.exists()) {
-//   const propertyData = propertyDocSnapshot.data();
-//   const icsID = propertyData.icsID;
-//   if (icsID) {
-//     // Retrieve the DocumentID from icsID
-//     const documentID = `${propertyData.VerNum}`;
-//     const documentDocRef = doc(db, "item_document", documentID);
-
-//     // Fetch the document from item_document collection
-//     const documentDocSnapshot = await getDoc(documentDocRef);
-//     if (documentDocSnapshot.exists()) {
-//       const documentData = documentDocSnapshot.data();
-//       const link = documentData.Link;
-//       console.log("Link:", link);
-//     } else {
-//       console.log("Document not found in item_document collection.");
-//     }
-//   } else {
-//     console.log("icsID is empty.");
-//   }
-// } else {
-//   console.log("Property document not found.");
-// }
 
 const InventoryPage = () => {
   const [link, setLink] = useState(null);
   const [rows, setRows] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch link from Firestore
-        const propertyDocSnapshot = await getDoc(propertyDocRef);
-        if (propertyDocSnapshot.exists()) {
-          const propertyData = propertyDocSnapshot.data();
-          const icsID = propertyData.icsID;
-          if (icsID) {
-            const documentID = `${propertyData.VerNum}`;
-            const documentDocRef = doc(db, "item_document", documentID);
-            const documentDocSnapshot = await getDoc(documentDocRef);
-            if (documentDocSnapshot.exists()) {
-              const documentData = documentDocSnapshot.data();
-              const fetchedLink = documentData.Link;
-              setLink(fetchedLink);
-            } else {
-              console.log("Document not found in item_document collection.");
-            }
-          } else {
-            console.log("icsID is empty.");
-          }
-        } else {
-          console.log("Property document not found.");
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  
 
   const InvCol = [
     { field: "PropertyID", headerName: "ID", width: 90 },
@@ -86,36 +30,82 @@ const InventoryPage = () => {
     { field: "TrusteeID", headerName: "Trustee ID", width: 90 },
     { field: "LocationName", headerName: "Location", width: 150 },
     { field: "PurchaseOrderID", headerName: "Purchase Order", width: 90 },
-    { field: "SupplierID", headerName: "Supplier", width: 150 },
-
-    // { field: "VerNum", headerName: "VER", width: 150
-    //   // ,valueGetter: (value) => { return value }
-    //   ,valueGetter: (param, row) => {
-    //     return `${row.icsID.VerNum || 'AAA'} ${row.PropertyName || ''}`;
-    //   },
-    // },
-
+    { field: "SupplierName", headerName: "Supplier", width: 150 },
     {
-      field: "icsID",
-      headerName: "ICS",
+      field: "DocumentID",
+      headerName: "AAADocument",
       width: 150,
       valueGetter: (params, row) => {
         const propertyName = `${row.VerNum}`;
-        console.log("PROPNAMEAAA", propertyName);
-        console.log(typeof propertyName);
-        console.log(`row.icsID.${row.VerNum}`);
-        console.log("what #1", row.icsID[row.VerNum]);
-        console.log("what #2", row.icsID[propertyName]);
-        const propValue = `row.icsID.${row.VerNum}`;
+        // console.log("PROPNAMEAAA", propertyName);
+        // console.log(typeof propertyName);
+        // console.log(`row.Documents.${row.VerNum}`);
+        // console.log("what #1", row.icsID[row.VerNum]);
+        // console.log("what #2", row.icsID[propertyName]);
+        const propValue = `row.Documents.${row.VerNum}`;
 
-        return row.icsID[row.VerNum];
+        return row.Documents[row.VerNum];
       },
     },
 
-    // { field: "link", headerName: "ICS", width: 150
+    {
+      field: "DocumentLink",
+      headerName: "Playground",
+      width: 150,
+      renderCell: rowData =>
+        <Link href={`${rowData.row.DocumentLink}`} target="_blank">
+          {
+          // console.log("HEYHOTHISISWHAT", rowData.row.DocumentLink)
+          rowData.row.Documents[rowData.row.VerNum]
+          }
+        </Link>
+    },
+
+    // { field: "Link", headerName: "Link", width: 150
     //   , renderCell: (params) => (
     //     <Link to={`/form/${params.value}`}>{params.value}</Link>
     //   )
+    // },
+
+    // {
+    //   field: 'Link', // Field name for the new column
+    //   headerName: 'Link', // Header for the new column
+    //   width: 150,
+    //   valueGetter: async (params, row) => {
+    //     // Fetch data from another collection based on some key or field
+    //     const propertyName = `${row.VerNum}`;
+    //     console.log("PROPNAMEAAA", propertyName);
+    //     console.log(typeof propertyName);
+    //     console.log(`row.Documents.${row.VerNum}`);
+    //     // console.log("what #1", row.icsID[row.VerNum]);
+    //     // console.log("what #2", row.icsID[propertyName]);
+    //     const propValue = `row.Documents.${row.VerNum}`;
+
+    //     // Query to find the document in item_document collection where DocumentID matches DocTitle
+    //     const itemDocumentQuery = query(docuCollection, where('DocumentID', '==', propValue));
+        
+    //     // Execute the query
+    //     const itemDocumentQuerySnapshot = await getDocs(itemDocumentQuery);
+        
+    //     // Check if the document exists
+    //     if (!itemDocumentQuerySnapshot.empty) {
+    //         // Access the first document (assuming there's only one matching document)
+    //         const itemDocumentData = itemDocumentQuerySnapshot.docs[0].data();
+        
+    //         // Access the 'Link' field
+    //         const link = itemDocumentData.Link;
+        
+    //         // Now you can use the 'link' variable wherever you need
+    //         console.log('Link:', link);
+    //         return link;
+    //     } else {
+    //         console.log('none');
+    //         return '';
+    //     }
+    //   },
+    //   // renderCell: (params) => (
+    //   //   <a href={params.value}>{params.value}</a>
+    //   // ),
     // },
   ];
 
@@ -129,6 +119,15 @@ const InventoryPage = () => {
     direction: "asc",
   });
 
+  const propertyDocRef = doc(db, "property", "YOUR_PROPERTY_ID");
+
+  const propertiesCollection = collection(db, "property");
+
+
+  const itemDocRef = doc(db, "item_document", "YOUR_DOCU_ID");
+
+  const docuCollection = collection(db, "item_document");
+
   useEffect(() => {
     onSnapshot(propertiesCollection, (snapshot) => {
       const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
@@ -136,26 +135,57 @@ const InventoryPage = () => {
       let invData = [];
       snapshot.docs.forEach((doc) => {
         let row = doc.data();
+        console.log("YAPPAPAP",row)
         commonCollections.forEach(({ name, columnNameOfID }) => {
-          const id = row[columnNameOfID];
-          const newAttr = columnNameOfID.slice(0, -2) + "Name";
-          // let newAttr; // Declare newAttr variable
-          // if (columnNameOfID === "icsID" || columnNameOfID === "parID" || columnNameOfID === "iirupID") {
-          //   console.log("what am i looking at", columnNameOfID);
-          //   newAttr = "VerNum";
-          // } else {
-          //   newAttr = columnNameOfID.slice(0, -2) + "Name"; // Default behavior for other attributes
-          // }
-          const replacementName = String(prefetched[name][id]);
-          // let replacementName = ""; // Default to empty string
-          // if (prefetched[name][id]) {
-          //   replacementName = prefetched[name][id]; // If value exists, use it
-          // }
-          console.log("ID:", id);
-          console.log("New Attribute:", newAttr);
-          console.log("Replacement Name:", replacementName);
-          row = { ...row, [newAttr]: replacementName };
+          let id = row[columnNameOfID];
+          // const id = 1;
+
+          console.log("COLNAME", columnNameOfID, "IDDD",id, "NAME", name)
+
+          if (columnNameOfID != "DocumentID"){
+            let newAttr = columnNameOfID.slice(0, -2) + "Name";
+            console.log("NEW", newAttr)
+  
+            let replacementName = String(prefetched[name][id]);
+            // let replacementName = ""; // Default to empty string
+            // if (prefetched[name][id]) {
+            //   replacementName = prefetched[name][id]; // If value exists, use it
+            // }
+            console.log("ID:", id);
+            console.log("New Attribute:", newAttr);
+            console.log("Replacement Name:", replacementName);
+            row = { ...row, [newAttr]: replacementName };
+
+          }
+
+          else {
+            console.log("VERNUM:", row.VerNum)
+            id = row.Documents[row.VerNum];
+            console.log("NEW ID FOR ITEMDOC:", id)
+            const docTitle = row.Documents[row.VerNum];
+            console.log("GUMAGANA KA BA:", docTitle, "Anuna", name)
+  
+            const docLink = String(prefetched[name][id]);
+            console.log("ANO TO:", docLink)
+
+            let newAttr = columnNameOfID.slice(0, -2) + "Link";
+            console.log("New Attribute:", newAttr);
+
+            row = { ...row, [newAttr]: docLink };
+          }
+
+
+
+          // const docLinkfromitemdoc = docuCollection.find(row.DocTitle === docFromCollectionA)
+          // console.log("ANO BA TO:", docLinkfromitemdoc)
+
+
+
+
         });
+
+
+
         if (row.isArchived !== 1 && row.isApproved !== 0) {
           // Filter out archived items here
           invData.push(row);
