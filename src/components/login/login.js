@@ -14,6 +14,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     setIsLoading(true);
     const feedback = await handleLogin(userCred);
     setIsLoading(false);
@@ -29,8 +30,8 @@ const Login = () => {
     setUserCred({ ...userCred, [e.target.name]: e.target.value });
   };
 
-  return (
-    <Box display="flex" flexDirection="column" sx={{ height: "100vh" }}>
+  const invisibleStuff = (
+    <>
       <LoadingModal open={isLoading} />
       <Snackbar
         open={!!hasError}
@@ -43,6 +44,12 @@ const Login = () => {
           {hasError}
         </Alert>
       </Snackbar>
+    </>
+  );
+
+  return (
+    <Box display="flex" flexDirection="column" sx={{ height: "100vh" }}>
+      {invisibleStuff}
       {/* title and logo section  */}
       <Box display="flex" flexDirection="row" justifyContent="center">
         <StaticImage className={styles.logo} alt="LogoCOE" src="../../images/coe_logo.png" />
