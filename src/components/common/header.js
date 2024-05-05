@@ -19,41 +19,28 @@ const Header = () => {
       {/* header container  */}
       <Box display="flex" flexDirection="column">
         {/* logo - log out button container  */}
-        <Box
-          display="flex"
-          flexDirection="row"
-          justifyContent="center"
-          alignItems="center"
-        >
+        <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center">
           {/* logo  */}
-          <StaticImage
-            className={styles.logo}
-            alt="Logo"
-            src="../../images/coe_logo.png"
-          />
+          <StaticImage className={styles.logo} alt="Logo" src="../../images/coe_logo.png" />
 
           {/* webapp title  */}
           <Box flexGrow={10}>
-            <Typography variant="h6">
-              Properties Accountabilites and Inventory Management System
-            </Typography>
+            <Typography variant="h6">Properties Accountabilites and Inventory Management System</Typography>
           </Box>
 
           {/* log out button  */}
-          <Box
-            display="flex"
-            flexDirection="row"
-            justifyContent="center"
-            flexGrow={1}
-          >
+          <Box display="flex" flexDirection="row" justifyContent="center" flexGrow={1}>
             <Button
               onClick={handleLogout}
               variant="contained"
               sx={{
                 margin: 4,
-                bgColor: "#014421",
+                background: "#014421",
                 color: "#ffffff",
                 borderRadius: 5,
+                "&:hover": {
+                  backgroundColor: "#3A754E",
+                },
               }}
             >
               {" "}
