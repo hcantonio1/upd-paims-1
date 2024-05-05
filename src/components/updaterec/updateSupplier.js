@@ -28,7 +28,7 @@ const UpdateSupplier = () => {
   const supplierForUseEffect = formData.SupplierID;
   useEffect(() => {
     const autofillSupplierData = async () => {
-      const supplierAutofillData = await fetchSupplierAutofill(formData.SupplierID);
+      const supplierAutofillData = await fetchSupplierAutofill(supplierForUseEffect);
       if (!!supplierAutofillData) {
         const supData = supplierAutofillData;
         setFormData(supData);
@@ -46,7 +46,18 @@ const UpdateSupplier = () => {
 
   const { SupplierID, SupplierContact, UnitNumber, StreetName, City, State, SupplierName } = formData;
   useEffect(() => {
-    gatherFormErrors();
+    const gatherFormErrors = () => {
+      // Unexpected behavior: originalSupplier becomes {} after changing a non-ID field
+      const unchanged = _.isEqual(originalSupplier, formData);
+      const contactNumberError = /^\d+$/.test(SupplierContact) ? null : "Numbers only.";
+      const unitNumberError = /^\d+$/.test(UnitNumber) ? null : "Numbers only.";
+      const newErrors = { ...formErrors, unchanged: unchanged, SupplierContact: contactNumberError, UnitNumber: unitNumberError };
+      const filteredErrors = Object.fromEntries(Object.entries(newErrors).filter(([_, value]) => !!value));
+      setFormErrors(filteredErrors);
+    };
+    if (SupplierContact !== "" || UnitNumber !== "") {
+      gatherFormErrors();
+    }
   }, [SupplierID, SupplierContact, UnitNumber, StreetName, City, State, SupplierName]);
 
   const handleInputChange = (e) => {
@@ -56,22 +67,15 @@ const UpdateSupplier = () => {
     });
   };
 
-  const gatherFormErrors = () => {
-    // Unexpected behavior: originalSupplier becomes {} after changing a non-ID field
-    const unchanged = _.isEqual(originalSupplier, formData);
-    const contactNumberError = /^\d+$/.test(formData.SupplierContact) ? null : "Numbers only.";
-    const unitNumberError = /^\d+$/.test(formData.UnitNumber) ? null : "Numbers only.";
-    const newErrors = { ...formErrors, unchanged: unchanged, SupplierContact: contactNumberError, UnitNumber: unitNumberError };
-    const filteredErrors = Object.fromEntries(Object.entries(newErrors).filter(([_, value]) => !!value));
-    setFormErrors(filteredErrors);
-  };
-
-  const formHasNoErrors = () => {
-    return Object.keys(formErrors) === 0;
+  const formHasErrors = () => {
+    return Object.keys(formErrors) > 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formHasErrors()) return;
+
     try {
       const supplierRef = doc(db, "supplier", formData.SupplierID);
       await updateDoc(supplierRef, {
@@ -94,14 +98,31 @@ const UpdateSupplier = () => {
     <PaimsForm header="Update a Supplier in the Database" onSubmit={handleSubmit}>
       <FormSubheadered subheader="Supplier Details">
         <FormRow segments={3}>
-          <SmallTextField id="SupplierID" label="Supplier ID" value={formData.SupplierID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
+          <SmallTextField
+            id="SupplierID"
+            label="Supplier ID"
+            value={formData.SupplierID}
+            onChange={handleInputChange}
+            required
+            InputProps={{ pattern: "[0-9]*", title: "Numbers only." }}
+            helperText={formErrors.unchanged ? "Please modify a value" : null}
+            color={formErrors.unchanged ? "success" : "primary"}
+          />
           <SmallTextField id="SupplierName" label="Supplier Name" value={formData.SupplierName} onChange={handleInputChange} required />
-          <SmallTextField id="SupplierContact" label="Contact Number" value={formData.SupplierContact} onChange={handleInputChange} required />
+          <SmallTextField
+            id="SupplierContact"
+            label="Contact Number"
+            value={formData.SupplierContact}
+            onChange={handleInputChange}
+            required
+            error={!!formErrors.SupplierContact}
+            helperText={formErrors.SupplierContact}
+          />
         </FormRow>
       </FormSubheadered>
       <FormSubheadered subheader="Supplier Address">
         <FormRow segments={4}>
-          <SmallTextField id="UnitNumber" label="Unit Number" value={formData.UnitNumber} onChange={handleInputChange} />
+          <SmallTextField id="UnitNumber" label="Unit Number" value={formData.UnitNumber} onChange={handleInputChange} error={!!formErrors.UnitNumber} helperText={formErrors.UnitNumber} />
           <SmallTextField id="StreetName" label="Street Name" value={formData.StreetName} onChange={handleInputChange} />
           <SmallTextField id="City" label="City" value={formData.City} onChange={handleInputChange} />
           <SmallTextField id="State" label="State" value={formData.State} onChange={handleInputChange} />
