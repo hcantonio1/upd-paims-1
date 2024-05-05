@@ -28,6 +28,11 @@ export const commonCollections = [
     valuesToFetch: ["SupplierName"],
   },
   {
+    name: "user",
+    columnNameOfID: "UserID",
+    valuesToFetch: ["Username"],
+  },
+  {
     name: "item_document",
     columnNameOfID: "DocumentID",
     valuesToFetch: ["Link"],
