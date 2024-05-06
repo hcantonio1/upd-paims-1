@@ -10,7 +10,6 @@ export const fetchSupplierAutofill = async (supplierID) => {
     if (supSnap.exists()) {
       return supSnap.data();
     }
-    return null;
   } catch (error) {
     console.error("Error fetching supplier autofill:", error);
   }
@@ -25,9 +24,22 @@ export const fetchDocumentAutofill = async (documentID) => {
     if (docSnap.exists()) {
       return docSnap.data();
     }
-    return null;
   } catch (error) {
     console.error("Error fetching document autofill:", error);
+  }
+  return null;
+};
+
+export const fetchPropertyAutofill = async (propertyID) => {
+  if (propertyID === "") return;
+  try {
+    const propRef = doc(db, "property", propertyID);
+    const propSnap = await getDoc(propRef);
+    if (propSnap.exists()) {
+      return propSnap.data();
+    }
+  } catch (error) {
+    console.error("Error fetching property autofill:", error);
   }
   return null;
 };

@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../../../firebase-config";
 import _ from "lodash";
-
+import { db } from "../../../firebase-config";
+import { doc, updateDoc } from "firebase/firestore";
+import { fetchSupplierAutofill } from "../../fetchutils/formautofill2";
 import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import SubmitButton from "../paimsform/submitButton";
-// import { autofillSupplierData } from "../../fetchutils/formautofill";
-import { fetchSupplierAutofill } from "../../fetchutils/formautofill2";
 
 /* In the future, add a heading "Select Existing Supplier" dropdown component before the first heading, "Supplier Details" */
 
@@ -25,7 +23,6 @@ const UpdateSupplier = () => {
   const [originalSupplier, setOriginalSupplier] = useState({});
   const [formErrors, setFormErrors] = useState({});
 
-  // const supplierForUseEffect = formData.SupplierID;
   useEffect(() => {
     const autofillSupplierData = async () => {
       const supplierAutofillData = await fetchSupplierAutofill(formData.SupplierID);
@@ -37,7 +34,6 @@ const UpdateSupplier = () => {
         setOriginalSupplier({});
       }
     };
-
     if (formData.SupplierID) {
       autofillSupplierData();
     }
@@ -46,7 +42,6 @@ const UpdateSupplier = () => {
   useEffect(() => {
     const gatherFormErrors = () => {
       const isUnmodified = _.isEqual(originalSupplier, formData);
-      // console.log(isUnmodified, originalSupplier, formData);
       const contactNumberError = /^\d+$/.test(formData.SupplierContact) ? null : "Numbers only.";
       const unitNumberError = /^\d+$/.test(formData.UnitNumber) ? null : "Numbers only.";
       setFormErrors((previousErrors) => {
