@@ -1,12 +1,7 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import Layout from "../common/layout";
 import { Box, Typography, IconButton, Paper } from "@mui/material";
 import { Close, Add, West, East } from "@mui/icons-material";
-import { autofillDocumentData, autofillPropRowSupp } from "../../fetchutils/formautofill";
-import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "../../fetchutils/fetchdropdowndata";
-import { insertDocument, handleSubmit } from "./handleinsert";
-
-import Layout from "../common/layout";
 import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import { AggregatedFormSelect } from "../paimsform/formSelect";
@@ -14,8 +9,12 @@ import SubmitButton from "../paimsform/submitButton";
 import FormDatePicker from "../paimsform/formDatePicker";
 import { FormFileUpload } from "../paimsform/formFileUpload";
 
+import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "../../fetchutils/fetchdropdowndata";
+import { fetchDocumentAutofill, fetchSupplierAutofill } from "../../fetchutils/formautofill2";
+import dayjs from "dayjs";
+import { insertDocument, handleSubmit } from "./handleinsert";
+
 import PropertyRow from "./propertyRow";
-import { fetchSupplierAutofill } from "../../fetchutils/formautofill2";
 
 const PROPERTY_ROW_FIELDS = {
   CategoryID: "",
@@ -78,6 +77,27 @@ const InsertRecord = () => {
     fetchdropdowndata();
   }, []);
 
+  useEffect(() => {
+    const autofillDocumentData = async () => {
+      const documentAutofillData = await fetchDocumentAutofill(docData.DocumentID);
+      if (!!documentAutofillData) {
+        setDocLocked(true);
+        setDocData((prev) => {
+          delete documentAutofillData.DocumentID;
+          const docData = { ...documentAutofillData, DateIssued: dayjs(documentAutofillData.DateIssued.toDate()) };
+          const oldDocData = { ...prev };
+          const newDocData = Object.assign(oldDocData, docData);
+          return newDocData;
+        });
+        return;
+      }
+      setDocLocked(false);
+    };
+    if (docData.DocumentID) {
+      autofillDocumentData();
+    }
+  }, [docData.DocumentID]);
+
   const suppliersForAutofill = propertyRows.map((propRowData, index) => propRowData[`SupplierID_${index}`]);
   useEffect(() => {
     const autofillSupplierData = async () => {
@@ -103,16 +123,13 @@ const InsertRecord = () => {
       }
     };
     autofillSupplierData();
-  }, suppliersForAutofill);
+    console.log("infity??");
+  }, [suppliersForAutofill, propRowToDisplay]);
 
   const handleDocChange = (e) => {
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
     const docDataKey = e.target.name !== "" ? e.target.name : e.target.id;
     setDocData({ ...docData, [docDataKey]: e.target.value });
-
-    if (docDataKey === "DocumentID") {
-      autofillDocumentData(e.target.value, setDocData, setDocLocked);
-    }
   };
 
   const handleFileChange = (e) => {
@@ -122,9 +139,8 @@ const InsertRecord = () => {
   };
 
   const handlePropRowChange = (e, index) => {
-    const newPropertyRows = [...propertyRows];
-
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
+    const newPropertyRows = [...propertyRows];
     const propRowKey = e.target.name !== "" ? e.target.name : e.target.id;
     newPropertyRows[index][propRowKey] = e.target.value;
     setPropertyRows(newPropertyRows);
@@ -133,14 +149,6 @@ const InsertRecord = () => {
     // if (keyType === "SupplierID") {
     //   autofillPropRowSupp(index, e.target.value, setPropRowLocks, setPropertyRows);
     // }
-
-    // if (e.target.name === `PropertyID_${index}`) {
-    //   // RETURN IF PROPERTY ID ALREADY EXISTS
-    //   fetchPropertyData(e.target.value);
-    // }
-    //if (e.target.name === `PurchaseOrderID_${index}`) {
-    //  fetchOrderData(e.target.value);
-    //}
   };
 
   const docSubheadered = (
@@ -213,7 +221,7 @@ const InsertRecord = () => {
           >
             {docSubheadered}
             <SubmitButton
-              text="Only Submit Document"
+              text="Only Submit Document Info"
               onClick={(e) => {
                 insertDocument(e, docData);
               }}
