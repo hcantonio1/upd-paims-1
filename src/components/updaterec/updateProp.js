@@ -4,10 +4,9 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage
 import { db, storage } from "../../../firebase-config";
 import { fetchDeptLocations, fetchDeptUsers, fetchStatuses, fetchTypes } from "../../fetchutils/fetchdropdowndata";
 
-import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
+import { PaimsForm, FormSubheadered, FormRow, SubmitButton } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import { AggregatedFormSelect } from "../paimsform/formSelect";
-import SubmitButton from "../paimsform/submitButton";
 import FormDatePicker from "../paimsform/formDatePicker";
 import { FormFileUpload } from "../paimsform/formFileUpload";
 

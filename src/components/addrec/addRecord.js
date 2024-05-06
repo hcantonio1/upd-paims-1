@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import Layout from "../common/layout";
 import { Box, Typography, IconButton, Paper } from "@mui/material";
 import { Close, Add, West, East } from "@mui/icons-material";
-import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
+import { PaimsForm, FormSubheadered, FormRow, SubmitButton } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import { AggregatedFormSelect } from "../paimsform/formSelect";
-import SubmitButton from "../paimsform/submitButton";
 import FormDatePicker from "../paimsform/formDatePicker";
 import { FormFileUpload } from "../paimsform/formFileUpload";
 

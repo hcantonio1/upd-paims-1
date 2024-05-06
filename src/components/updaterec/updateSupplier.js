@@ -3,9 +3,8 @@ import _ from "lodash";
 import { db } from "../../../firebase-config";
 import { doc, updateDoc } from "firebase/firestore";
 import { fetchSupplierAutofill } from "../../fetchutils/formautofill";
-import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
+import { PaimsForm, FormSubheadered, FormRow, SubmitButton } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
-import SubmitButton from "../paimsform/submitButton";
 
 /* In the future, add a heading "Select Existing Supplier" dropdown component before the first heading, "Supplier Details" */
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Divider, Stack, Typography } from "@mui/material";
+import { Box, Divider, Stack, Typography, Button } from "@mui/material";
 // import FormHeader from "./formHeader";
 
 /* TOP-DOWN DESIGN APPROACH: make PaimsForm first
@@ -94,4 +94,16 @@ export const FormRow = ({ children, segments, test }) => {
     );
 
   return <Stack sx={{ display: "flex", flexDirection: "row", px: 1, gap: 1 }}>{childrens}</Stack>;
+};
+
+export const SubmitButton = (props) => {
+  return (
+    <Stack sx={{ display: "flex", flexDirection: "row", px: 1, mb: 2 }} alignItems="flex-start" justifyContent="flex-end">
+      <Stack sx={{ width: 1 / 6 }}>
+        <Button {...props} type="submit" variant="contained" size="small" color="success">
+          {props.text}
+        </Button>
+      </Stack>
+    </Stack>
+  );
 };
