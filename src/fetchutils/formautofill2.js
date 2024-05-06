@@ -12,7 +12,22 @@ export const fetchSupplierAutofill = async (supplierID) => {
     }
     return null;
   } catch (error) {
-    console.error("Error fetching supplier:", error);
+    console.error("Error fetching supplier autofill:", error);
+  }
+  return null;
+};
+
+export const fetchDocumentAutofill = async (documentID) => {
+  if (documentID === "") return;
+  try {
+    const docRef = doc(db, "item_document", documentID);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data();
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching document autofill:", error);
   }
   return null;
 };
