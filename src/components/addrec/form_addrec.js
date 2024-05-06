@@ -11,7 +11,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import SelectTextField from "../common/selectTextField";
 
-import { autofillDocumentData, autofillSupplierData } from "../../formutils/formautofill";
+// import { autofillDocumentData, autofillSupplierData } from "../../formutils/formautofill";
 import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "../../formutils/fetchdropdowndata";
 import { insertDocument as handleInsertDoc } from "./handleinsert";
 
@@ -143,7 +143,7 @@ const InsertRecord = () => {
           const verNum = "a";
           await setDoc(doc(db, "property", itemData.PropertyID), {
             CategoryID: parseInt(itemData.CategoryID),
-            Documents: {verNum : inputData.DocumentID},
+            Documents: { verNum: inputData.DocumentID },
             isArchived: archiveStat,
             isApproved: 0,
             LocationID: parseInt(itemData.LocationID),

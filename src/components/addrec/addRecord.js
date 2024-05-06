@@ -99,9 +99,11 @@ const InsertRecord = () => {
   }, [docData.DocumentID]);
 
   const suppliersForAutofill = propertyRows.map((propRowData, index) => propRowData[`SupplierID_${index}`]);
+  const suppliersStringified = JSON.stringify(suppliersForAutofill);
   useEffect(() => {
     const autofillSupplierData = async () => {
       const index = propRowToDisplay;
+      const suppliersForAutofill = JSON.parse(suppliersStringified);
       const supplierAutofillData = await fetchSupplierAutofill(suppliersForAutofill[index]);
       if (!!supplierAutofillData) {
         const supData = supplierAutofillData;
@@ -123,8 +125,7 @@ const InsertRecord = () => {
       }
     };
     autofillSupplierData();
-    console.log("infity??");
-  }, [suppliersForAutofill, propRowToDisplay]);
+  }, [suppliersStringified, propRowToDisplay]);
 
   const handleDocChange = (e) => {
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
@@ -144,11 +145,6 @@ const InsertRecord = () => {
     const propRowKey = e.target.name !== "" ? e.target.name : e.target.id;
     newPropertyRows[index][propRowKey] = e.target.value;
     setPropertyRows(newPropertyRows);
-
-    // const keyType = propRowKey.split("_")[0];
-    // if (keyType === "SupplierID") {
-    //   autofillPropRowSupp(index, e.target.value, setPropRowLocks, setPropertyRows);
-    // }
   };
 
   const docSubheadered = (
