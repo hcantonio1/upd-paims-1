@@ -10,11 +10,10 @@ import { AggregatedFormSelect } from "../paimsform/formSelect";
 import SubmitButton from "../paimsform/submitButton";
 import FormDatePicker from "../paimsform/formDatePicker";
 import { FormFileUpload } from "../paimsform/formFileUpload";
-import { autofillPropertyData } from "../../fetchutils/formautofill";
 
 import { PDFDocument } from "pdf-lib";
 import dayjs from "dayjs";
-import { fetchDocumentAutofill } from "../../fetchutils/formautofill2";
+import { fetchDocumentAutofill, fetchPropertyAutofill } from "../../fetchutils/formautofill2";
 
 function nextChar(c) {
   return String.fromCharCode(c.charCodeAt(0) + 1);
@@ -98,14 +97,43 @@ const UpdateProp = () => {
     }
   }, [formData.SpecDoc]);
 
+  useEffect(() => {
+    const autofillPropertyData = async () => {
+      const propertyAutofillData = await fetchPropertyAutofill(formData.PropertyID);
+      if (!!propertyAutofillData) {
+        setFormData((prev) => {
+          const propData = propertyAutofillData;
+          const propData1 = {
+            ...prev,
+            LocationID: parseInt(propData.LocationID),
+            StatusID: parseInt(propData.StatusID),
+            TrusteeID: parseInt(propData.TrusteeID),
+            VerNum: propData.VerNum,
+            Documents: propData.Documents,
+          };
+          const oldFormData = { ...prev };
+          const newFormData = Object.assign(oldFormData, propData1);
+          return newFormData;
+        });
+        return;
+      }
+    };
+
+    if (formData.PropertyID) {
+      autofillPropertyData();
+    }
+  }, [formData.PropertyID]);
+
+  useEffect(() => console.log(formData), [formData]);
+
   const handleInputChange = (e) => {
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
     const formDataKey = e.target.name !== "" ? e.target.name : e.target.id;
     setFormData({ ...formData, [formDataKey]: e.target.value });
 
-    if (formDataKey === "PropertyID") {
-      autofillPropertyData(e.target.value, setFormData);
-    }
+    // if (formDataKey === "PropertyID") {
+    //   autofillPropertyData(e.target.value, setFormData);
+    // }
     // if (formDataKey === "SpecDoc") {
     //   autofillDocumentData(e.target.value, setFormData);
     // }
