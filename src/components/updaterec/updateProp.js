@@ -13,7 +13,7 @@ import { FormFileUpload } from "../paimsform/formFileUpload";
 
 import { PDFDocument } from "pdf-lib";
 import dayjs from "dayjs";
-import { fetchDocumentAutofill, fetchPropertyAutofill } from "../../fetchutils/formautofill2";
+import { fetchDocumentAutofill, fetchPropertyAutofill } from "../../fetchutils/formautofill";
 
 function nextChar(c) {
   return String.fromCharCode(c.charCodeAt(0) + 1);

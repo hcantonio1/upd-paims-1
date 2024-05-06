@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import _ from "lodash";
 import { db } from "../../../firebase-config";
 import { doc, updateDoc } from "firebase/firestore";
-import { fetchSupplierAutofill } from "../../fetchutils/formautofill2";
+import { fetchSupplierAutofill } from "../../fetchutils/formautofill";
 import { PaimsForm, FormSubheadered, FormRow } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import SubmitButton from "../paimsform/submitButton";

@@ -10,7 +10,7 @@ import FormDatePicker from "../paimsform/formDatePicker";
 import { FormFileUpload } from "../paimsform/formFileUpload";
 
 import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "../../fetchutils/fetchdropdowndata";
-import { fetchDocumentAutofill, fetchSupplierAutofill } from "../../fetchutils/formautofill2";
+import { fetchDocumentAutofill, fetchSupplierAutofill } from "../../fetchutils/formautofill";
 import dayjs from "dayjs";
 import { insertDocument, handleSubmit } from "./handleinsert";
 
