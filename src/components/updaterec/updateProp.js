@@ -71,7 +71,6 @@ const UpdateProp = () => {
       setStatuses(await fetchStatuses());
       setTypes(await fetchTypes());
     };
-
     fetchdropdowndata();
   }, []);
 
@@ -79,19 +78,18 @@ const UpdateProp = () => {
     const autofillDocumentData = async () => {
       const documentAutofillData = await fetchDocumentAutofill(formData.SpecDoc);
       if (!!documentAutofillData) {
-        // for some reason, if both setDocLocked (inside if and outside if) are commented out, the autofill does not display the data
         setDocLocked(true);
         setFormData((prev) => {
           delete documentAutofillData.DocumentID;
           const docData = { ...documentAutofillData, DateIssued: dayjs(documentAutofillData.DateIssued.toDate()) };
-          const newFormData = Object.assign(prev, docData);
+          const oldFormData = { ...prev };
+          const newFormData = Object.assign(oldFormData, docData);
           return newFormData;
         });
         return;
       }
       setDocLocked(false);
     };
-
     if (formData.SpecDoc) {
       autofillDocumentData();
     }
@@ -124,19 +122,10 @@ const UpdateProp = () => {
     }
   }, [formData.PropertyID]);
 
-  useEffect(() => console.log(formData), [formData]);
-
   const handleInputChange = (e) => {
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
     const formDataKey = e.target.name !== "" ? e.target.name : e.target.id;
     setFormData({ ...formData, [formDataKey]: e.target.value });
-
-    // if (formDataKey === "PropertyID") {
-    //   autofillPropertyData(e.target.value, setFormData);
-    // }
-    // if (formDataKey === "SpecDoc") {
-    //   autofillDocumentData(e.target.value, setFormData);
-    // }
   };
 
   const handleFileChange = (e) => {
