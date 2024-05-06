@@ -10,22 +10,24 @@ import { AggregatedFormSelect } from "../paimsform/formSelect";
 import SubmitButton from "../paimsform/submitButton";
 import FormDatePicker from "../paimsform/formDatePicker";
 import { FormFileUpload } from "../paimsform/formFileUpload";
-import { autofillDocumentData, autofillPropertyData } from "../../fetchutils/formautofill";
+import { autofillPropertyData } from "../../fetchutils/formautofill";
 
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument } from "pdf-lib";
+import dayjs from "dayjs";
+import { fetchDocumentAutofill } from "../../fetchutils/formautofill2";
 
 function nextChar(c) {
   return String.fromCharCode(c.charCodeAt(0) + 1);
 }
 
 async function copyPages(url1, url2) {
-  const firstDonorPdfBytes = await fetch(url1).then(res => res.arrayBuffer())
-  const secondDonorPdfBytes = await fetch(url2).then(res => res.arrayBuffer())
+  const firstDonorPdfBytes = await fetch(url1).then((res) => res.arrayBuffer());
+  const secondDonorPdfBytes = await fetch(url2).then((res) => res.arrayBuffer());
 
   const mergedPdf = await PDFDocument.create();
 
-  const pdfA = await PDFDocument.load(firstDonorPdfBytes)
-  const pdfB = await PDFDocument.load(secondDonorPdfBytes)
+  const pdfA = await PDFDocument.load(firstDonorPdfBytes);
+  const pdfB = await PDFDocument.load(secondDonorPdfBytes);
 
   const copiedPagesA = await mergedPdf.copyPages(pdfA, pdfA.getPageIndices());
   copiedPagesA.forEach((page) => mergedPdf.addPage(page));
@@ -74,6 +76,28 @@ const UpdateProp = () => {
     fetchdropdowndata();
   }, []);
 
+  useEffect(() => {
+    const autofillDocumentData = async () => {
+      const documentAutofillData = await fetchDocumentAutofill(formData.SpecDoc);
+      if (!!documentAutofillData) {
+        // for some reason, if both setDocLocked (inside if and outside if) are commented out, the autofill does not display the data
+        setDocLocked(true);
+        setFormData((prev) => {
+          delete documentAutofillData.DocumentID;
+          const docData = { ...documentAutofillData, DateIssued: dayjs(documentAutofillData.DateIssued.toDate()) };
+          const newFormData = Object.assign(prev, docData);
+          return newFormData;
+        });
+        return;
+      }
+      setDocLocked(false);
+    };
+
+    if (formData.SpecDoc) {
+      autofillDocumentData();
+    }
+  }, [formData.SpecDoc]);
+
   const handleInputChange = (e) => {
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
     const formDataKey = e.target.name !== "" ? e.target.name : e.target.id;
@@ -82,9 +106,9 @@ const UpdateProp = () => {
     if (formDataKey === "PropertyID") {
       autofillPropertyData(e.target.value, setFormData);
     }
-    if (formDataKey === "SpecDoc") {
-      autofillDocumentData(e.target.value, setFormData);
-    }
+    // if (formDataKey === "SpecDoc") {
+    //   autofillDocumentData(e.target.value, setFormData);
+    // }
   };
 
   const handleFileChange = (e) => {
@@ -101,7 +125,7 @@ const UpdateProp = () => {
     if (formData.IssuedBy === formData.ReceivedBy) {
       alert("IssuedBy and ReceivedBy cannot be the same user.");
       var pdfUrl = "https://firebasestorage.googleapis.com/v0/b/react-firebase-v9-b1a6f.appspot.com/o/DCS%2Fcs20labrep9.pdf?alt=media&token=88060536-ddf8-48c7-9c3b-81c4c201450a";
-      window.open(pdfUrl, '_blank');
+      window.open(pdfUrl, "_blank");
 
       return;
     }
@@ -126,25 +150,27 @@ const UpdateProp = () => {
       if (formData.holdLink.name === undefined) {
         fileUrl = formData.Link;
       } else {
-        const prevDoc = (formData.Documents)[formData.VerNum];
+        const prevDoc = formData.Documents[formData.VerNum];
         const prevDocRef = doc(db, "item_document", prevDoc);
         const prevDocSnap = await getDoc(prevDocRef);
         if (prevDocSnap.exists()) {
           const prevDocData = prevDocSnap.data();
           const oldLink = prevDocData.Link;
           const combinedPdfs = await copyPages(oldLink, fileUrl);
-        
-          deleteObject(fileRef).then(() => {
-            console.log("File deleted successfully!");
-          }).catch((error) => {
-            console.log("Error deleting file!");
-          });
-        
+
+          deleteObject(fileRef)
+            .then(() => {
+              console.log("File deleted successfully!");
+            })
+            .catch((error) => {
+              console.log("Error deleting file!");
+            });
+
           console.log("Uploading merged file to Firebase Storage");
           const newFileRef = ref(storage, "DCS/" + formData.holdLink.name);
           const metadata = {
             name: formData.holdLink.name,
-            contentType: 'application/pdf',
+            contentType: "application/pdf",
           };
           await uploadBytes(newFileRef, combinedPdfs, metadata);
           fileUrl = await getDownloadURL(newFileRef);
