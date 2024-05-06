@@ -25,40 +25,40 @@ const UpdateSupplier = () => {
   const [originalSupplier, setOriginalSupplier] = useState({});
   const [formErrors, setFormErrors] = useState({});
 
-  const supplierForUseEffect = formData.SupplierID;
+  // const supplierForUseEffect = formData.SupplierID;
   useEffect(() => {
     const autofillSupplierData = async () => {
-      const supplierAutofillData = await fetchSupplierAutofill(supplierForUseEffect);
+      const supplierAutofillData = await fetchSupplierAutofill(formData.SupplierID);
       if (!!supplierAutofillData) {
-        const supData = supplierAutofillData;
+        const supData = { ...supplierAutofillData, SupplierID: supplierAutofillData.SupplierID.toString() };
         setFormData(supData);
         setOriginalSupplier(supData);
       } else {
-        // console.log("supplier for use effect", supplierForUseEffect);
         setOriginalSupplier({});
       }
     };
 
-    if (supplierForUseEffect) {
+    if (formData.SupplierID) {
       autofillSupplierData();
     }
-  }, [supplierForUseEffect]);
+  }, [formData.SupplierID]);
 
-  const { SupplierID, SupplierContact, UnitNumber, StreetName, City, State, SupplierName } = formData;
   useEffect(() => {
     const gatherFormErrors = () => {
-      // Unexpected behavior: originalSupplier becomes {} after changing a non-ID field
-      const unchanged = _.isEqual(originalSupplier, formData);
-      const contactNumberError = /^\d+$/.test(SupplierContact) ? null : "Numbers only.";
-      const unitNumberError = /^\d+$/.test(UnitNumber) ? null : "Numbers only.";
-      const newErrors = { ...formErrors, unchanged: unchanged, SupplierContact: contactNumberError, UnitNumber: unitNumberError };
-      const filteredErrors = Object.fromEntries(Object.entries(newErrors).filter(([_, value]) => !!value));
-      setFormErrors(filteredErrors);
+      const isUnmodified = _.isEqual(originalSupplier, formData);
+      // console.log(isUnmodified, originalSupplier, formData);
+      const contactNumberError = /^\d+$/.test(formData.SupplierContact) ? null : "Numbers only.";
+      const unitNumberError = /^\d+$/.test(formData.UnitNumber) ? null : "Numbers only.";
+      setFormErrors((previousErrors) => {
+        const newErrors = { ...previousErrors, unchanged: isUnmodified, SupplierContact: contactNumberError, UnitNumber: unitNumberError };
+        const filteredErrors = Object.fromEntries(Object.entries(newErrors).filter(([_, value]) => !!value));
+        return filteredErrors;
+      });
     };
-    if (SupplierContact !== "" || UnitNumber !== "") {
+    if (formData.SupplierContact !== "" || formData.UnitNumber !== "" || Object.keys(originalSupplier) > 0) {
       gatherFormErrors();
     }
-  }, [SupplierID, SupplierContact, UnitNumber, StreetName, City, State, SupplierName]);
+  }, [formData, originalSupplier]);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -68,7 +68,7 @@ const UpdateSupplier = () => {
   };
 
   const formHasErrors = () => {
-    return Object.keys(formErrors) > 0;
+    return Object.keys(formErrors).length > 0;
   };
 
   const handleSubmit = async (e) => {
@@ -105,7 +105,7 @@ const UpdateSupplier = () => {
             onChange={handleInputChange}
             required
             InputProps={{ pattern: "[0-9]*", title: "Numbers only." }}
-            helperText={formErrors.unchanged ? "Please modify a value" : null}
+            helperText={formErrors.unchanged ? "Supplier found" : null}
             color={formErrors.unchanged ? "success" : "primary"}
           />
           <SmallTextField id="SupplierName" label="Supplier Name" value={formData.SupplierName} onChange={handleInputChange} required />
