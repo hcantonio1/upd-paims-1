@@ -25,7 +25,9 @@ export const handleLogin = async ({ email, password }) => {
   }
   try {
     await setUserData();
+    console.log("[Prefetch] Pre-fetching column data");
     await fetchCommonData();
+    console.log("[Prefetch] Done Pre-fetching column data");
   } catch (error) {
     console.log("Error fetching user data.", error);
     return { error: "Error fetching user data." };

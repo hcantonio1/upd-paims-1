@@ -17,6 +17,26 @@ export const commonCollections = [
     columnNameOfID: "StatusID",
     valuesToFetch: ["StatusName"],
   },
+  // {
+  //   name: "purchase_order",
+  //   columnNameOfID: "PurchaseOrderID",
+  //   valuesToFetch: ["TotalCost"],
+  // },
+  {
+    name: "supplier",
+    columnNameOfID: "SupplierID",
+    valuesToFetch: ["SupplierName"],
+  },
+  {
+    name: "user",
+    columnNameOfID: "UserID",
+    valuesToFetch: ["Username"],
+  },
+  {
+    name: "item_document",
+    columnNameOfID: "DocumentID",
+    valuesToFetch: ["Link"],
+  },
 ];
 
 const prefetched = {};
@@ -28,9 +48,10 @@ const fetchCollData = async ({ name, columnNameOfID, valuesToFetch }) => {
     const collSnap = await getDocs(collection(db, name));
     collSnap.docs.forEach((doc) => {
       const data = doc.data();
+      // console.log("ok what am i looking at", data);
       const key = data[columnNameOfID];
+      // console.log("COLUMN", columnNameOfID, "CHECK KEYS", key);
       const values = valuesToFetch.map((column) => {
-        // console.log(column);
         return data[column];
       });
       prefetched[name][key] = values[0];
