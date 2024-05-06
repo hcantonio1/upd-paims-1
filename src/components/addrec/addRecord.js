@@ -15,6 +15,7 @@ import FormDatePicker from "../paimsform/formDatePicker";
 import { FormFileUpload } from "../paimsform/formFileUpload";
 
 import PropertyRow from "./propertyRow";
+import { fetchSupplierAutofill } from "../../fetchutils/formautofill2";
 
 const PROPERTY_ROW_FIELDS = {
   CategoryID: "",
@@ -45,7 +46,7 @@ const indexedPropRowFields = (index) => {
 };
 
 const InsertRecord = () => {
-  const [docData, setDocData] = useState({ DocumentID: "", DocumentType: "", DateIssued: null, IssuedBy: "", ReceivedBy: "", Link: "" , holdLink: ""});
+  const [docData, setDocData] = useState({ DocumentID: "", DocumentType: "", DateIssued: null, IssuedBy: "", ReceivedBy: "", Link: "", holdLink: "" });
 
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -74,9 +75,35 @@ const InsertRecord = () => {
       setStatuses(await fetchStatuses());
       setTypes(await fetchTypes());
     };
-
     fetchdropdowndata();
   }, []);
+
+  const suppliersForAutofill = propertyRows.map((propRowData, index) => propRowData[`SupplierID_${index}`]);
+  useEffect(() => {
+    const autofillSupplierData = async () => {
+      const index = propRowToDisplay;
+      const supplierAutofillData = await fetchSupplierAutofill(suppliersForAutofill[index]);
+      if (!!supplierAutofillData) {
+        const supData = supplierAutofillData;
+        setPropertyRows((prev) => {
+          const newPropertyRows = [...prev];
+          const myRow = newPropertyRows[index];
+          const myNewRow = {
+            ...myRow,
+            [`City_${index}`]: supData.City,
+            [`State_${index}`]: supData.State,
+            [`StreetName_${index}`]: supData.StreetName,
+            [`SupplierContact_${index}`]: supData.SupplierContact,
+            [`SupplierName_${index}`]: supData.SupplierName,
+            [`UnitNumber_${index}`]: parseInt(supData.UnitNumber),
+          };
+          newPropertyRows[index] = myNewRow;
+          return newPropertyRows;
+        });
+      }
+    };
+    autofillSupplierData();
+  }, suppliersForAutofill);
 
   const handleDocChange = (e) => {
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
@@ -102,10 +129,10 @@ const InsertRecord = () => {
     newPropertyRows[index][propRowKey] = e.target.value;
     setPropertyRows(newPropertyRows);
 
-    const keyType = propRowKey.split("_")[0];
-    if (keyType === "SupplierID") {
-      autofillPropRowSupp(index, e.target.value, setPropRowLocks, setPropertyRows);
-    }
+    // const keyType = propRowKey.split("_")[0];
+    // if (keyType === "SupplierID") {
+    //   autofillPropRowSupp(index, e.target.value, setPropRowLocks, setPropertyRows);
+    // }
 
     // if (e.target.name === `PropertyID_${index}`) {
     //   // RETURN IF PROPERTY ID ALREADY EXISTS
