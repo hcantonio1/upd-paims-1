@@ -13,7 +13,7 @@ import { fetchDocumentAutofill, fetchSupplierAutofill } from "../../fetchutils/f
 import dayjs from "dayjs";
 import { insertDocument, handleSubmit } from "./handleinsert";
 
-import PropertyRow from "./propertyRow";
+import PropertyRow from "./propertyRow1";
 
 const PROPERTY_ROW_FIELDS = {
   CategoryID: "",
@@ -231,7 +231,21 @@ const InsertRecord = () => {
                   <DeletePropRowButton />
                 </Box>
               </Box>
-              {propertyRows.map((propRowData, index) => {
+              <PropertyRow
+                rownum={propRowToDisplay}
+                propRowData={propertyRows[propRowToDisplay]}
+                locks={propRowLocks[propRowToDisplay]}
+                handleChange={(e) => {
+                  handlePropRowChange(e, propRowToDisplay);
+                }}
+                dropdowndata={{ users, statuses, categories, locations, types }}
+                podatepickerfunc={(val) => {
+                  const newPropertyRows = [...propertyRows];
+                  newPropertyRows[propRowToDisplay][`PurchaseDate_${propRowToDisplay}`] = val;
+                  setPropertyRows(newPropertyRows);
+                }}
+              />
+              {/* {propertyRows.map((propRowData, index) => {
                 const propUI = (
                   <PropertyRow
                     rownum={index}
@@ -250,7 +264,7 @@ const InsertRecord = () => {
                 );
                 const res = <div key={`PropertyRow_${index}`}>{index === propRowToDisplay ? propUI : <></>}</div>;
                 return res;
-              })}
+              })} */}
               <Box display="flex" flexDirection="row" justifyContent="end">
                 <PrevPropRowButton />
                 <NextPropRowButton />
