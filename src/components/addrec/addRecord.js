@@ -13,7 +13,7 @@ import { fetchDocumentAutofill, fetchSupplierAutofill } from "../../fetchutils/f
 import dayjs from "dayjs";
 import { insertDocument, handleSubmit } from "./handleinsert";
 
-import PropertyRow from "./propertyRow1";
+import PropertyRow from "./propertyRow";
 
 const PROPERTY_ROW_FIELDS = {
   CategoryID: "",
@@ -49,7 +49,6 @@ const InsertRecord = () => {
   const [propRowLocks, setPropRowLocks] = useState([{ orderLocked: false, supLocked: false }]);
 
   const addPropertyRow = () => {
-    const rownum = propertyRows.length;
     const propRowData = { ...PROPERTY_ROW_FIELDS };
     setPropertyRows([...propertyRows, propRowData]);
     setPropRowLocks([...propRowLocks, { orderLocked: false, supLocked: false }]);
@@ -87,34 +86,36 @@ const InsertRecord = () => {
     }
   }, [docData.DocumentID]);
 
-  // const suppliersForAutofill = propertyRows.map((propRowData, index) => propRowData[`SupplierID_${index}`]);
-  // const suppliersStringified = JSON.stringify(suppliersForAutofill);
-  // useEffect(() => {
-  //   const autofillSupplierData = async () => {
-  //     const index = propRowToDisplay;
-  //     const suppliersForAutofill = JSON.parse(suppliersStringified);
-  //     const supplierAutofillData = await fetchSupplierAutofill(suppliersForAutofill[index]);
-  //     if (!!supplierAutofillData) {
-  //       const supData = supplierAutofillData;
-  //       setPropertyRows((prev) => {
-  //         const newPropertyRows = [...prev];
-  //         const myRow = newPropertyRows[index];
-  //         const myNewRow = {
-  //           ...myRow,
-  //           [`City_${index}`]: supData.City,
-  //           [`State_${index}`]: supData.State,
-  //           [`StreetName_${index}`]: supData.StreetName,
-  //           [`SupplierContact_${index}`]: supData.SupplierContact,
-  //           [`SupplierName_${index}`]: supData.SupplierName,
-  //           [`UnitNumber_${index}`]: parseInt(supData.UnitNumber),
-  //         };
-  //         newPropertyRows[index] = myNewRow;
-  //         return newPropertyRows;
-  //       });
-  //     }
-  //   };
-  //   autofillSupplierData();
-  // }, [suppliersStringified, propRowToDisplay]);
+  const currPropRowSupplier = propertyRows[propRowToDisplay].SupplierID;
+  useEffect(() => {
+    const autofillSupplierData = async () => {
+      const supplierAutofillData = await fetchSupplierAutofill(currPropRowSupplier);
+      if (!!supplierAutofillData) {
+        // setDocLocked(true);
+        const supData = supplierAutofillData;
+        setPropertyRows((prev) => {
+          const newPropertyRows = [...prev];
+          const myRow = newPropertyRows[propRowToDisplay];
+          const myNewRow = {
+            ...myRow,
+            [`City`]: supData.City,
+            [`State`]: supData.State,
+            [`StreetName`]: supData.StreetName,
+            [`SupplierContact`]: supData.SupplierContact,
+            [`SupplierName`]: supData.SupplierName,
+            [`UnitNumber`]: parseInt(supData.UnitNumber),
+          };
+          newPropertyRows[propRowToDisplay] = myNewRow;
+          return newPropertyRows;
+        });
+        return;
+      }
+      // setDocLocked(false);
+    };
+    if (currPropRowSupplier) {
+      autofillSupplierData();
+    }
+  }, [currPropRowSupplier, propRowToDisplay]);
 
   const handleDocChange = (e) => {
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
