@@ -151,7 +151,7 @@ const InsertRecord = () => {
     newPropRowLocks.splice(propRowToDisplay, 1);
     setPropertyRows(newPropertyRows);
     setPropRowLocks(newPropRowLocks);
-    setPropRowToDisplay(Math.min(propertyRows.length - 1, propRowToDisplay));
+    setPropRowToDisplay(Math.min(newPropertyRows.length - 1, propRowToDisplay));
   };
 
   const docSubheadered = (
