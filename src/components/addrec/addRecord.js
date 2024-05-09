@@ -34,15 +34,6 @@ const PROPERTY_ROW_FIELDS = {
   UnitNumber: "",
 };
 
-const indexedPropRowFields = (index) => {
-  const propRowData = {};
-  for (const key in PROPERTY_ROW_FIELDS) {
-    const newkey = `${key}_${index}`;
-    propRowData[newkey] = PROPERTY_ROW_FIELDS[key];
-  }
-  return propRowData;
-};
-
 const InsertRecord = () => {
   const [docData, setDocData] = useState({ DocumentID: "", DocumentType: "", DateIssued: null, IssuedBy: "", ReceivedBy: "", Link: "", holdLink: "" });
 
@@ -53,16 +44,15 @@ const InsertRecord = () => {
   const [types, setTypes] = useState([]);
   const [docLocked, setDocLocked] = useState(false);
 
-  const [propertyRows, setPropertyRows] = useState([indexedPropRowFields(0)]);
+  const [propertyRows, setPropertyRows] = useState([{ ...PROPERTY_ROW_FIELDS }]);
   const [propRowToDisplay, setPropRowToDisplay] = useState(0);
   const [propRowLocks, setPropRowLocks] = useState([{ orderLocked: false, supLocked: false }]);
 
   const addPropertyRow = () => {
     const rownum = propertyRows.length;
-    const propRowData = indexedPropRowFields(rownum);
+    const propRowData = { ...PROPERTY_ROW_FIELDS };
     setPropertyRows([...propertyRows, propRowData]);
     setPropRowLocks([...propRowLocks, { orderLocked: false, supLocked: false }]);
-    setPropRowToDisplay(propRowToDisplay + 1);
   };
 
   useEffect(() => {
@@ -97,34 +87,34 @@ const InsertRecord = () => {
     }
   }, [docData.DocumentID]);
 
-  const suppliersForAutofill = propertyRows.map((propRowData, index) => propRowData[`SupplierID_${index}`]);
-  const suppliersStringified = JSON.stringify(suppliersForAutofill);
-  useEffect(() => {
-    const autofillSupplierData = async () => {
-      const index = propRowToDisplay;
-      const suppliersForAutofill = JSON.parse(suppliersStringified);
-      const supplierAutofillData = await fetchSupplierAutofill(suppliersForAutofill[index]);
-      if (!!supplierAutofillData) {
-        const supData = supplierAutofillData;
-        setPropertyRows((prev) => {
-          const newPropertyRows = [...prev];
-          const myRow = newPropertyRows[index];
-          const myNewRow = {
-            ...myRow,
-            [`City_${index}`]: supData.City,
-            [`State_${index}`]: supData.State,
-            [`StreetName_${index}`]: supData.StreetName,
-            [`SupplierContact_${index}`]: supData.SupplierContact,
-            [`SupplierName_${index}`]: supData.SupplierName,
-            [`UnitNumber_${index}`]: parseInt(supData.UnitNumber),
-          };
-          newPropertyRows[index] = myNewRow;
-          return newPropertyRows;
-        });
-      }
-    };
-    autofillSupplierData();
-  }, [suppliersStringified, propRowToDisplay]);
+  // const suppliersForAutofill = propertyRows.map((propRowData, index) => propRowData[`SupplierID_${index}`]);
+  // const suppliersStringified = JSON.stringify(suppliersForAutofill);
+  // useEffect(() => {
+  //   const autofillSupplierData = async () => {
+  //     const index = propRowToDisplay;
+  //     const suppliersForAutofill = JSON.parse(suppliersStringified);
+  //     const supplierAutofillData = await fetchSupplierAutofill(suppliersForAutofill[index]);
+  //     if (!!supplierAutofillData) {
+  //       const supData = supplierAutofillData;
+  //       setPropertyRows((prev) => {
+  //         const newPropertyRows = [...prev];
+  //         const myRow = newPropertyRows[index];
+  //         const myNewRow = {
+  //           ...myRow,
+  //           [`City_${index}`]: supData.City,
+  //           [`State_${index}`]: supData.State,
+  //           [`StreetName_${index}`]: supData.StreetName,
+  //           [`SupplierContact_${index}`]: supData.SupplierContact,
+  //           [`SupplierName_${index}`]: supData.SupplierName,
+  //           [`UnitNumber_${index}`]: parseInt(supData.UnitNumber),
+  //         };
+  //         newPropertyRows[index] = myNewRow;
+  //         return newPropertyRows;
+  //       });
+  //     }
+  //   };
+  //   autofillSupplierData();
+  // }, [suppliersStringified, propRowToDisplay]);
 
   const handleDocChange = (e) => {
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
@@ -241,30 +231,10 @@ const InsertRecord = () => {
                 dropdowndata={{ users, statuses, categories, locations, types }}
                 podatepickerfunc={(val) => {
                   const newPropertyRows = [...propertyRows];
-                  newPropertyRows[propRowToDisplay][`PurchaseDate_${propRowToDisplay}`] = val;
+                  newPropertyRows[propRowToDisplay][`PurchaseDate`] = val;
                   setPropertyRows(newPropertyRows);
                 }}
               />
-              {/* {propertyRows.map((propRowData, index) => {
-                const propUI = (
-                  <PropertyRow
-                    rownum={index}
-                    propRowData={propRowData}
-                    locks={propRowLocks[index]}
-                    handleChange={(e) => {
-                      handlePropRowChange(e, index);
-                    }}
-                    dropdowndata={{ users, statuses, categories, locations, types }}
-                    podatepickerfunc={(val) => {
-                      const newPropertyRows = [...propertyRows];
-                      newPropertyRows[index][`PurchaseDate_${index}`] = val;
-                      setPropertyRows(newPropertyRows);
-                    }}
-                  />
-                );
-                const res = <div key={`PropertyRow_${index}`}>{index === propRowToDisplay ? propUI : <></>}</div>;
-                return res;
-              })} */}
               <Box display="flex" flexDirection="row" justifyContent="end">
                 <PrevPropRowButton />
                 <NextPropRowButton />
