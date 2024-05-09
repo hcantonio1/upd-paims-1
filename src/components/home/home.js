@@ -8,112 +8,31 @@ import { commonCollections } from "../../services/prefetch.js";
 import { collection, onSnapshot } from "firebase/firestore";
 import { DataGrid } from "@mui/x-data-grid";
 import UserDetailDisplay from "./userDetailDisplay.js";
+import InventoryTable from '../inventory/inventoryTable.js';
+import { doc, updateDoc } from "firebase/firestore";
 
-const propertiesCollection = collection(db, "property");
 
 const HomePage = () => {
-  const InvCol = [
-    { field: "PropertyID", headerName: "ID", width: 90 },
-    { field: "PropertyName", headerName: "Name", width: 150 },
-    { field: "CategoryName", headerName: "Category", width: 90 },
-    { field: "StatusName", headerName: "Status", width: 150 },
-    { field: "TrusteeID", headerName: "Trustee ID", width: 90 },
-    { field: "LocationName", headerName: "Location", width: 150 },
-    { field: "PurchaseOrderID", headerName: "Purchase Order", width: 90 },
-    { field: "SupplierID", headerName: "Supplier", width: 150 },
-  ];
 
-  const filterableColumns = InvCol.filter((column) => column.filterable);
-  const [inventoryData, setInventoryData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [searchResultsEmpty, setSearchResultsEmpty] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState("");
-  const [sortConfig, setSortConfig] = useState({
-    key: "InvPID",
-    direction: "asc",
-  });
-
-  useEffect(() => {
-    onSnapshot(propertiesCollection, (snapshot) => {
-      const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
-
-      let invData = [];
-      snapshot.docs.forEach((doc) => {
-        let row = doc.data();
-        commonCollections.forEach(({ name, columnNameOfID }) => {
-          const id = row[columnNameOfID];
-          const newAttr = columnNameOfID.slice(0, -2) + "Name";
-          const replacementName = String(prefetched[name][id]);
-
-          console.log("ID:", id);
-          console.log("New Attribute:", newAttr);
-          console.log("Replacement Name:", replacementName);
-          row = { ...row, [newAttr]: replacementName };
-        });
-        if (row.isApproved !== 1) {
-          // Filter out archived items here
-          invData.push(row);
-        }
-      });
-      setInventoryData(invData);
-    });
-  }, []);
-
-  const handleSearch = (searchTerm) => {
-    console.log("Search Term:", searchTerm);
-    console.log("Selected Filter:", selectedFilter);
-
-    const filteredResults = inventoryData.filter((item) => {
-      const match = Object.entries(item).some(([key, value]) => {
-        console.log("Checking:", key, value);
-        if (key === selectedFilter) {
-          return value.toLowerCase().includes(searchTerm.toLowerCase());
-        } else if (typeof value === "string") {
-          return value.toLowerCase().includes(searchTerm.toLowerCase());
-        } else if (typeof value === "number") {
-          return value.toString().includes(searchTerm.toLowerCase());
-        }
-        return false;
-      });
-      return match && item.isArchived !== 1;
-    });
-    setFilteredData(filteredResults);
-    setSearchResultsEmpty(filteredResults.length === 0);
+  const noLabelChangelog = "No recent changes";
+  const approvedFilter = (row) => {
+    return row.isArchived !== 1 && row.isApproved !== 1;
   };
 
-  const handleFilterChange = (filter) => {
-    setSelectedFilter(filter);
-  };
+  const onApproveClick = async (e, row) => {
+    e.stopPropagation();
+    try {
+      console.log("HUH", row);        
+      const propertyDocRef = doc(db, "property", row.PropertyID.toString()); 
+      await updateDoc(propertyDocRef, {
+        isApproved: 1,
+      });
 
-  const requestSort = (key) => {
-    let direction = "ascending";
-    if (sortConfig.key === key && sortConfig.direction === "ascending") {
-      direction = "descending";
+    } catch (error) {
+        console.error('Error updating property:', error);
     }
-    setSortConfig({ key, direction });
   };
-
-  const handleSort = (columnKey) => {
-    const direction =
-      columnKey === sortConfig.key && sortConfig.direction === "asc"
-        ? "desc"
-        : "asc";
-    setSortConfig({ key: columnKey, direction });
-    const sortedResults = [...filteredData].sort((a, b) => {
-      const aValue = a[columnKey];
-      const bValue = b[columnKey];
-
-      if (typeof aValue === "number" && typeof bValue === "number") {
-        return direction === "asc" ? aValue - bValue : bValue - aValue;
-      } else if (typeof aValue === "string" && typeof bValue === "string") {
-        return direction === "asc"
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      }
-      return 0;
-    });
-    setFilteredData(sortedResults);
-  };
+  
 
   return (
     <Layout pageTitle="DASHBOARD">
@@ -183,23 +102,7 @@ const HomePage = () => {
             {/* <Typography align="center" sx={{fontStyle: "italic"}}>
               No recent changes have been made.
             </Typography> */}
-            <Box sx={{ height: 400, width: "100%" }}>
-              <DataGrid
-                getRowId={(row) => row.PropertyID + "_" + row.PurchaseOrderID}
-                rows={filteredData.length > 0 ? filteredData : inventoryData}
-                columns={InvCol}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 5,
-                    },
-                  },
-                }}
-                pageSizeOptions={[5]}
-                checkboxSelection
-                disableRowSelectionOnClick
-              />
-            </Box>
+            <InventoryTable filterCondition={approvedFilter} buttonLabel="Approve" onButtonClick={onApproveClick} noLabelText={false} />
           </Box>
         </Box>
       </Box>

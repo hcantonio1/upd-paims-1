@@ -107,7 +107,6 @@ const AccountsTable = () => {
                 },
               }}
               pageSizeOptions={[5]}
-              checkboxSelection
               disableRowSelectionOnClick
             />
           </Box>
