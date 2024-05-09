@@ -3,8 +3,10 @@ import { FormSubheadered, FormRow } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import FormDatePicker from "../paimsform/formDatePicker";
 import { AggregatedFormSelect } from "../paimsform/formSelect";
+import { IconButton } from "@mui/material";
+import { Add, Close, East, West } from "@mui/icons-material";
 
-const PropertyRow = ({ rownum, propRowData, handleChange, locks, ...rest }) => {
+const PropertyRow = ({ propRowData, handleChange, locks, ...rest }) => {
   const { supLocked, orderLocked } = locks;
 
   const handleInputChange = handleChange;
@@ -86,3 +88,8 @@ const PropertyRow = ({ rownum, propRowData, handleChange, locks, ...rest }) => {
 };
 
 export default PropertyRow;
+
+export const NextPropRowButton = (props) => <IconButton {...props} variant="contained" children={<East />} color="primary" />;
+export const AddPropRowButton = (props) => <IconButton {...props} variant="contained" children={<Add />} color="primary" />;
+export const PrevPropRowButton = (props) => <IconButton {...props} variant="contained" children={<West />} color="primary" />;
+export const DeletePropRowButton = (props) => <IconButton {...props} variant="contained" children={<Close />} color="error" />;
