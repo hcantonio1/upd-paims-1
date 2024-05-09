@@ -2,15 +2,6 @@ import { db, storage } from "../../../firebase-config";
 import { Timestamp, doc, setDoc } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes } from "@firebase/storage";
 
-const unindexPropRowFields = (propRowData) => {
-  const newPropRowData = {};
-  for (const key in propRowData) {
-    const newkey = key.split("_")[0];
-    newPropRowData[newkey] = propRowData[key];
-  }
-  return newPropRowData;
-};
-
 export const handleSubmit = (e, docData, propertyRows) => {
   e.preventDefault();
 
@@ -18,7 +9,6 @@ export const handleSubmit = (e, docData, propertyRows) => {
   console.log(`I received properties[${propertyRows.length}]:`, propertyRows);
 
   const propPromises = propertyRows.map((propRowData, index) => {
-    propRowData = unindexPropRowFields(propRowData);
     const p = async () => {
       try {
         await insertPropRow(e, propRowData, docData.DocumentID);
