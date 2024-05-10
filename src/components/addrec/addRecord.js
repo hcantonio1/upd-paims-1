@@ -148,7 +148,7 @@ const InsertRecord = () => {
       }
       return false;
     };
-    const gatherFormErrors = async () => {
+    const gatherFormErrors = () => {
       let errorsThisCheck = 0;
       const docDataErrors = { DocumentID: [], DocumentType: [], DateIssued: [], IssuedBy: [], ReceivedBy: [], Link: [] };
 
@@ -163,21 +163,6 @@ const InsertRecord = () => {
         errorsThisCheck++;
       }
 
-      // propertyRows
-      // const arePropertiesInDataBase = propertyRows.map(propRowData=>{
-      // const isPropertyInDatabase = async (propId) => {
-      //   try {
-      //     const propRef = doc(db, "property", propId);
-      //     const propSnap = await getDoc(propRef);
-      //     if (propSnap.exists()) return true;
-      //   } catch (error) {
-      //     console.error("Error fetching property:", error);
-      //   }
-      //   return false;
-      //   };
-      //   return isPropertyInDatabase(propRowData.PropertyID)
-      // })
-      // Promise.all(arePropertiesInDataBase).then(() => {});
       const propertyRowsErrors = propertyRows.map((propRowData) => {
         const p = async (propRowData) => {
           const newPropRowDataErrors = {
@@ -255,17 +240,15 @@ const InsertRecord = () => {
         return p(propRowData);
       });
 
-      await Promise.all(propertyRowsErrors);
-      // DOESN'T WORK because propertyRowsErrors is now an array of promises (due to previous map())
-      // So we cannot get the value propRowDataError objects
-      const newErrors = { numberOfErrors: errorsThisCheck, docData: docDataErrors, propertyRows: propertyRowsErrors };
-      console.log(newErrors);
-      setErrors(newErrors);
+      Promise.all(propertyRowsErrors).then((propRowDataErrors) => {
+        const newErrors = { numberOfErrors: errorsThisCheck, docData: docDataErrors, propertyRows: propRowDataErrors };
+        // console.log(newErrors);
+        setErrors(newErrors);
+      });
     };
     if (docData.DocumentID || propertyRows[0].PropertyID) {
       gatherFormErrors();
     }
-    // console.log("infty checker");
   }, [docData, propertyRows]);
 
   const handleDocChange = (e) => {
