@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import _ from "lodash";
 import Layout from "../common/layout";
 import { Box, Typography, Paper } from "@mui/material";
 import { PaimsForm, FormSubheadered, FormRow, SubmitButton } from "../paimsform/paimsForm";
@@ -34,6 +35,26 @@ const PROPERTY_ROW_FIELDS = {
   UnitNumber: "",
 };
 
+const emptyDocDataErrors = { DocumentID: [], DocumentType: [], DateIssued: [], IssuedBy: [], ReceivedBy: [], Link: [] };
+const emptyPropRowErrors = {
+  CategoryID: [],
+  LocationID: [],
+  PropertyID: [],
+  PropertyName: [],
+  TrusteeID: [],
+  StatusID: [],
+  SupplierID: [],
+  PurchaseDate: [],
+  PurchaseOrderID: [],
+  TotalCost: [],
+  City: [],
+  State: [],
+  StreetName: [],
+  SupplierContact: [],
+  SupplierName: [],
+  UnitNumber: [],
+};
+
 const InsertRecord = () => {
   const [docData, setDocData] = useState({ DocumentID: "", DocumentType: "", DateIssued: null, IssuedBy: "", ReceivedBy: "", Link: "", holdLink: "" });
 
@@ -49,30 +70,7 @@ const InsertRecord = () => {
   const [propRowToDisplay, setPropRowToDisplay] = useState(0);
   const [propRowLocks, setPropRowLocks] = useState([{ orderLocked: false, supLocked: false }]);
 
-  const [errors, setErrors] = useState({
-    numberOfErrors: 0,
-    docData: { DocumentID: [], DocumentType: [], DateIssued: [], IssuedBy: [], ReceivedBy: [], Link: [] },
-    propertyRows: [
-      {
-        CategoryID: [],
-        LocationID: [],
-        PropertyID: [],
-        PropertyName: [],
-        TrusteeID: [],
-        StatusID: [],
-        SupplierID: [],
-        PurchaseDate: [],
-        PurchaseOrderID: [],
-        TotalCost: [],
-        City: [],
-        State: [],
-        StreetName: [],
-        SupplierContact: [],
-        SupplierName: [],
-        UnitNumber: [],
-      },
-    ],
-  });
+  const [errors, setErrors] = useState({ numberOfErrors: 0, docData: _.cloneDeep(emptyDocDataErrors), propertyRows: [_.cloneDeep(emptyPropRowErrors)] });
 
   useEffect(() => {
     const fetchdropdowndata = async () => {
@@ -165,24 +163,7 @@ const InsertRecord = () => {
 
       const propertyRowsErrors = propertyRows.map((propRowData) => {
         const p = async (propRowData) => {
-          const newPropRowDataErrors = {
-            CategoryID: [],
-            LocationID: [],
-            PropertyID: [],
-            PropertyName: [],
-            TrusteeID: [],
-            StatusID: [],
-            SupplierID: [],
-            PurchaseDate: [],
-            PurchaseOrderID: [],
-            TotalCost: [],
-            City: [],
-            State: [],
-            StreetName: [],
-            SupplierContact: [],
-            SupplierName: [],
-            UnitNumber: [],
-          };
+          const newPropRowDataErrors = _.cloneDeep(emptyPropRowErrors);
 
           // property details errors
           if (!propRowData.PropertyID) {
@@ -246,10 +227,10 @@ const InsertRecord = () => {
         setErrors(newErrors);
       });
     };
-    if (docData.DocumentID || propertyRows[0].PropertyID) {
+    if (docData.DocumentID || propertyRows[propRowToDisplay].PropertyID) {
       gatherFormErrors();
     }
-  }, [docData, propertyRows]);
+  }, [docData, propertyRows, propRowToDisplay]);
 
   const handleDocChange = (e) => {
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
@@ -273,7 +254,11 @@ const InsertRecord = () => {
 
   const addPropertyRow = () => {
     const propRowData = { ...PROPERTY_ROW_FIELDS };
+    // const propRowErrors = { ...emptyPropRowErrors };
+    const newErrors = { ...errors };
+    newErrors.propertyRows.push(_.cloneDeep(emptyPropRowErrors));
     setPropertyRows([...propertyRows, propRowData]);
+    setErrors(newErrors);
     setPropRowLocks([...propRowLocks, { orderLocked: false, supLocked: false }]);
   };
 
@@ -329,6 +314,7 @@ const InsertRecord = () => {
               </Box>
               <PropertyRow
                 propRowData={propertyRows[propRowToDisplay]}
+                errors={errors.propertyRows[propRowToDisplay]}
                 locks={propRowLocks[propRowToDisplay]}
                 handleChange={(e) => handlePropRowChange(e, propRowToDisplay)}
                 dropdowndata={{ users, statuses, categories, locations, types }}

@@ -6,11 +6,17 @@ import { AggregatedFormSelect } from "../paimsform/formSelect";
 import { IconButton } from "@mui/material";
 import { Add, Close, East, West } from "@mui/icons-material";
 
-const PropertyRow = ({ propRowData, handleChange, locks, ...rest }) => {
+const PropertyRow = ({ propRowData, handleChange, errors, locks, ...rest }) => {
   const { supLocked, orderLocked } = locks;
 
   const handleInputChange = handleChange;
   const { users, categories, statuses, locations } = rest.dropdowndata;
+
+  const fieldHasError = (fieldID) => {
+    // return helperText when it has error
+    if (errors[fieldID].length === 0) return;
+    return errors[fieldID][0];
+  };
 
   const itemSubheadered = (
     <FormSubheadered subheader="Item Details">
@@ -25,6 +31,8 @@ const PropertyRow = ({ propRowData, handleChange, locks, ...rest }) => {
             inputMode: "numeric",
             pattern: "[0-9]*",
           }}
+          error={!!fieldHasError("PropertyID")}
+          helperText={fieldHasError("PropertyID")}
           title="Numbers only."
           required
         />
@@ -57,6 +65,8 @@ const PropertyRow = ({ propRowData, handleChange, locks, ...rest }) => {
           title="Please enter a positive number."
           required
           readOnly={orderLocked}
+          error={!!fieldHasError("TotalCost")}
+          helperText={fieldHasError("TotalCost")}
         />
         <FormDatePicker label="Purchase Date" id={`PurchaseDate`} value={propRowData[`PurchaseDate`]} onChange={rest.podatepickerfunc} />
       </FormRow>
@@ -65,12 +75,39 @@ const PropertyRow = ({ propRowData, handleChange, locks, ...rest }) => {
   const supplierSubheadered = (
     <FormSubheadered subheader="Supplier Details">
       <FormRow segments={3}>
-        <SmallTextField id={`SupplierID`} label="Supplier ID" value={propRowData[`SupplierID`]} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
+        <SmallTextField
+          id={`SupplierID`}
+          label="Supplier ID"
+          value={propRowData[`SupplierID`]}
+          onChange={handleInputChange}
+          pattern="[0-9]*"
+          title="Numbers only."
+          required
+          error={!!fieldHasError("SupplierID")}
+          helperText={fieldHasError("SupplierID")}
+        />
         <SmallTextField id={`SupplierName`} label="Supplier Name" value={propRowData[`SupplierName`]} onChange={handleInputChange} readOnly={supLocked} required />
-        <SmallTextField id={`SupplierContact`} label="Contact Number" value={propRowData[`SupplierContact`]} onChange={handleInputChange} readOnly={supLocked} required />
+        <SmallTextField
+          id={`SupplierContact`}
+          label="Contact Number"
+          value={propRowData[`SupplierContact`]}
+          onChange={handleInputChange}
+          readOnly={supLocked}
+          required
+          error={!!fieldHasError("SupplierContact")}
+          helperText={fieldHasError("SupplierContact")}
+        />
       </FormRow>
       <FormRow segments={4}>
-        <SmallTextField id={`UnitNumber`} label="Unit Number" value={propRowData[`UnitNumber`]} onChange={handleInputChange} readOnly={supLocked} />
+        <SmallTextField
+          id={`UnitNumber`}
+          label="Unit Number"
+          value={propRowData[`UnitNumber`]}
+          onChange={handleInputChange}
+          readOnly={supLocked}
+          error={!!fieldHasError("UnitNumber")}
+          helperText={fieldHasError("UnitNumber")}
+        />
         <SmallTextField id={`StreetName`} label="Street Name" value={propRowData[`StreetName`]} onChange={handleInputChange} readOnly={supLocked} />
         <SmallTextField id={`City`} label="City" value={propRowData[`City`]} onChange={handleInputChange} readOnly={supLocked} />
         <SmallTextField id={`State`} label="State" value={propRowData[`State`]} onChange={handleInputChange} readOnly={supLocked} />
