@@ -2,11 +2,16 @@ import { db, storage } from "../../../firebase-config";
 import { Timestamp, doc, setDoc } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes } from "@firebase/storage";
 
-export const handleSubmit = (e, docData, propertyRows) => {
+export const handleSubmit = (e, docData, propertyRows, errors) => {
   e.preventDefault();
 
   console.log("I received document:", docData);
   console.log(`I received properties[${propertyRows.length}]:`, propertyRows);
+
+  if (errors.numberOfErrors !== 0) {
+    console.log("I have received errors", errors);
+    return;
+  }
 
   const propPromises = propertyRows.map((propRowData, index) => {
     const p = async () => {

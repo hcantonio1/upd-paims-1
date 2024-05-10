@@ -42,15 +42,35 @@ const InsertRecord = () => {
   const [types, setTypes] = useState([]);
   const [docLocked, setDocLocked] = useState(false);
 
+  // each element of propertyRows is called propRowData
   const [propertyRows, setPropertyRows] = useState([{ ...PROPERTY_ROW_FIELDS }]);
   const [propRowToDisplay, setPropRowToDisplay] = useState(0);
   const [propRowLocks, setPropRowLocks] = useState([{ orderLocked: false, supLocked: false }]);
 
-  const addPropertyRow = () => {
-    const propRowData = { ...PROPERTY_ROW_FIELDS };
-    setPropertyRows([...propertyRows, propRowData]);
-    setPropRowLocks([...propRowLocks, { orderLocked: false, supLocked: false }]);
-  };
+  const [errors, setErrors] = useState({
+    numberOfErrors: 0,
+    docData: { DocumentID: [], DocumentType: [], DateIssued: [], IssuedBy: [], ReceivedBy: [], Link: [] },
+    propertyRows: [
+      {
+        CategoryID: [],
+        LocationID: [],
+        PropertyID: [],
+        PropertyName: [],
+        TrusteeID: [],
+        StatusID: [],
+        SupplierID: [],
+        PurchaseDate: [],
+        PurchaseOrderID: [],
+        TotalCost: [],
+        City: [],
+        State: [],
+        StreetName: [],
+        SupplierContact: [],
+        SupplierName: [],
+        UnitNumber: [],
+      },
+    ],
+  });
 
   useEffect(() => {
     const fetchdropdowndata = async () => {
@@ -115,6 +135,103 @@ const InsertRecord = () => {
     }
   }, [currPropRowSupplier, propRowToDisplay]);
 
+  useEffect(() => {
+    const gatherFormErrors = () => {
+      let errorsThisCheck = 0;
+      const docDataErrors = { DocumentID: [], DocumentType: [], DateIssued: [], IssuedBy: [], ReceivedBy: [], Link: [] };
+
+      // docData
+      if (!docData.DocumentID) {
+        docDataErrors.DocumentID.push("required");
+        errorsThisCheck++;
+      }
+      if (docData.IssuedBy && docData.ReceivedBy && docData.IssuedBy === docData.ReceivedBy) {
+        docDataErrors.IssuedBy.push("IssuedBy and ReceivedBy cannot be the same person");
+        docDataErrors.ReceivedBy.push("IssuedBy and ReceivedBy cannot be the same person");
+        errorsThisCheck++;
+      }
+
+      // propertyRows
+      const propertyRowsErrors = propertyRows.map((propRowData) => {
+        const newPropRowDataErrors = {
+          CategoryID: [],
+          LocationID: [],
+          PropertyID: [],
+          PropertyName: [],
+          TrusteeID: [],
+          StatusID: [],
+          SupplierID: [],
+          PurchaseDate: [],
+          PurchaseOrderID: [],
+          TotalCost: [],
+          City: [],
+          State: [],
+          StreetName: [],
+          SupplierContact: [],
+          SupplierName: [],
+          UnitNumber: [],
+        };
+
+        // property details errors
+        if (!propRowData.PropertyID) {
+          newPropRowDataErrors.PropertyID.push("required");
+          errorsThisCheck++;
+        }
+        if (propRowData.PropertyID && !/^\d+$/.test(propRowData.PropertyID)) {
+          newPropRowDataErrors.PropertyID.push("Numbers only");
+          errorsThisCheck++;
+        }
+        // error++: To check if the property already exists, let's just use another useEffect
+
+        // PO errors
+        if (propRowData.TotalCost && !/^\d+$/.test(propRowData.TotalCost)) {
+          newPropRowDataErrors.TotalCost.push("Numbers only");
+          errorsThisCheck++;
+        }
+        if (propRowData.TotalCost && parseInt(propRowData.TotalCost) <= 0) {
+          newPropRowDataErrors.TotalCost.push("Please input a positive value");
+          errorsThisCheck++;
+        }
+        if (propRowData.TotalCost && parseInt(propRowData.TotalCost) > 200000000) {
+          newPropRowDataErrors.TotalCost.push("Please input a reasonable amount");
+          errorsThisCheck++;
+        }
+        if (propRowData.TotalCost && parseInt(propRowData.TotalCost) < 50000 && docData.DocumentType === "PAR") {
+          newPropRowDataErrors.TotalCost.push("PAR total cost should be at least P50,000");
+          errorsThisCheck++;
+        }
+        if (propRowData.TotalCost && parseInt(propRowData.TotalCost) >= 50000 && docData.DocumentType === "ICS") {
+          newPropRowDataErrors.TotalCost.push("ICS total cost should be below P50,000");
+          errorsThisCheck++;
+        }
+
+        // supplier errors
+        if (propRowData.SupplierID && !/^\d+$/.test(propRowData.SupplierID)) {
+          newPropRowDataErrors.SupplierID.push("Numbers only");
+          errorsThisCheck++;
+        }
+        if (propRowData.SupplierContact && !/^\d+$/.test(propRowData.SupplierContact)) {
+          newPropRowDataErrors.SupplierContact.push("Numbers only");
+          errorsThisCheck++;
+        }
+        if (propRowData.UnitNumber && !/^\d+$/.test(propRowData.UnitNumber)) {
+          newPropRowDataErrors.UnitNumber.push("Numbers only");
+          errorsThisCheck++;
+        }
+
+        return newPropRowDataErrors;
+      });
+
+      const newErrors = { numberOfErrors: errorsThisCheck, docData: docDataErrors, propertyRows: propertyRowsErrors };
+      // console.log(newErrors);
+      setErrors(newErrors);
+    };
+    if (docData.DocumentID || propertyRows[0].PropertyID) {
+      gatherFormErrors();
+    }
+    // console.log("infty checker");
+  }, [docData, propertyRows]);
+
   const handleDocChange = (e) => {
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
     const docDataKey = e.target.name !== "" ? e.target.name : e.target.id;
@@ -133,6 +250,12 @@ const InsertRecord = () => {
     const propRowKey = e.target.name !== "" ? e.target.name : e.target.id;
     newPropertyRows[index][propRowKey] = e.target.value;
     setPropertyRows(newPropertyRows);
+  };
+
+  const addPropertyRow = () => {
+    const propRowData = { ...PROPERTY_ROW_FIELDS };
+    setPropertyRows([...propertyRows, propRowData]);
+    setPropRowLocks([...propRowLocks, { orderLocked: false, supLocked: false }]);
   };
 
   const addPropRowButtonFunc = (e) => {
@@ -159,18 +282,7 @@ const InsertRecord = () => {
       <FormRow segments={3}>
         <SmallTextField id="DocumentID" label="Document Name" value={docData.DocumentID} onChange={handleDocChange} required />
         <AggregatedFormSelect label="Type" id="DocumentType" value={docData.DocumentType} onChange={handleDocChange} options={types} readOnly={docLocked} required />
-        <FormDatePicker
-          id="DateIssued"
-          label="Date Issued"
-          value={docData.DateIssued}
-          onChange={(val) =>
-            setDocData({
-              ...docData,
-              DateIssued: val,
-            })
-          }
-          readOnly={docLocked}
-        />
+        <FormDatePicker id="DateIssued" label="Date Issued" value={docData.DateIssued} onChange={(val) => setDocData({ ...docData, DateIssued: val })} readOnly={docLocked} />
       </FormRow>
       <FormRow segments={3}>
         <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={docData.IssuedBy} onChange={handleDocChange} disabled={docLocked} options={users} />
@@ -184,9 +296,9 @@ const InsertRecord = () => {
     <Layout pageTitle="INSERT">
       <Box sx={{ padding: 2, margin: 1 }}>
         <main>
-          <PaimsForm header="Encode a Document into the Database" onSubmit={(e) => handleSubmit(e, docData, propertyRows)}>
+          <PaimsForm header="Encode a Document into the Database" onSubmit={(e) => handleSubmit(e, docData, propertyRows, errors)}>
             {docSubheadered}
-            <SubmitButton text="Only Submit Document Info" onClick={(e) => insertDocument(e, docData)} disabled={docLocked} />
+            <SubmitButton text="Only Submit Document" onClick={(e) => insertDocument(e, docData)} disabled={docLocked} />
             <Paper sx={{ p: 2, backgroundColor: "#f3f3f3" }}>
               <Box display="flex" flexDirection="row" height={36}>
                 <Typography width="50%" variant="h9" fontWeight={"bold"}>
