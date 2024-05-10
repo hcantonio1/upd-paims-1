@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
 
 export const FormSelect = (props) => {
   const { id, label, choicevaluepairs } = props;
@@ -7,7 +7,7 @@ export const FormSelect = (props) => {
   const inputLabelLabel = `select-${smallLabel}`;
 
   return (
-    <FormControl id={id} size="small">
+    <FormControl id={id} size="small" error={!!props.error}>
       <InputLabel id={inputLabelLabel}>{label}</InputLabel>
       <Select {...props} name={id} labelId={inputLabelLabel}>
         {choicevaluepairs.map((choice, index) => (
@@ -16,6 +16,7 @@ export const FormSelect = (props) => {
           </MenuItem>
         ))}
       </Select>
+      {props.error && <FormHelperText>{props.helpertext}</FormHelperText>}
     </FormControl>
   );
 };

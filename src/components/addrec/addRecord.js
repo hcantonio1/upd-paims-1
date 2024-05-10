@@ -223,7 +223,6 @@ const InsertRecord = () => {
 
       Promise.all(propertyRowsErrors).then((propRowDataErrors) => {
         const newErrors = { numberOfErrors: errorsThisCheck, docData: docDataErrors, propertyRows: propRowDataErrors };
-        // console.log(newErrors);
         setErrors(newErrors);
       });
     };
@@ -254,7 +253,6 @@ const InsertRecord = () => {
 
   const addPropertyRow = () => {
     const propRowData = { ...PROPERTY_ROW_FIELDS };
-    // const propRowErrors = { ...emptyPropRowErrors };
     const newErrors = { ...errors };
     newErrors.propertyRows.push(_.cloneDeep(emptyPropRowErrors));
     setPropertyRows([...propertyRows, propRowData]);
@@ -281,16 +279,48 @@ const InsertRecord = () => {
     setPropRowToDisplay(Math.min(newPropertyRows.length - 1, propRowToDisplay));
   };
 
+  const docFieldHasError = (fieldID) => {
+    // return helperText when it has error
+    if (errors.docData[fieldID].length === 0) return;
+    return errors.docData[fieldID][0];
+  };
+
   const docSubheadered = (
     <FormSubheadered subheader="Document Details">
       <FormRow segments={3}>
-        <SmallTextField id="DocumentID" label="Document Name" value={docData.DocumentID} onChange={handleDocChange} required />
+        <SmallTextField
+          id="DocumentID"
+          label="Document Name"
+          value={docData.DocumentID}
+          onChange={handleDocChange}
+          required
+          error={!!docFieldHasError("DocumentID")}
+          helperText={docFieldHasError("DocumentID")}
+        />
         <AggregatedFormSelect label="Type" id="DocumentType" value={docData.DocumentType} onChange={handleDocChange} options={types} readOnly={docLocked} required />
         <FormDatePicker id="DateIssued" label="Date Issued" value={docData.DateIssued} onChange={(val) => setDocData({ ...docData, DateIssued: val })} readOnly={docLocked} />
       </FormRow>
       <FormRow segments={3}>
-        <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={docData.IssuedBy} onChange={handleDocChange} disabled={docLocked} options={users} />
-        <AggregatedFormSelect label="ReceivedBy" id="ReceivedBy" value={docData.ReceivedBy} onChange={handleDocChange} disabled={docLocked} options={users} />
+        <AggregatedFormSelect
+          label="IssuedBy"
+          id="IssuedBy"
+          value={docData.IssuedBy}
+          onChange={handleDocChange}
+          disabled={docLocked}
+          options={users}
+          error={!!docFieldHasError("IssuedBy")}
+          helpertext={docFieldHasError("IssuedBy")}
+        />
+        <AggregatedFormSelect
+          label="ReceivedBy"
+          id="ReceivedBy"
+          value={docData.ReceivedBy}
+          onChange={handleDocChange}
+          disabled={docLocked}
+          options={users}
+          error={!!docFieldHasError("ReceivedBy")}
+          helpertext={docFieldHasError("ReceivedBy")}
+        />
         <FormFileUpload id="Link" filename={docData.holdLink?.name} onChange={handleFileChange} disabled={docLocked} />
       </FormRow>
     </FormSubheadered>
