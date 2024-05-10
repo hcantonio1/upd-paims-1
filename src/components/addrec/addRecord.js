@@ -12,6 +12,8 @@ import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fet
 import { fetchDocumentAutofill, fetchSupplierAutofill } from "../../fetchutils/formautofill";
 import dayjs from "dayjs";
 import { insertDocument, handleSubmit } from "./handleinsert";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../../firebase-config";
 
 const PROPERTY_ROW_FIELDS = {
   CategoryID: "",
@@ -136,7 +138,17 @@ const InsertRecord = () => {
   }, [currPropRowSupplier, propRowToDisplay]);
 
   useEffect(() => {
-    const gatherFormErrors = () => {
+    const isPropertyInDatabase = async (propId) => {
+      try {
+        const propRef = doc(db, "property", propId);
+        const propSnap = await getDoc(propRef);
+        if (propSnap.exists()) return true;
+      } catch (error) {
+        console.error("Error fetching property:", error);
+      }
+      return false;
+    };
+    const gatherFormErrors = async () => {
       let errorsThisCheck = 0;
       const docDataErrors = { DocumentID: [], DocumentType: [], DateIssued: [], IssuedBy: [], ReceivedBy: [], Link: [] };
 
@@ -152,78 +164,102 @@ const InsertRecord = () => {
       }
 
       // propertyRows
+      // const arePropertiesInDataBase = propertyRows.map(propRowData=>{
+      // const isPropertyInDatabase = async (propId) => {
+      //   try {
+      //     const propRef = doc(db, "property", propId);
+      //     const propSnap = await getDoc(propRef);
+      //     if (propSnap.exists()) return true;
+      //   } catch (error) {
+      //     console.error("Error fetching property:", error);
+      //   }
+      //   return false;
+      //   };
+      //   return isPropertyInDatabase(propRowData.PropertyID)
+      // })
+      // Promise.all(arePropertiesInDataBase).then(() => {});
       const propertyRowsErrors = propertyRows.map((propRowData) => {
-        const newPropRowDataErrors = {
-          CategoryID: [],
-          LocationID: [],
-          PropertyID: [],
-          PropertyName: [],
-          TrusteeID: [],
-          StatusID: [],
-          SupplierID: [],
-          PurchaseDate: [],
-          PurchaseOrderID: [],
-          TotalCost: [],
-          City: [],
-          State: [],
-          StreetName: [],
-          SupplierContact: [],
-          SupplierName: [],
-          UnitNumber: [],
+        const p = async (propRowData) => {
+          const newPropRowDataErrors = {
+            CategoryID: [],
+            LocationID: [],
+            PropertyID: [],
+            PropertyName: [],
+            TrusteeID: [],
+            StatusID: [],
+            SupplierID: [],
+            PurchaseDate: [],
+            PurchaseOrderID: [],
+            TotalCost: [],
+            City: [],
+            State: [],
+            StreetName: [],
+            SupplierContact: [],
+            SupplierName: [],
+            UnitNumber: [],
+          };
+
+          // property details errors
+          if (!propRowData.PropertyID) {
+            newPropRowDataErrors.PropertyID.push("required");
+            errorsThisCheck++;
+          }
+          if (propRowData.PropertyID && !/^\d+$/.test(propRowData.PropertyID)) {
+            newPropRowDataErrors.PropertyID.push("Numbers only");
+            errorsThisCheck++;
+          }
+          // error++: To check if the property already exists, let's just use another useEffect
+          if (propRowData.PropertyID && (await isPropertyInDatabase(propRowData.PropertyID))) {
+            newPropRowDataErrors.PropertyID.push("Property already exists");
+            errorsThisCheck++;
+          }
+
+          // PO errors
+          if (propRowData.TotalCost && !/^\d+$/.test(propRowData.TotalCost)) {
+            newPropRowDataErrors.TotalCost.push("Numbers only");
+            errorsThisCheck++;
+          }
+          if (propRowData.TotalCost && parseInt(propRowData.TotalCost) <= 0) {
+            newPropRowDataErrors.TotalCost.push("Please input a positive value");
+            errorsThisCheck++;
+          }
+          if (propRowData.TotalCost && parseInt(propRowData.TotalCost) > 200000000) {
+            newPropRowDataErrors.TotalCost.push("Please input a reasonable amount");
+            errorsThisCheck++;
+          }
+          if (propRowData.TotalCost && parseInt(propRowData.TotalCost) < 50000 && docData.DocumentType === "PAR") {
+            newPropRowDataErrors.TotalCost.push("PAR total cost should be at least P50,000");
+            errorsThisCheck++;
+          }
+          if (propRowData.TotalCost && parseInt(propRowData.TotalCost) >= 50000 && docData.DocumentType === "ICS") {
+            newPropRowDataErrors.TotalCost.push("ICS total cost should be below P50,000");
+            errorsThisCheck++;
+          }
+
+          // supplier errors
+          if (propRowData.SupplierID && !/^\d+$/.test(propRowData.SupplierID)) {
+            newPropRowDataErrors.SupplierID.push("Numbers only");
+            errorsThisCheck++;
+          }
+          if (propRowData.SupplierContact && !/^\d+$/.test(propRowData.SupplierContact)) {
+            newPropRowDataErrors.SupplierContact.push("Numbers only");
+            errorsThisCheck++;
+          }
+          if (propRowData.UnitNumber && !/^\d+$/.test(propRowData.UnitNumber)) {
+            newPropRowDataErrors.UnitNumber.push("Numbers only");
+            errorsThisCheck++;
+          }
+
+          return newPropRowDataErrors;
         };
-
-        // property details errors
-        if (!propRowData.PropertyID) {
-          newPropRowDataErrors.PropertyID.push("required");
-          errorsThisCheck++;
-        }
-        if (propRowData.PropertyID && !/^\d+$/.test(propRowData.PropertyID)) {
-          newPropRowDataErrors.PropertyID.push("Numbers only");
-          errorsThisCheck++;
-        }
-        // error++: To check if the property already exists, let's just use another useEffect
-
-        // PO errors
-        if (propRowData.TotalCost && !/^\d+$/.test(propRowData.TotalCost)) {
-          newPropRowDataErrors.TotalCost.push("Numbers only");
-          errorsThisCheck++;
-        }
-        if (propRowData.TotalCost && parseInt(propRowData.TotalCost) <= 0) {
-          newPropRowDataErrors.TotalCost.push("Please input a positive value");
-          errorsThisCheck++;
-        }
-        if (propRowData.TotalCost && parseInt(propRowData.TotalCost) > 200000000) {
-          newPropRowDataErrors.TotalCost.push("Please input a reasonable amount");
-          errorsThisCheck++;
-        }
-        if (propRowData.TotalCost && parseInt(propRowData.TotalCost) < 50000 && docData.DocumentType === "PAR") {
-          newPropRowDataErrors.TotalCost.push("PAR total cost should be at least P50,000");
-          errorsThisCheck++;
-        }
-        if (propRowData.TotalCost && parseInt(propRowData.TotalCost) >= 50000 && docData.DocumentType === "ICS") {
-          newPropRowDataErrors.TotalCost.push("ICS total cost should be below P50,000");
-          errorsThisCheck++;
-        }
-
-        // supplier errors
-        if (propRowData.SupplierID && !/^\d+$/.test(propRowData.SupplierID)) {
-          newPropRowDataErrors.SupplierID.push("Numbers only");
-          errorsThisCheck++;
-        }
-        if (propRowData.SupplierContact && !/^\d+$/.test(propRowData.SupplierContact)) {
-          newPropRowDataErrors.SupplierContact.push("Numbers only");
-          errorsThisCheck++;
-        }
-        if (propRowData.UnitNumber && !/^\d+$/.test(propRowData.UnitNumber)) {
-          newPropRowDataErrors.UnitNumber.push("Numbers only");
-          errorsThisCheck++;
-        }
-
-        return newPropRowDataErrors;
+        return p(propRowData);
       });
 
+      await Promise.all(propertyRowsErrors);
+      // DOESN'T WORK because propertyRowsErrors is now an array of promises (due to previous map())
+      // So we cannot get the value propRowDataError objects
       const newErrors = { numberOfErrors: errorsThisCheck, docData: docDataErrors, propertyRows: propertyRowsErrors };
-      // console.log(newErrors);
+      console.log(newErrors);
       setErrors(newErrors);
     };
     if (docData.DocumentID || propertyRows[0].PropertyID) {
