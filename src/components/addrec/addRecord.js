@@ -70,7 +70,7 @@ const InsertRecord = () => {
   const [propRowToDisplay, setPropRowToDisplay] = useState(0);
   const [propRowLocks, setPropRowLocks] = useState([{ orderLocked: false, supLocked: false }]);
 
-  const [errors, setErrors] = useState({ numberOfErrors: 0, docData: _.cloneDeep(emptyDocDataErrors), propertyRows: [_.cloneDeep(emptyPropRowErrors)] });
+  const [errors, setErrors] = useState({ count: 0, docData: _.cloneDeep(emptyDocDataErrors), propertyRows: [_.cloneDeep(emptyPropRowErrors)] });
 
   useEffect(() => {
     const fetchdropdowndata = async () => {
@@ -249,7 +249,7 @@ const InsertRecord = () => {
       });
 
       Promise.all(propertyRowsErrors).then((propRowDataErrors) => {
-        const newErrors = { numberOfErrors: errorsThisCheck, docData: docDataErrors, propertyRows: propRowDataErrors };
+        const newErrors = { count: errorsThisCheck, docData: docDataErrors, propertyRows: propRowDataErrors };
         setErrors(newErrors);
       });
     };
@@ -322,7 +322,7 @@ const InsertRecord = () => {
           onChange={handleDocChange}
           required
           error={!!docFieldHasError("DocumentID")}
-          helperText={docFieldHasError("DocumentID")}
+          helperText={docFieldHasError("DocumentID")} // notice small "T"
         />
         <AggregatedFormSelect label="Type" id="DocumentType" value={docData.DocumentType} onChange={handleDocChange} options={types} readOnly={docLocked} required />
         <FormDatePicker id="DateIssued" label="Date Issued" value={docData.DateIssued} onChange={(val) => setDocData({ ...docData, DateIssued: val })} readOnly={docLocked} />
@@ -336,7 +336,7 @@ const InsertRecord = () => {
           disabled={docLocked}
           options={users}
           error={!!docFieldHasError("IssuedBy")}
-          helpertext={docFieldHasError("IssuedBy")}
+          helpertext={docFieldHasError("IssuedBy")} // notice small "T"
         />
         <AggregatedFormSelect
           label="ReceivedBy"
@@ -346,7 +346,7 @@ const InsertRecord = () => {
           disabled={docLocked}
           options={users}
           error={!!docFieldHasError("ReceivedBy")}
-          helpertext={docFieldHasError("ReceivedBy")}
+          helpertext={docFieldHasError("ReceivedBy")} // notice small "T"
         />
         <FormFileUpload id="Link" filename={docData.holdLink?.name} onChange={handleFileChange} disabled={docLocked} />
       </FormRow>

@@ -8,7 +8,7 @@ export const handleSubmit = (e, docData, propertyRows, errors) => {
   console.log("I received document:", docData);
   console.log(`I received properties[${propertyRows.length}]:`, propertyRows);
 
-  if (errors.numberOfErrors !== 0) {
+  if (errors.count !== 0) {
     console.log("I have received errors", errors);
     return;
   }
