@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import _ from "lodash";
 import { doc, updateDoc, setDoc, Timestamp, getDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { db, storage } from "../../../firebase-config";
@@ -10,32 +11,22 @@ import { AggregatedFormSelect } from "../paimsform/formSelect";
 import FormDatePicker from "../paimsform/formDatePicker";
 import { FormFileUpload } from "../paimsform/formFileUpload";
 
-import { PDFDocument } from "pdf-lib";
 import dayjs from "dayjs";
 import { fetchDocumentAutofill, fetchPropertyAutofill } from "../../fetchutils/formautofill";
+import { copyPages, nextChar } from "./mergedpdf";
 
-function nextChar(c) {
-  return String.fromCharCode(c.charCodeAt(0) + 1);
-}
-
-async function copyPages(url1, url2) {
-  const firstDonorPdfBytes = await fetch(url1).then((res) => res.arrayBuffer());
-  const secondDonorPdfBytes = await fetch(url2).then((res) => res.arrayBuffer());
-
-  const mergedPdf = await PDFDocument.create();
-
-  const pdfA = await PDFDocument.load(firstDonorPdfBytes);
-  const pdfB = await PDFDocument.load(secondDonorPdfBytes);
-
-  const copiedPagesA = await mergedPdf.copyPages(pdfA, pdfA.getPageIndices());
-  copiedPagesA.forEach((page) => mergedPdf.addPage(page));
-
-  const copiedPagesB = await mergedPdf.copyPages(pdfB, pdfB.getPageIndices());
-  copiedPagesB.forEach((page) => mergedPdf.addPage(page));
-
-  const mergedPdfFile = await mergedPdf.save();
-  return mergedPdfFile;
-}
+const emptyPropertyErrors = {
+  LocationID: [],
+  PropertyID: [],
+  TrusteeID: [],
+  StatusID: [],
+  DocumentID: [],
+  DocumentType: [],
+  DateIssued: [],
+  IssuedBy: [],
+  ReceivedBy: [],
+  Link: [],
+};
 
 const UpdateProp = () => {
   const [formData, setFormData] = useState({
@@ -46,7 +37,7 @@ const UpdateProp = () => {
     parID: {},
     iirupID: {},
     icsID: {},
-    SpecDoc: "",
+    DocumentID: "",
     DocumentType: "",
     DateIssued: null,
     IssuedBy: "",
@@ -63,6 +54,9 @@ const UpdateProp = () => {
   const [types, setTypes] = useState([]);
   const [docLocked, setDocLocked] = useState(false);
 
+  const [propertyFound, setPropertyFound] = useState(false);
+  const [formErrors, setFormErrors] = useState(_.cloneDeep(emptyPropertyErrors));
+
   useEffect(() => {
     const fetchdropdowndata = async () => {
       setUsers(await fetchDeptUsers());
@@ -75,7 +69,7 @@ const UpdateProp = () => {
 
   useEffect(() => {
     const autofillDocumentData = async () => {
-      const documentAutofillData = await fetchDocumentAutofill(formData.SpecDoc);
+      const documentAutofillData = await fetchDocumentAutofill(formData.DocumentID);
       if (!!documentAutofillData) {
         setDocLocked(true);
         setFormData((prev) => {
@@ -89,15 +83,16 @@ const UpdateProp = () => {
       }
       setDocLocked(false);
     };
-    if (formData.SpecDoc) {
+    if (formData.DocumentID) {
       autofillDocumentData();
     }
-  }, [formData.SpecDoc]);
+  }, [formData.DocumentID]);
 
   useEffect(() => {
     const autofillPropertyData = async () => {
       const propertyAutofillData = await fetchPropertyAutofill(formData.PropertyID);
       if (!!propertyAutofillData) {
+        setPropertyFound(true);
         setFormData((prev) => {
           const propData = propertyAutofillData;
           const propData1 = {
@@ -114,12 +109,28 @@ const UpdateProp = () => {
         });
         return;
       }
+      setPropertyFound(false);
     };
 
     if (formData.PropertyID) {
       autofillPropertyData();
     }
   }, [formData.PropertyID]);
+
+  useEffect(() => {
+    const gatherFormErrors = () => {
+      const newFormErrors = _.cloneDeep(emptyPropertyErrors);
+      if (formData.PropertyID && !/^\d+$/.test(formData.PropertyID)) newFormErrors.PropertyID.push("Numbers only");
+      if (formData.IssuedBy && formData.ReceivedBy && formData.IssuedBy === formData.ReceivedBy) {
+        newFormErrors.IssuedBy.push("IssuedBy and ReceivedBy cannot be the same person");
+        newFormErrors.ReceivedBy.push("IssuedBy and ReceivedBy cannot be the same person");
+      }
+      setFormErrors(newFormErrors);
+    };
+    if (formData.PropertyID || formData.DocumentID) {
+      gatherFormErrors();
+    }
+  }, [formData]);
 
   const handleInputChange = (e) => {
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
@@ -149,7 +160,7 @@ const UpdateProp = () => {
     try {
       var docUpdate = {};
       var newVar = nextChar(formData.VerNum);
-      docUpdate[`Documents.${newVar}`] = formData.SpecDoc;
+      docUpdate[`Documents.${newVar}`] = formData.DocumentID;
       var archiveStat = 0;
       if (formData.DocumentType === "IIRUP") {
         archiveStat = 1;
@@ -202,9 +213,9 @@ const UpdateProp = () => {
         VerNum: newVar,
       });
 
-      await setDoc(doc(db, "item_document", formData.SpecDoc), {
+      await setDoc(doc(db, "item_document", formData.DocumentID), {
         DateIssued: Timestamp.fromDate(new Date(formData.DateIssued)),
-        DocumentID: formData.SpecDoc,
+        DocumentID: formData.DocumentID,
         DocumentType: formData.DocumentType,
         IssuedBy: formData.IssuedBy,
         Link: fileUrl,
@@ -218,11 +229,27 @@ const UpdateProp = () => {
     }
   };
 
+  const propFieldHasError = (fieldID) => {
+    // return helperText when it has error
+    if (formErrors[fieldID].length === 0) return;
+    return formErrors[fieldID][0];
+  };
+
   return (
     <PaimsForm header="Update a Property in the Database" onSubmit={handleSubmit}>
       <FormSubheadered subheader="Property Details">
         <FormRow segments={3}>
-          <SmallTextField id="PropertyID" label="Property ID" value={formData.PropertyID} onChange={handleInputChange} pattern="[0-9]*" title="Numbers only." required />
+          <SmallTextField
+            id="PropertyID"
+            label="Property ID"
+            value={formData.PropertyID}
+            onChange={handleInputChange}
+            pattern="[0-9]*"
+            title="Numbers only."
+            required
+            helperText={propertyFound ? "Property found" : propFieldHasError("PropertyID")}
+            color={propertyFound ? "success" : propFieldHasError("PropertyID") ? "error" : "primary"}
+          />
           <AggregatedFormSelect id={`TrusteeID`} label="Trustee" value={formData.TrusteeID} onChange={handleInputChange} options={users} />
         </FormRow>
         <FormRow segments={3}>
@@ -232,7 +259,7 @@ const UpdateProp = () => {
       </FormSubheadered>
       <FormSubheadered subheader="Accompanying Document">
         <FormRow segments={3}>
-          <SmallTextField id="SpecDoc" label="Document Name" value={formData.SpecDoc} onChange={handleInputChange} required />
+          <SmallTextField id="DocumentID" label="Document Name" value={formData.DocumentID} onChange={handleInputChange} required />
           <AggregatedFormSelect label="Type" id="DocumentType" value={formData.DocumentType} onChange={handleInputChange} options={types} disabled={docLocked} />
           <FormDatePicker
             id="DateIssued"
@@ -248,8 +275,26 @@ const UpdateProp = () => {
           />
         </FormRow>
         <FormRow segments={3}>
-          <AggregatedFormSelect label="IssuedBy" id="IssuedBy" value={formData.IssuedBy} onChange={handleInputChange} disabled={docLocked} options={users} />
-          <AggregatedFormSelect label="ReceivedBy" id="ReceivedBy" value={formData.ReceivedBy} onChange={handleInputChange} disabled={docLocked} options={users} />
+          <AggregatedFormSelect
+            label="IssuedBy"
+            id="IssuedBy"
+            value={formData.IssuedBy}
+            onChange={handleInputChange}
+            disabled={docLocked}
+            options={users}
+            error={!!propFieldHasError("IssuedBy")}
+            helpertext={propFieldHasError("IssuedBy")} // notice small "T"
+          />
+          <AggregatedFormSelect
+            label="ReceivedBy"
+            id="ReceivedBy"
+            value={formData.ReceivedBy}
+            onChange={handleInputChange}
+            disabled={docLocked}
+            options={users}
+            error={!!propFieldHasError("IssuedBy")}
+            helpertext={propFieldHasError("IssuedBy")} // notice small "T"
+          />
           <FormFileUpload id="Link" filename={formData.holdLink?.name} onChange={handleFileChange} disabled={docLocked} />
         </FormRow>
       </FormSubheadered>
