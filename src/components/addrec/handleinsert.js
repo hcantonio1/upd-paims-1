@@ -33,58 +33,50 @@ export const handleSubmit = (e, docData, propertyRows, errors) => {
     .catch((error) => {
       console.log("Some properties were not inserted.", error);
     });
-
-  // const { DocumentID, DocumentType, DateIssued, IssuedBy, ReceivedBy, Link, ...propRowData } = inputData;
-  // console.log(propRowData);
 };
 
 const insertPropRow = async (e, propRowData, documentID) => {
   e.preventDefault();
 
-  // if (propRowData.IssuedBy === propRowData.ReceivedBy) {
-  //   alert("IssuedBy and ReceivedBy cannot be the same user.");
-  //   return;
+  // try {
+  await setDoc(doc(db, "supplier", propRowData.SupplierID), {
+    City: propRowData.City,
+    State: propRowData.State,
+    StreetName: propRowData.StreetName,
+    SupplierContact: propRowData.SupplierContact.toString(),
+    SupplierID: parseInt(propRowData.SupplierID),
+    SupplierName: propRowData.SupplierName,
+    UnitNumber: parseInt(propRowData.UnitNumber),
+  });
+
+  var docObject = {};
+  docObject["a"] = documentID;
+  await setDoc(doc(db, "property", propRowData.PropertyID), {
+    CategoryID: parseInt(propRowData.CategoryID),
+    Documents: docObject,
+    isArchived: 0,
+    isApproved: 0,
+    LocationID: parseInt(propRowData.LocationID),
+    PropertyID: parseInt(propRowData.PropertyID),
+    PropertyName: propRowData.PropertyName,
+    TrusteeID: parseInt(propRowData.TrusteeID),
+    StatusID: parseInt(propRowData.StatusID),
+    SupplierID: parseInt(propRowData.SupplierID),
+    PurchaseOrderID: parseInt(propRowData.PurchaseOrderID),
+    VerNum: "a",
+  });
+  await setDoc(doc(db, "purchase_order", propRowData.PurchaseOrderID), {
+    PurchaseDate: Timestamp.fromDate(new Date(propRowData.PurchaseDate)),
+    PurchaseOrderID: parseInt(propRowData.PurchaseOrderID),
+    SupplierID: parseInt(propRowData.SupplierID),
+    TotalCost: parseInt(propRowData.TotalCost),
+  });
+  // alert("Successfully inserted!");
+  // window.location.reload();
+  // } catch (error) {
+  //   console.error("Error inserting document:", error);
+  //   // alert("Failed to insert record.");
   // }
-
-  try {
-    await setDoc(doc(db, "supplier", propRowData.SupplierID), {
-      City: propRowData.City,
-      State: propRowData.State,
-      StreetName: propRowData.StreetName,
-      SupplierContact: propRowData.SupplierContact.toString(),
-      SupplierID: parseInt(propRowData.SupplierID),
-      SupplierName: propRowData.SupplierName,
-      UnitNumber: parseInt(propRowData.UnitNumber),
-    });
-
-    var docObject = {};
-    docObject["a"] = documentID;
-    await setDoc(doc(db, "property", propRowData.PropertyID), {
-      CategoryID: parseInt(propRowData.CategoryID),
-      Documents: docObject,
-      isArchived: 0,
-      isApproved: 0,
-      LocationID: parseInt(propRowData.LocationID),
-      PropertyID: parseInt(propRowData.PropertyID),
-      PropertyName: propRowData.PropertyName,
-      TrusteeID: parseInt(propRowData.TrusteeID),
-      StatusID: parseInt(propRowData.StatusID),
-      SupplierID: parseInt(propRowData.SupplierID),
-      PurchaseOrderID: parseInt(propRowData.PurchaseOrderID),
-      VerNum: "a",
-    });
-    await setDoc(doc(db, "purchase_order", propRowData.PurchaseOrderID), {
-      PurchaseDate: Timestamp.fromDate(new Date(propRowData.PurchaseDate)),
-      PurchaseOrderID: parseInt(propRowData.PurchaseOrderID),
-      SupplierID: parseInt(propRowData.SupplierID),
-      TotalCost: parseInt(propRowData.TotalCost),
-    });
-    // alert("Successfully inserted!");
-    // window.location.reload();
-  } catch (error) {
-    console.error("Error inserting document:", error);
-    // alert("Failed to insert record.");
-  }
 };
 
 export const insertDocument = async (e, documentData) => {
@@ -108,7 +100,7 @@ export const insertDocument = async (e, documentData) => {
       Link: fileUrl,
       ReceivedBy: documentData.ReceivedBy,
     });
-    alert("Successfully inserted!");
+    // alert("Successfully inserted!");
     // window.location.reload();
   } catch (error) {
     console.error("Error inserting document:", error);

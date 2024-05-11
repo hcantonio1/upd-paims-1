@@ -10,9 +10,9 @@ import { FormFileUpload } from "../paimsform/formFileUpload";
 import PropertyRow, { AddPropRowButton, DeletePropRowButton, NextPropRowButton, PrevPropRowButton } from "./propertyRow";
 
 import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "../../fetchutils/fetchdropdowndata";
-import { fetchDocumentAutofill, fetchSupplierAutofill } from "../../fetchutils/formautofill";
+import { fetchDocumentAutofill, fetchSupplierAutofill, fetchPOAutofill } from "../../fetchutils/formautofill";
 import dayjs from "dayjs";
-import { insertDocument, handleSubmit } from "./handleinsert";
+import { handleSubmit } from "./handleinsert";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 
@@ -134,6 +134,33 @@ const InsertRecord = () => {
       autofillSupplierData();
     }
   }, [currPropRowSupplier, propRowToDisplay]);
+
+  const currPropRowPO = propertyRows[propRowToDisplay].PurchaseOrderID;
+  useEffect(() => {
+    const autofillPOData = async () => {
+      const poAutofillData = await fetchPOAutofill(currPropRowPO);
+      if (!!poAutofillData) {
+        // setDocLocked(true);
+        const poData = poAutofillData;
+        setPropertyRows((prev) => {
+          const newPropertyRows = [...prev];
+          const myRow = newPropertyRows[propRowToDisplay];
+          const myNewRow = {
+            ...myRow,
+            TotalCost: poData.TotalCost.toString(),
+            PurchaseDate: dayjs(poData.PurchaseDate.toDate()),
+          };
+          newPropertyRows[propRowToDisplay] = myNewRow;
+          return newPropertyRows;
+        });
+        return;
+      }
+      // setDocLocked(false);
+    };
+    if (currPropRowPO) {
+      autofillPOData();
+    }
+  }, [currPropRowPO, propRowToDisplay]);
 
   useEffect(() => {
     const isPropertyInDatabase = async (propId) => {
@@ -332,7 +359,7 @@ const InsertRecord = () => {
         <main>
           <PaimsForm header="Encode a Document into the Database" onSubmit={(e) => handleSubmit(e, docData, propertyRows, errors)}>
             {docSubheadered}
-            <SubmitButton text="Only Submit Document" onClick={(e) => insertDocument(e, docData)} disabled={docLocked} />
+            {/* <SubmitButton text="Only Submit Document" onClick={(e) => insertDocument(e, docData)} disabled={docLocked} /> */}
             <Paper sx={{ p: 2, backgroundColor: "#f3f3f3" }}>
               <Box display="flex" flexDirection="row" height={36}>
                 <Typography width="50%" variant="h9" fontWeight={"bold"}>

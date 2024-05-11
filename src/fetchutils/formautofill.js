@@ -43,3 +43,17 @@ export const fetchPropertyAutofill = async (propertyID) => {
   }
   return null;
 };
+
+export const fetchPOAutofill = async (poID) => {
+  if (poID === "") return;
+  try {
+    const poRef = doc(db, "purchase_order", poID);
+    const poSnap = await getDoc(poRef);
+    if (poSnap.exists()) {
+      return poSnap.data();
+    }
+  } catch (error) {
+    console.error("Error fetching PO autofill:", error);
+  }
+  return null;
+};

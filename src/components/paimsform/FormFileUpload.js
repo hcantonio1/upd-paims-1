@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import React from "react";
 
 export const FormFileUpload = (props) => {
-  const text = props.filename ?? "Upload Document";
+  const text = props.filename ?? props.text ?? "Choose File";
   return (
     <>
       <input {...props} type="file" style={{ display: "none" }} />
