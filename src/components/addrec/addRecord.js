@@ -366,7 +366,7 @@ const InsertRecord = () => {
                   Property {propRowToDisplay + 1}
                 </Typography>
                 <Box width="50%" display="flex" flexDirection="row" justifyContent="end">
-                  <DeletePropRowButton onClick={delPropRowButtonFunc} disabled={propertyRows.length <= 1} />
+                  <DeletePropRowButton onClick={delPropRowButtonFunc} disabled={propertyRows.length === 1} />
                 </Box>
               </Box>
               <PropertyRow
@@ -382,7 +382,7 @@ const InsertRecord = () => {
                 }}
               />
               <Box display="flex" flexDirection="row" justifyContent="end">
-                <PrevPropRowButton onClick={prevPropRowButtonFunc} />
+                {propertyRows.length === 1 ? <></> : <PrevPropRowButton onClick={prevPropRowButtonFunc} />}
                 {propertyRows.length - 1 === propRowToDisplay ? <AddPropRowButton onClick={addPropRowButtonFunc} /> : <NextPropRowButton onClick={nextPropRowButtonFunc} />}
               </Box>
             </Paper>
