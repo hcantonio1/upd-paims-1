@@ -22,6 +22,8 @@ const HomePage = () => {
         sx={{
           px: 1,
           rowGap: 2,
+          padding: 2,
+          margin: 1,
         }}
       >
         {/* user information container  */}
@@ -93,11 +95,7 @@ const ChangeLogTable = () => {
         sx={{
           borderStyle: "solid",
           borderColor: "#e5e5e5",
-        }}
-      >
-        {/* <Typography align="center" sx={{fontStyle: "italic"}}>
-      No recent changes have been made.
-    </Typography> */}
+        }}>
         <InventoryTable filterCondition={approvedFilter} buttonLabel="Approve" onButtonClick={onApproveClick} noLabelText={false} />
       </Box>
     </Box>

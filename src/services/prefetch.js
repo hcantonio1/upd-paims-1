@@ -48,9 +48,9 @@ const fetchCollData = async ({ name, columnNameOfID, valuesToFetch }) => {
     const collSnap = await getDocs(collection(db, name));
     collSnap.docs.forEach((doc) => {
       const data = doc.data();
-      // console.log("ok what am i looking at", data);
+      console.log("ok what am i looking at", data);
       const key = data[columnNameOfID];
-      // console.log("COLUMN", columnNameOfID, "CHECK KEYS", key);
+      console.log("COLUMN", columnNameOfID, "CHECK KEYS", key);
       const values = valuesToFetch.map((column) => {
         return data[column];
       });

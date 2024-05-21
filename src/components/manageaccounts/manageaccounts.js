@@ -1,48 +1,28 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../common/layout.js";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { db } from "../../../firebase-config.js";
 import { onSnapshot, collection } from "firebase/firestore";
-import SearchBar from "../common/searchbar.js";
-import FilterBy from "../common/filter.js";
 import AddDeptAccountForm from "./addDeptAccountForm.js";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar} from "@mui/x-data-grid";
 
-const ManageAccounts = () => {
-  return (
-    <Layout pageTitle="Manage Accounts">
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <h1>Department Accounts</h1>
-        <AddDeptAccountForm />
-        <AccountsTable />
-      </Box>
-    </Layout>
-  );
-};
 
-export default ManageAccounts;
 
 const AccountsTable = () => {
   const usersCollection = collection(db, "user");
 
   const displayCol = [
-    { field: "UserID", headerName: "ID", width: 90 },
-    { field: "Email", headerName: "Email", width: 150 },
-    { field: "Department", headerName: "Department", width: 90 },
+    { field: "UserID", headerName: "ID", width: 50 },
+    { field: "Email", headerName: "Email", width: 250 },
+    { field: "Department", headerName: "Department", width: 130 },
     { field: "Role", headerName: "Role", width: 150 },
-    { field: "LastName", headerName: "Last Name", width: 90 },
+    { field: "LastName", headerName: "Last Name", width: 150 },
     { field: "FirstName", headerName: "First Name", width: 150 },
   ];
 
-  const filterableColumns = displayCol.filter((column) => column.filterable);
   const [accountsData, setAccountsData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [searchResultsEmpty, setSearchResultsEmpty] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState("");
-  const [sortConfig, setSortConfig] = useState({
-    key: "InvPID",
-    direcion: "asc",
-  });
+
 
   useEffect(() => {
     onSnapshot(usersCollection, (snapshot) => {
@@ -55,47 +35,26 @@ const AccountsTable = () => {
     });
   }, []);
 
-  const handleSearch = (searchTerm) => {
-    console.log("Search Term:", searchTerm);
-    console.log("Selected Filter:", selectedFilter);
-
-    const filteredResults = accountsData.filter((item) => {
-      const match = Object.entries(item).some(([key, value]) => {
-        console.log("Checking:", key, value);
-        if (key === selectedFilter) {
-          return value.toLowerCase().includes(searchTerm.toLowerCase());
-        } else if (typeof value === "string") {
-          return value.toLowerCase().includes(searchTerm.toLowerCase());
-        } else if (typeof value === "number") {
-          return value.toString().includes(searchTerm.toLowerCase());
-        }
-        return false;
-      });
-      return match;
-    });
-    setFilteredData(filteredResults);
-    setSearchResultsEmpty(filteredResults.length === 0);
-  };
-
-  const handleFilterChange = (filter) => {
-    setSelectedFilter(filter);
-  };
-
   return (
-    <Box>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <SearchBar onSearch={handleSearch} />
-        {/* <FilterBy
-          options={filterableColumns.map((column) => column.label)}
-          onFilterChange={handleFilterChange}
-  />*/}
-      </div>
       <div>
-        {searchResultsEmpty ? (
-          <p style={{ textAlign: "center" }}>No records found.</p>
-        ) : (
-          <Box sx={{ height: 400, width: "100%" }}>
-            <DataGrid
+          <Box display="flex" flexDirection="column">
+            <Box
+              sx={{
+                bgcolor: "#e5e5e5",
+                padding: 2,
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                Department Accounts
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                borderStyle: "solid",
+                borderColor: "#e5e5e5",
+              }}>            
+              
+              <DataGrid
               getRowId={(row) => row.UserID}
               rows={filteredData.length > 0 ? filteredData : accountsData}
               columns={displayCol}
@@ -108,10 +67,55 @@ const AccountsTable = () => {
               }}
               pageSizeOptions={[5]}
               disableRowSelectionOnClick
+              slots={{
+                toolbar: GridToolbar,
+              }}
+              slotProps={{
+                toolbar: {
+                  csvOptions: { allColumns: true },
+                  showQuickFilter: true,
+                },
+              }}
+              sx={{
+                '.MuiDataGrid-columnHeaderTitle': { 
+                  fontWeight: 'bold !important',
+                  overflow: 'visible !important'
+               },
+               '& .MuiDataGrid-toolbarContainer': {
+                // justifyContent: "space-between",
+                '& .MuiButton-text': {
+                  color: '#014421',
+                },
+                '& .MuiBadge-badge': {
+                  backgroundColor: '#014421',
+                },
+               }
+              }}
             />
+            </Box>
           </Box>
-        )}
       </div>
-    </Box>
   );
 };
+
+
+const ManageAccounts = () => {
+  return (
+    <Layout pageTitle="MANAGE ACCOUNTS">
+      <Box 
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          padding: 2,
+          margin: 1,
+        }}>
+        <AccountsTable />
+        <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+        <AddDeptAccountForm />
+        </div>
+      </Box>
+    </Layout>
+  );
+};
+
+export default ManageAccounts;

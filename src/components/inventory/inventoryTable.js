@@ -38,13 +38,13 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
   const noInventory = "No data available";
 
   const InvCol = [
-    { field: "PropertyID", headerName: "ID", width: 50 },
+    { field: "PropertyID", headerName: "ID", width: 100 },
     { field: "PropertyName", headerName: "Name", width: 150 },
     { field: "CategoryName", headerName: "Category", width: 100 },
     { field: "StatusName", headerName: "Status", width: 100 },
     { field: "TrusteeName", headerName: "Trustee", width: 120 },
     { field: "LocationName", headerName: "Location", width: 130 },
-    { field: "PurchaseOrderID", headerName: "Purchase Order", width: 80 },
+    { field: "PurchaseOrderID", headerName: "Purchase Order", width: 100 },
     { field: "SupplierName", headerName: "Supplier", width: 170 },
     { field: "VerNum", headerName: "Version", width: 50 },
     {
@@ -74,6 +74,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
           if (columnNameOfID == "DocumentID") {
             id = row.Documents[row.VerNum];
             const docLink = String(prefetched[name][id]);
+            console.log("LINK>>", docLink)
             let newAttr = columnNameOfID.slice(0, -2) + "Link";
             row = { ...row, [newAttr]: docLink };
           } else if (columnNameOfID == "UserID") {
@@ -99,6 +100,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
   }, [filterCondition, buttonLabel, onButtonClick, noLabelText, userRoleAndID]);
 
   const localeText = noLabelText ? { noRowsLabel: noInventory } : { noRowsLabel: noChangelog };
+  // console.log("Labeltext:", noLabelText);
 
   return (
     <div>
@@ -117,6 +119,8 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
             columns: {
               columnVisibilityModel: {
                 VerNum: false,
+                actions: !noLabelText,
+ 
               },
             },
           }}
@@ -132,6 +136,21 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
               csvOptions: { allColumns: true },
               showQuickFilter: true,
             },
+          }}
+          sx={{
+            '.MuiDataGrid-columnHeaderTitle': { 
+              fontWeight: 'bold !important',
+              overflow: 'visible !important'
+           },
+           '& .MuiDataGrid-toolbarContainer': {
+            // justifyContent: "space-between",
+            '& .MuiButton-text': {
+              color: '#014421',
+            },
+            '& .MuiBadge-badge': {
+              backgroundColor: '#014421',
+            },
+           }
           }}
         />
       </Box>
