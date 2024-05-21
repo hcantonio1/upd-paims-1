@@ -21,6 +21,7 @@ const Login = () => {
 
     if (!!feedback) {
       setHasError(feedback.error);
+      setUserCred({ email: "", password: "" });
     } else {
       navigate(`/app/home`);
     }
@@ -78,6 +79,7 @@ const Login = () => {
                 type="text"
                 name="email"
                 label={userCred.email === "" ? "Email" : ""}
+                value={userCred.email}
                 onChange={handleUpdate}
                 variant="outlined"
                 size="small"
@@ -94,6 +96,7 @@ const Login = () => {
               <TextField
                 name="password"
                 label={userCred.password === "" ? "Password" : ""}
+                value={userCred.password}
                 type="password"
                 onChange={handleUpdate}
                 variant="outlined"
