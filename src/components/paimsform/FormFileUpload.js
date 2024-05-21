@@ -8,7 +8,7 @@ export const FormFileUpload = (props) => {
     <>
       <input {...props} type="file" style={{ display: "none" }} />
       <label htmlFor={props.id}>
-        <Button sx={{ width: 1 }} component="span" variant="contained" tabIndex={-1} startIcon={<CloudUpload />} disabled={props.disabled}>
+        <Button sx={{ width: 1,   backgroundColor: '#014421', '& .MuiButton-startIcon': {color: 'white'}, }} component="span" variant="contained" tabIndex={-1} startIcon={<CloudUpload />} disabled={props.disabled}>
           {text}
         </Button>
       </label>

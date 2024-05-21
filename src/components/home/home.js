@@ -24,9 +24,6 @@ const HomePage = () => {
           rowGap: 2,
           padding: 2,
           margin: 1,
-          width: "100",
-          overflow: "hidden",
-          maxWidth: "95%",
         }}
       >
         {/* user information container  */}

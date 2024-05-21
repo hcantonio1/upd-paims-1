@@ -84,7 +84,7 @@ const AddDeptAccountForm = () => {
               color={confirmPassChanged ? (passwordsMatch ? "success" : "error") : "primary"}
             />
           </Box>
-          <Button sx={{ width: 1 / 2 }} type="submit" variant="contained" size="small" color="success">
+          <Button sx={{ width: 1 / 2, backgroundColor: "#014421" }} type="submit" variant="contained" size="small" >
             Register {formData.role}
           </Button>
         </Box>
@@ -94,7 +94,7 @@ const AddDeptAccountForm = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-      <Button variant="contained" onClick={buttonClick} sx={{ width: 1 / 4, backgroundColor: "#014421" }}>
+      <Button variant="contained" onClick={buttonClick} sx={{  width: 1 / 3, backgroundColor: "#014421", marginLeft: 'auto' }}>
         {collapsed ? "New Department Account" : "Hide Section"}
       </Button>
       {collapsed ? <></> : form}

@@ -12,12 +12,12 @@ const AccountsTable = () => {
   const usersCollection = collection(db, "user");
 
   const displayCol = [
-    { field: "UserID", headerName: "ID", width: 50 },
-    { field: "Email", headerName: "Email", width: 250 },
-    { field: "Department", headerName: "Department", width: 130 },
-    { field: "Role", headerName: "Role", width: 150 },
-    { field: "LastName", headerName: "Last Name", width: 150 },
-    { field: "FirstName", headerName: "First Name", width: 150 },
+    { field: "UserID", headerName: "ID", width: 100 },
+    { field: "Email", headerName: "Email", flex: 1 },
+    { field: "Department", headerName: "Department", flex: 1 },
+    { field: "Role", headerName: "Role", flex: 1 },
+    { field: "LastName", headerName: "Last Name", flex: 1 },
+    { field: "FirstName", headerName: "First Name", flex: 1 },
   ];
 
   const [accountsData, setAccountsData] = useState([]);
@@ -77,6 +77,7 @@ const AccountsTable = () => {
                 },
               }}
               sx={{
+                padding: 1,
                 '.MuiDataGrid-columnHeaderTitle': { 
                   fontWeight: 'bold !important',
                   overflow: 'visible !important'
@@ -108,9 +109,6 @@ const ManageAccounts = () => {
           flexDirection: "column",
           padding: 2,
           margin: 1,
-          width: "100%",
-          overflow: "hidden",
-          maxWidth: "95%",
         }}>
         <AccountsTable />
         <div style={{ marginTop: '10px', marginBottom: '10px' }}>

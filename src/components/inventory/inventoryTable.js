@@ -29,7 +29,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
   const propertiesCollection = collection(db, "property");
 
   const renderActionCell = (rowData) => (
-    <Button onClick={(e) => onButtonClick(e, rowData.row)} variant="contained">
+    <Button onClick={(e) => onButtonClick(e, rowData.row)} variant="contained" sx={{ color: 'white', bgcolor: '#014421' }}>
       {buttonLabel}
     </Button>
   );
@@ -38,15 +38,15 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
   const noInventory = "No data available";
 
   const InvCol = [
-    { field: "PropertyID", headerName: "ID", width: 100 },
-    { field: "PropertyName", headerName: "Name", width: 150 },
+    { field: "PropertyID", headerName: "ID", width: 80 },
+    { field: "PropertyName", headerName: "Name", flex: 1 },
     { field: "CategoryName", headerName: "Category", width: 100 },
     { field: "StatusName", headerName: "Status", width: 100 },
-    { field: "TrusteeName", headerName: "Trustee", width: 120 },
-    { field: "LocationName", headerName: "Location", width: 130 },
-    { field: "PurchaseOrderID", headerName: "Purchase Order", width: 100 },
-    { field: "SupplierName", headerName: "Supplier", width: 170 },
-    { field: "VerNum", headerName: "Version", width: 50 },
+    { field: "TrusteeName", headerName: "Trustee", width: 100 },
+    { field: "LocationName", headerName: "Location", flex: 1 },
+    { field: "PurchaseOrderID", headerName: "Purchase Order", flex: 1 },
+    { field: "SupplierName", headerName: "Supplier", flex: 1 },
+    { field: "VerNum", headerName: "Version", flex: 1 },
     {
       field: "DocumentLink",
       headerName: "Document",
@@ -57,7 +57,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
         </Link>
       ),
     },
-    { field: "actions", headerName: buttonLabel, width: 150, renderCell: renderActionCell },
+    { field: "actions", headerName: buttonLabel, flex: 1, renderCell: renderActionCell },
   ];
 
   useEffect(() => {
@@ -138,6 +138,8 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
             },
           }}
           sx={{
+            padding: 1,
+            overflow: "auto",
             '.MuiDataGrid-columnHeaderTitle': { 
               fontWeight: 'bold !important',
               overflow: 'visible !important'

@@ -58,9 +58,8 @@ const InventoryPage = () => {
             flexDirection: "column",
             padding: 2,
             margin: 1,
-            width: "100%",
-            overflow: "hidden",
-            maxWidth: "95%",
+            // width: "100%",
+            // maxWidth: "100%",
           }}
         >
       <main>
