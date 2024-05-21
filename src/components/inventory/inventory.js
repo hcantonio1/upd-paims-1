@@ -52,15 +52,19 @@ const InventoryPage = () => {
 
   return (
     <Layout pageTitle="INVENTORY">
-      <main>
-        <Box
+      <Box
           sx={{
             display: "flex",
             flexDirection: "column",
             padding: 2,
             margin: 1,
+            width: "100%",
+            overflow: "hidden",
+            maxWidth: "95%",
           }}
         >
+      <main>
+
           <div>
           <Box display="flex" flexDirection="column">
             <Box
@@ -124,8 +128,9 @@ const InventoryPage = () => {
           <Button onClick={toggleGridVisibility}>{isGridVisible ? "Hide Archive" : "Show Archive"}</Button>
           {isGridVisible && <InventoryTable filterCondition={archivedFilter} buttonLabel="Unarchive" onButtonClick={onUnarchiveClick} noLabelText={true} />}
         </div> */}
-        </Box>
       </main>
+      </Box>
+
     </Layout>
   );
 };

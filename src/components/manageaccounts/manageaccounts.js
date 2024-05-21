@@ -108,6 +108,9 @@ const ManageAccounts = () => {
           flexDirection: "column",
           padding: 2,
           margin: 1,
+          width: "100%",
+          overflow: "hidden",
+          maxWidth: "95%",
         }}>
         <AccountsTable />
         <div style={{ marginTop: '10px', marginBottom: '10px' }}>

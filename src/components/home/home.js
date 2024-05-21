@@ -24,10 +24,13 @@ const HomePage = () => {
           rowGap: 2,
           padding: 2,
           margin: 1,
+          width: "100",
+          overflow: "hidden",
+          maxWidth: "95%",
         }}
       >
         {/* user information container  */}
-        <Box display="flex" flexDirection="column">
+        <Box display="flex" flexDirection="column" >
           {/* hello user  */}
           <Typography
             variant="h6"
@@ -48,6 +51,7 @@ const HomePage = () => {
         <UserDetailDisplay IconComponent={Build} entryLabel="Role" entryValue={getUser().role} />
         {/* changelog container  */}
         <RestrictedComponent restrictedRoles={["Trustee", "Encoder"]}>
+
           <ChangeLogTable />
         </RestrictedComponent>
       </Box>
@@ -76,7 +80,11 @@ const ChangeLogTable = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column">
+    <Box display="flex" flexDirection="column" sx={{
+      width: "100",
+      overflow: "hidden",
+      maxWidth: "100%",
+    }}>
       {/* changelog text  */}
       <Box
         sx={{
