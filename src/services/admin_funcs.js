@@ -37,7 +37,6 @@ export const createDepartmentAccount = async ({
       FirstName: firstname,
       LastName: lastname,
       UserID: accountsData.length + 1,
-      Username: "default",
     });
   } catch (err) {
     console.log("Error inserting account to the database.", err.message);

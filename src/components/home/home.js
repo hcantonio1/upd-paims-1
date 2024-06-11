@@ -39,7 +39,7 @@ const HomePage = () => {
             Hello, {getUser().firstname}!
           </Typography>
 
-          {/* username container  */}
+          {/* email container  */}
           <UserDetailDisplay IconComponent={AccountCircle} entryLabel="User" entryValue={getUser().email} />
         </Box>
 

@@ -20,8 +20,8 @@ export const handleLogin = async ({ email, password }) => {
     const authToken = await signInWithEmailAndPassword(auth, email, password);
     sessionStorage.setItem("Auth Token", authToken._tokenResponse.refreshToken);
   } catch (error) {
-    console.log("Invalid username or password.", error);
-    return { error: "Invalid username or password." };
+    console.log("Invalid email or password.", error);
+    return { error: "Invalid email or password." };
   }
   try {
     await setUserData();
@@ -59,7 +59,6 @@ const setUserData = async () => {
     firstname: data.FirstName,
     lastname: data.LastName,
     dept: data.Department,
-    username: data.Username,
   });
 };
 

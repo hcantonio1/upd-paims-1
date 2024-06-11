@@ -30,7 +30,7 @@ export const commonCollections = [
   {
     name: "user",
     columnNameOfID: "UserID",
-    valuesToFetch: ["Username"],
+    valuesToFetch: ["UserID"],
   },
   {
     name: "item_document",

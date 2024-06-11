@@ -34,6 +34,6 @@ Running the software
         - Once the development bundle has finished, you are free to proceed and go to localhost:8000 for the website
     - On another terminal window, run node expressApp.js
         - This is necessary to run queries for the database in the website
-    - As of now, the current username and password for testing is:
-        - Username: hcantonio1@up.edu.ph
+    - As of now, the current email and password for testing is:
+        - Email: hcantonio1@up.edu.ph
         - Password: thispass
