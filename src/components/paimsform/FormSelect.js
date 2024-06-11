@@ -39,7 +39,7 @@ export const AggregatedFormSelect = (props) => {
       : raw_id === "DocumentType"
       ? options.map((option) => [option.Type, option.Type])
       : ["IssuedBy", "ReceivedBy"].includes(raw_id)
-      ? options.map((option) => [getFullName(option), option.Username])
+      ? options.map((option) => [getFullName(option), option.UserID])
       : null;
 
   return <FormSelect {...props} choicevaluepairs={choicevaluepairs} />;

@@ -14,6 +14,7 @@ import { FormFileUpload } from "../paimsform/formFileUpload";
 import dayjs from "dayjs";
 import { fetchDocumentAutofill, fetchPropertyAutofill } from "../../fetchutils/formautofill";
 import { copyPages, nextChar } from "./mergedpdf";
+import { getUser } from "../../services/auth.js";
 
 const emptyPropertyErrors = {
   LocationID: [],
@@ -151,8 +152,6 @@ const UpdateProp = () => {
 
     if (formData.IssuedBy === formData.ReceivedBy) {
       alert("IssuedBy and ReceivedBy cannot be the same user.");
-      var pdfUrl = "https://firebasestorage.googleapis.com/v0/b/react-firebase-v9-b1a6f.appspot.com/o/DCS%2Fcs20labrep9.pdf?alt=media&token=88060536-ddf8-48c7-9c3b-81c4c201450a";
-      window.open(pdfUrl, "_blank");
 
       return;
     }
@@ -169,7 +168,8 @@ const UpdateProp = () => {
       await updateDoc(propertyRef, docUpdate);
 
       console.log("Uploading file to Firebase Storage");
-      const fileRef = ref(storage, "DCS/" + formData.holdLink.name);
+      const fileRef = ref(storage, `${getUser().dept}` + "/" + formData.holdLink.name);
+      //console.log(`${getUser().dept}` + "/" + formData.holdLink.name);
       await uploadBytes(fileRef, formData.holdLink);
       var fileUrl = await getDownloadURL(fileRef);
       console.log("Temp File uploaded successfully:", fileUrl);
@@ -194,7 +194,7 @@ const UpdateProp = () => {
             });
 
           console.log("Uploading merged file to Firebase Storage");
-          const newFileRef = ref(storage, "DCS/" + formData.holdLink.name);
+          const newFileRef = ref(storage, `${getUser().dept}` + "/" + formData.holdLink.name);
           const metadata = {
             name: formData.holdLink.name,
             contentType: "application/pdf",
@@ -210,6 +210,7 @@ const UpdateProp = () => {
         StatusID: parseInt(formData.StatusID),
         TrusteeID: parseInt(formData.TrusteeID),
         isArchived: archiveStat,
+        isApproved: 0,
         VerNum: newVar,
       });
 

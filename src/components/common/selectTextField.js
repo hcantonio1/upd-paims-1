@@ -68,8 +68,8 @@ function SelectTextField({ label, name, value, options, onChange, getFunc, lock 
       {(label === "Issued By" || label === "Received By") && (
         options.map((option, index) => (
           <MenuItem
-            key={option.Username}
-            value={option.Username}>
+            key={option.UserID}
+            value={option.UserID}>
             {getFunc(option)}
           </MenuItem>
         ))
