@@ -1,6 +1,7 @@
 import { db, storage } from "../../../firebase-config";
 import { Timestamp, doc, setDoc } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes } from "@firebase/storage";
+import { getUser } from "../../services/auth.js";
 
 export const handleSubmit = (e, docData, propertyRows, errors) => {
   e.preventDefault();
@@ -83,7 +84,7 @@ export const insertDocument = async (e, documentData) => {
   e.preventDefault();
   try {
     console.log("Uploading file to Firebase Storage");
-    const fileRef = ref(storage, "DCS/" + documentData.holdLink.name);
+    const fileRef = ref(storage, `${getUser().dept}` + "/" + documentData.holdLink.name);
     await uploadBytes(fileRef, documentData.holdLink);
     var fileUrl = await getDownloadURL(fileRef);
     console.log("File uploaded successfully:", fileUrl);
