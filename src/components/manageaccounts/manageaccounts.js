@@ -1,14 +1,31 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../common/layout.js";
 import { Box, Typography } from "@mui/material";
-import { db } from "../../../firebase-config.js";
-import { onSnapshot, collection } from "firebase/firestore";
+import { auth, db } from "../../../firebase-config.js";
+import { onSnapshot, doc, getDoc, collection } from "firebase/firestore";
 import AddDeptAccountForm from "./addDeptAccountForm.js";
 import { DataGrid, GridToolbar} from "@mui/x-data-grid";
 
 
-
 const AccountsTable = () => {
+  const [userRoleAndID, setUserRoleAndID] = useState({ role: "", userID: null });
+
+  useEffect(() => {
+    const getUserRoleAndID = async () => {
+      try {
+        const test = auth.currentUser.email;
+      } catch (err) {
+        console.log("Error undefined user. Solve this by making states persistent.", err);
+        return;
+      }
+      const email = auth.currentUser.email;
+      const docSnap = await getDoc(doc(db, "user", email));
+      const data = docSnap.data();
+      setUserRoleAndID({ role: data.Role, userID: data.UserID, department: data.Department });
+    };
+    getUserRoleAndID();
+  }, []);
+
   const usersCollection = collection(db, "user");
 
   const displayCol = [
@@ -28,12 +45,19 @@ const AccountsTable = () => {
     onSnapshot(usersCollection, (snapshot) => {
       let accData = [];
       snapshot.docs.forEach((doc) => {
-        accData.push(doc.data());
+        // accData.push(doc.data());
+
+        let row = doc.data();
+        const isSameDepartment = row.Department === userRoleAndID?.department;
+        if ( isSameDepartment ) {
+          accData.push(row);
+        }
+
       });
       setAccountsData(accData);
       sessionStorage.setItem("accountsData", JSON.stringify(accData));
     });
-  }, []);
+  }, [userRoleAndID]);
 
   return (
       <div>

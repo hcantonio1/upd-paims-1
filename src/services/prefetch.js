@@ -17,11 +17,11 @@ export const commonCollections = [
     columnNameOfID: "StatusID",
     valuesToFetch: ["StatusName"],
   },
-  // {
-  //   name: "purchase_order",
-  //   columnNameOfID: "PurchaseOrderID",
-  //   valuesToFetch: ["TotalCost"],
-  // },
+  {
+    name: "purchase_order",
+    columnNameOfID: "PurchaseOrderID",
+    valuesToFetch: ["TotalCost"],
+  },
   {
     name: "supplier",
     columnNameOfID: "SupplierID",
@@ -30,12 +30,12 @@ export const commonCollections = [
   {
     name: "user",
     columnNameOfID: "UserID",
-    valuesToFetch: ["Username"],
+    valuesToFetch: ["FirstName", "LastName", "Department"],
   },
   {
     name: "item_document",
     columnNameOfID: "DocumentID",
-    valuesToFetch: ["Link"],
+    valuesToFetch: ["Link", "DateIssued", "IssuedBy"],
   },
 ];
 
@@ -48,15 +48,28 @@ const fetchCollData = async ({ name, columnNameOfID, valuesToFetch }) => {
     const collSnap = await getDocs(collection(db, name));
     collSnap.docs.forEach((doc) => {
       const data = doc.data();
-      console.log("ok what am i looking at", data);
+      // console.log("ok what am i looking at", data);
       const key = data[columnNameOfID];
-      console.log("COLUMN", columnNameOfID, "CHECK KEYS", key);
+      // console.log("COLUMN", columnNameOfID, "CHECK KEYS", key);
       const values = valuesToFetch.map((column) => {
         return data[column];
       });
       prefetched[name][key] = values[0];
       if (name === "item_location") {
         prefetched[name][key] = `${values[0]} ${values[1]}`;
+      }
+      if (name === "user") {
+        prefetched[name][key] = `${values[0]} ${values[1]} ${values[2]}`;
+      }
+      if (name === "item_document") {
+        const timestamp = (values[1]);
+        const dateIssued = timestamp.toDate().toDateString()
+        const words = dateIssued.split(' ');
+        words.shift();
+        const formattedDate = words.join(' ');
+        // console.log("prefetch formattedDate:", formattedDate);
+
+        prefetched[name][key] = `${values[0]} ${values[2]} ${formattedDate}`;
       }
     });
   } catch (err) {

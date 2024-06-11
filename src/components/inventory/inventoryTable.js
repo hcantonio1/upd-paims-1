@@ -5,6 +5,7 @@ import { commonCollections } from "../../services/prefetch.js";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Box, Link, Button } from "@mui/material";
 
+
 const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelText }) => {
   const [inventoryData, setInventoryData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -21,7 +22,8 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
       const email = auth.currentUser.email;
       const docSnap = await getDoc(doc(db, "user", email));
       const data = docSnap.data();
-      setUserRoleAndID({ role: data.Role, userID: data.UserID });
+      // console.log("USERS:", data);
+      setUserRoleAndID({ role: data.Role, userID: data.UserID, department: data.Department });
     };
     getUserRoleAndID();
   }, []);
@@ -45,8 +47,10 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
     { field: "TrusteeName", headerName: "Trustee", width: 100 },
     { field: "LocationName", headerName: "Location", flex: 1 },
     { field: "PurchaseOrderID", headerName: "Purchase Order", flex: 1 },
+    { field: "TotalCost", headerName: "Total Cost", flex: 1 },
     { field: "SupplierName", headerName: "Supplier", flex: 1 },
     { field: "VerNum", headerName: "Version", flex: 1 },
+    { field: "Department", headerName: "Department", flex: 1 },
     {
       field: "DocumentLink",
       headerName: "Document",
@@ -57,6 +61,9 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
         </Link>
       ),
     },
+    { field: "DateIssued", headerName: "Date Issued", flex: 1 },
+    { field: "IssuedBy", headerName: "Issued By", flex: 1 },
+
     { field: "actions", headerName: buttonLabel, flex: 1, renderCell: renderActionCell },
   ];
 
@@ -72,16 +79,40 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
           let id = row[columnNameOfID];
 
           if (columnNameOfID == "DocumentID") {
-            id = row.Documents[row.VerNum];
-            const docLink = String(prefetched[name][id]);
-            console.log("LINK>>", docLink)
-            let newAttr = columnNameOfID.slice(0, -2) + "Link";
-            row = { ...row, [newAttr]: docLink };
+            let id = row.Documents[row.VerNum];
+            const itemDocs = String(prefetched[name][id]);
+            // console.log("item doc details>>", itemDocs, name, id)
+            const parts = itemDocs.split(' ');
+            const docLink = parts[0];
+            const docIssued = parts[1];
+            const docDate = parts.slice(2).join(' ');
+            // console.log("WHATS UP REGEX", link, "Num", number, "date", date);
+
+            let newAttr1 = columnNameOfID.slice(0, -2) + "Link";
+            row = { ...row, [newAttr1]: docLink };
+            let newAttr2 = "DateIssued";
+            row = { ...row, [newAttr2]: docDate };
+            let newAttr3 = "IssuedBy";
+            row = { ...row, [newAttr3]: docIssued };
+
           } else if (columnNameOfID == "UserID") {
             id = row.TrusteeID;
-            const userName = String(prefetched[name][id]);
-            let newAttr = "TrusteeName";
-            row = { ...row, [newAttr]: userName };
+            const userInfo = String(prefetched[name][id]);
+            const [firstName, lastName, department] = userInfo.split(' ');
+            const userName = `${firstName} ${lastName}`;
+            const userDept = `${department}`;
+            // console.log("USER INFO:", userName, userDept );
+            let newAttr1 = "TrusteeName";
+            row = { ...row, [newAttr1]: userName };
+            let newAttr2 = "Department";
+            row = { ...row, [newAttr2]: userDept };
+
+          } else if (columnNameOfID == "PurchaseOrderID") {
+            id = row.PurchaseOrderID;
+            const cost = String(prefetched[name][id]);
+            let newAttr = "TotalCost";
+            row = { ...row, [newAttr]: cost };
+
           } else {
             let newAttr = columnNameOfID.slice(0, -2) + "Name";
             let replacementName = String(prefetched[name][id]);
@@ -90,8 +121,10 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
         });
 
         const isPropertyOfTrustee = row.TrusteeID === userRoleAndID?.userID;
+        // console.log("Dept of Property?", row.Department);
+        const isSameDepartment = row.Department === userRoleAndID?.department;
         const isEncoderOrSupervisor = ["Encoder", "Supervisor", "Admin"].includes(userRoleAndID?.role);
-        if (filterCondition(row) && userRoleAndID?.role && (isPropertyOfTrustee || isEncoderOrSupervisor)) {
+        if (filterCondition(row) && userRoleAndID?.role && isSameDepartment && (isPropertyOfTrustee || isEncoderOrSupervisor)) {
           invData.push(row);
         }
       });
@@ -120,6 +153,10 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
               columnVisibilityModel: {
                 VerNum: false,
                 actions: !noLabelText,
+                Department: false,
+                DateIssued: false,
+                IssuedBy: false,
+                TotalCost: false,
  
               },
             },
