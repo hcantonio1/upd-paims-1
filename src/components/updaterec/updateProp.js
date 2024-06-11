@@ -210,6 +210,7 @@ const UpdateProp = () => {
         StatusID: parseInt(formData.StatusID),
         TrusteeID: parseInt(formData.TrusteeID),
         isArchived: archiveStat,
+        isApproved: 0,
         VerNum: newVar,
       });
 
