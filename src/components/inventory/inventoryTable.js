@@ -4,7 +4,7 @@ import { auth, db } from "../../../firebase-config.js";
 import { commonCollections } from "../../services/prefetch.js";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Box, Link, Button } from "@mui/material";
-
+import { getUser } from "../../services/auth.js";
 
 const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelText }) => {
   const [inventoryData, setInventoryData] = useState([]);
@@ -31,7 +31,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
   const propertiesCollection = collection(db, "property");
 
   const renderActionCell = (rowData) => (
-    <Button onClick={(e) => onButtonClick(e, rowData.row)} variant="contained" sx={{ color: 'white', bgcolor: '#014421' }}>
+    <Button onClick={(e) => onButtonClick(e, rowData.row)} variant="contained" sx={{ color: "white", bgcolor: "#014421" }}>
       {buttonLabel}
     </Button>
   );
@@ -64,9 +64,12 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
     { field: "DateIssued", headerName: "Date Issued", flex: 1 },
     { field: "IssuedBy", headerName: "Issued By", flex: 1 },
 
-    { field: "actions", headerName: buttonLabel, flex: 1, renderCell: renderActionCell },
+    // { field: "actions", headerName: buttonLabel, flex: 1, renderCell: renderActionCell },
   ];
 
+  if (["Supervisor", "Encoder", "Admin"].includes(getUser().role)) {
+    InvCol.push({ field: "actions", headerName: buttonLabel, flex: 1, renderCell: renderActionCell });
+  }
   useEffect(() => {
     onSnapshot(propertiesCollection, (snapshot) => {
       const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
@@ -82,10 +85,10 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
             let id = row.Documents[row.VerNum];
             const itemDocs = String(prefetched[name][id]);
             // console.log("item doc details>>", itemDocs, name, id)
-            const parts = itemDocs.split(' ');
+            const parts = itemDocs.split(" ");
             const docLink = parts[0];
             const docIssued = parts[1];
-            const docDate = parts.slice(2).join(' ');
+            const docDate = parts.slice(2).join(" ");
             // console.log("WHATS UP REGEX", link, "Num", number, "date", date);
 
             let newAttr1 = columnNameOfID.slice(0, -2) + "Link";
@@ -94,11 +97,10 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
             row = { ...row, [newAttr2]: docDate };
             let newAttr3 = "IssuedBy";
             row = { ...row, [newAttr3]: docIssued };
-
           } else if (columnNameOfID == "UserID") {
             id = row.TrusteeID;
             const userInfo = String(prefetched[name][id]);
-            const [firstName, lastName, department] = userInfo.split(' ');
+            const [firstName, lastName, department] = userInfo.split(" ");
             const userName = `${firstName} ${lastName}`;
             const userDept = `${department}`;
             // console.log("USER INFO:", userName, userDept );
@@ -106,13 +108,11 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
             row = { ...row, [newAttr1]: userName };
             let newAttr2 = "Department";
             row = { ...row, [newAttr2]: userDept };
-
           } else if (columnNameOfID == "PurchaseOrderID") {
             id = row.PurchaseOrderID;
             const cost = String(prefetched[name][id]);
             let newAttr = "TotalCost";
             row = { ...row, [newAttr]: cost };
-
           } else {
             let newAttr = columnNameOfID.slice(0, -2) + "Name";
             let replacementName = String(prefetched[name][id]);
@@ -157,7 +157,6 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
                 DateIssued: false,
                 IssuedBy: false,
                 TotalCost: false,
- 
               },
             },
           }}
@@ -177,19 +176,19 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
           sx={{
             padding: 1,
             overflow: "auto",
-            '.MuiDataGrid-columnHeaderTitle': { 
-              fontWeight: 'bold !important',
-              overflow: 'visible !important'
-           },
-           '& .MuiDataGrid-toolbarContainer': {
-            // justifyContent: "space-between",
-            '& .MuiButton-text': {
-              color: '#014421',
+            ".MuiDataGrid-columnHeaderTitle": {
+              fontWeight: "bold !important",
+              overflow: "visible !important",
             },
-            '& .MuiBadge-badge': {
-              backgroundColor: '#014421',
+            "& .MuiDataGrid-toolbarContainer": {
+              // justifyContent: "space-between",
+              "& .MuiButton-text": {
+                color: "#014421",
+              },
+              "& .MuiBadge-badge": {
+                backgroundColor: "#014421",
+              },
             },
-           }
           }}
         />
       </Box>
