@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
 import Layout from "../common/layout";
-import { Box, Typography, Paper } from "@mui/material";
+import { Box, Typography, Paper, Snackbar, Alert } from "@mui/material";
 import { PaimsForm, FormSubheadered, FormRow, SubmitButton } from "../paimsform/paimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import { AggregatedFormSelect } from "../paimsform/formSelect";
@@ -12,9 +12,11 @@ import PropertyRow, { AddPropRowButton, DeletePropRowButton, NextPropRowButton, 
 import { fetchDeptUsers, fetchCategories, fetchStatuses, fetchDeptLocations, fetchTypes } from "../../fetchutils/fetchdropdowndata";
 import { fetchDocumentAutofill, fetchSupplierAutofill, fetchPOAutofill } from "../../fetchutils/formautofill";
 import dayjs from "dayjs";
-import { handleSubmit } from "./handleinsert";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../firebase-config";
+
+import { db, storage } from "../../../firebase-config";
+import { Timestamp, doc, setDoc, getDoc } from "firebase/firestore";
+import { ref, getDownloadURL, uploadBytes } from "@firebase/storage";
+import { getUser } from "../../services/auth.js";
 
 const PROPERTY_ROW_FIELDS = {
   CategoryID: "",
@@ -70,7 +72,8 @@ const InsertRecord = () => {
   const [propRowToDisplay, setPropRowToDisplay] = useState(0);
   const [propRowLocks, setPropRowLocks] = useState([{ orderLocked: false, supLocked: false }]);
 
-  const [errors, setErrors] = useState({ count: 0, docData: _.cloneDeep(emptyDocDataErrors), propertyRows: [_.cloneDeep(emptyPropRowErrors)] });
+  const [errors, setErrors] = useState({ count: 0, errorTexts: [], docData: _.cloneDeep(emptyDocDataErrors), propertyRows: [_.cloneDeep(emptyPropRowErrors)] });
+  const [toastState, setToastState] = useState({ isTriggered: false, errorText: "" });
 
   useEffect(() => {
     const fetchdropdowndata = async () => {
@@ -175,71 +178,85 @@ const InsertRecord = () => {
     };
     const gatherFormErrors = () => {
       let errorsThisCheck = 0;
+      const errorTexts = [];
       const docDataErrors = { DocumentID: [], DocumentType: [], DateIssued: [], IssuedBy: [], ReceivedBy: [], Link: [] };
 
       // docData
       if (!docData.DocumentID) {
         docDataErrors.DocumentID.push("required");
+        errorTexts.push("Document Data\\DocumentID: required.");
         errorsThisCheck++;
       }
       if (docData.IssuedBy && docData.ReceivedBy && docData.IssuedBy === docData.ReceivedBy) {
         docDataErrors.IssuedBy.push("IssuedBy and ReceivedBy cannot be the same person");
         docDataErrors.ReceivedBy.push("IssuedBy and ReceivedBy cannot be the same person");
+        errorTexts.push("Document Data\\Issued By: IssuedBy and ReceivedBy cannot be the same person");
         errorsThisCheck++;
       }
 
-      const propertyRowsErrors = propertyRows.map((propRowData) => {
+      const propertyRowsErrors = propertyRows.map((propRowData, index) => {
         const p = async (propRowData) => {
           const newPropRowDataErrors = _.cloneDeep(emptyPropRowErrors);
 
           // property details errors
           if (!propRowData.PropertyID) {
             newPropRowDataErrors.PropertyID.push("required");
+            errorTexts.push(`Property Row ${index + 1}\\PropertyID: required`);
             errorsThisCheck++;
           }
           if (propRowData.PropertyID && !/^\d+$/.test(propRowData.PropertyID)) {
             newPropRowDataErrors.PropertyID.push("Numbers only");
+            errorTexts.push(`Property Row ${index + 1}\\PropertyID: Numbers only`);
             errorsThisCheck++;
           }
           // error++: To check if the property already exists, let's just use another useEffect
           if (propRowData.PropertyID && (await isPropertyInDatabase(propRowData.PropertyID))) {
             newPropRowDataErrors.PropertyID.push("Property already exists");
+            errorTexts.push(`Property Row ${index + 1}\\PropertyID: Property already exists`);
             errorsThisCheck++;
           }
 
           // PO errors
           if (propRowData.TotalCost && !/^\d+$/.test(propRowData.TotalCost)) {
             newPropRowDataErrors.TotalCost.push("Numbers only");
+            errorTexts.push(`Property Row ${index + 1}\\TotalCost: Numbers only`);
             errorsThisCheck++;
           }
           if (propRowData.TotalCost && parseInt(propRowData.TotalCost) <= 0) {
             newPropRowDataErrors.TotalCost.push("Please input a positive value");
+            errorTexts.push(`Property Row ${index + 1}\\TotalCost: Please input a positive value`);
             errorsThisCheck++;
           }
           if (propRowData.TotalCost && parseInt(propRowData.TotalCost) > 200000000) {
             newPropRowDataErrors.TotalCost.push("Please input a reasonable amount");
+            errorTexts.push(`Property Row ${index + 1}\\TotalCost: Please input a reasonable amount`);
             errorsThisCheck++;
           }
           if (propRowData.TotalCost && parseInt(propRowData.TotalCost) < 50000 && docData.DocumentType === "PAR") {
             newPropRowDataErrors.TotalCost.push("PAR total cost should be at least P50,000");
+            errorTexts.push(`Property Row ${index + 1}\\TotalCost: PAR total cost should be at least P50,000`);
             errorsThisCheck++;
           }
           if (propRowData.TotalCost && parseInt(propRowData.TotalCost) >= 50000 && docData.DocumentType === "ICS") {
             newPropRowDataErrors.TotalCost.push("ICS total cost should be below P50,000");
+            errorTexts.push(`Property Row ${index + 1}\\TotalCost: ICS total cost should be below P50,000`);
             errorsThisCheck++;
           }
 
           // supplier errors
           if (propRowData.SupplierID && !/^\d+$/.test(propRowData.SupplierID)) {
             newPropRowDataErrors.SupplierID.push("Numbers only");
+            errorTexts.push(`Property Row ${index + 1}\\SupplierID: Numbers only`);
             errorsThisCheck++;
           }
           if (propRowData.SupplierContact && !/^\d+$/.test(propRowData.SupplierContact)) {
             newPropRowDataErrors.SupplierContact.push("Numbers only");
+            errorTexts.push(`Property Row ${index + 1}\\SupplierContact: Numbers only`);
             errorsThisCheck++;
           }
           if (propRowData.UnitNumber && !/^\d+$/.test(propRowData.UnitNumber)) {
             newPropRowDataErrors.UnitNumber.push("Numbers only");
+            errorTexts.push(`Property Row ${index + 1}\\UnitNumber: Numbers only`);
             errorsThisCheck++;
           }
 
@@ -249,7 +266,7 @@ const InsertRecord = () => {
       });
 
       Promise.all(propertyRowsErrors).then((propRowDataErrors) => {
-        const newErrors = { count: errorsThisCheck, docData: docDataErrors, propertyRows: propRowDataErrors };
+        const newErrors = { count: errorsThisCheck, errorTexts: errorTexts, docData: docDataErrors, propertyRows: propRowDataErrors };
         setErrors(newErrors);
       });
     };
@@ -257,6 +274,113 @@ const InsertRecord = () => {
       gatherFormErrors();
     }
   }, [docData, propertyRows, propRowToDisplay]);
+
+  const handleSubmit = (e, docData, propertyRows, errors) => {
+    e.preventDefault();
+
+    console.log("I received document:", docData);
+    console.log(`I received properties[${propertyRows.length}]:`, propertyRows);
+
+    if (errors.count !== 0) {
+      console.log("I have received errors", errors);
+      setToastState({ isTriggered: true, errorText: errors.errorTexts[0] });
+      return;
+    }
+
+    const propPromises = propertyRows.map((propRowData, index) => {
+      const p = async () => {
+        try {
+          await insertPropRow(e, propRowData, docData.DocumentID);
+        } catch (error) {
+          console.log(`Error inserting Property ${index}.`);
+          alert(`Property ${index} (and succeeding properties) were not inserted.`);
+        }
+      };
+      return p();
+    });
+
+    Promise.all([insertDocument(e, docData), ...propPromises])
+      .then(() => {
+        alert("Successfully inserted all properties!");
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log("Some properties were not inserted.", error);
+      });
+  };
+
+  const insertPropRow = async (e, propRowData, documentID) => {
+    e.preventDefault();
+
+    // try {
+    await setDoc(doc(db, "supplier", propRowData.SupplierID), {
+      City: propRowData.City,
+      State: propRowData.State,
+      StreetName: propRowData.StreetName,
+      SupplierContact: propRowData.SupplierContact.toString(),
+      SupplierID: parseInt(propRowData.SupplierID),
+      SupplierName: propRowData.SupplierName,
+      UnitNumber: parseInt(propRowData.UnitNumber),
+    });
+
+    var docObject = {};
+    docObject["a"] = documentID;
+    await setDoc(doc(db, "property", propRowData.PropertyID), {
+      CategoryID: parseInt(propRowData.CategoryID),
+      Documents: docObject,
+      isArchived: 0,
+      isApproved: 0,
+      LocationID: parseInt(propRowData.LocationID),
+      PropertyID: parseInt(propRowData.PropertyID),
+      PropertyName: propRowData.PropertyName,
+      TrusteeID: parseInt(propRowData.TrusteeID),
+      StatusID: parseInt(propRowData.StatusID),
+      SupplierID: parseInt(propRowData.SupplierID),
+      PurchaseOrderID: parseInt(propRowData.PurchaseOrderID),
+      VerNum: "a",
+    });
+    await setDoc(doc(db, "purchase_order", propRowData.PurchaseOrderID), {
+      PurchaseDate: Timestamp.fromDate(new Date(propRowData.PurchaseDate)),
+      PurchaseOrderID: parseInt(propRowData.PurchaseOrderID),
+      SupplierID: parseInt(propRowData.SupplierID),
+      TotalCost: parseInt(propRowData.TotalCost),
+    });
+    // alert("Successfully inserted!");
+    // window.location.reload();
+    // } catch (error) {
+    //   console.error("Error inserting document:", error);
+    //   // alert("Failed to insert record.");
+    // }
+  };
+
+  const insertDocument = async (e, documentData) => {
+    e.preventDefault();
+    try {
+      console.log("Uploading file to Firebase Storage");
+      const fileRef = ref(storage, `${getUser().dept}` + "/" + documentData.holdLink.name);
+      await uploadBytes(fileRef, documentData.holdLink);
+      var fileUrl = await getDownloadURL(fileRef);
+      console.log("File uploaded successfully:", fileUrl);
+
+      if (documentData.holdLink.name === undefined) {
+        fileUrl = documentData.Link;
+      }
+
+      await setDoc(doc(db, "item_document", documentData.DocumentID), {
+        DateIssued: Timestamp.fromDate(new Date(documentData.DateIssued)),
+        DocumentID: documentData.DocumentID,
+        DocumentType: documentData.DocumentType,
+        IssuedBy: documentData.IssuedBy,
+        Link: fileUrl,
+        ReceivedBy: documentData.ReceivedBy,
+      });
+      // alert("Successfully inserted!");
+      // window.location.reload();
+    } catch (error) {
+      console.error("Error inserting document:", error);
+      alert("Failed to insert document.");
+    }
+  };
 
   const handleDocChange = (e) => {
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
@@ -355,7 +479,18 @@ const InsertRecord = () => {
 
   return (
     <Layout pageTitle="INSERT">
-      <Box sx={{ padding: 2, margin: 1 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", padding: 2, margin: 1 }}>
+        <Snackbar
+          open={toastState.isTriggered}
+          autoHideDuration={6000}
+          onClose={() => {
+            setToastState({ isTriggered: false, errorText: "" });
+          }}
+        >
+          <Alert severity="error" sx={{ width: "100%" }}>
+            {toastState.errorText}
+          </Alert>
+        </Snackbar>
         <main>
           <PaimsForm header="Encode a Document into the Database" onSubmit={(e) => handleSubmit(e, docData, propertyRows, errors)}>
             {docSubheadered}
