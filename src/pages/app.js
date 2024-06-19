@@ -13,6 +13,7 @@ import UpdateRecordPage from "../components/updaterec/updaterec";
 import ManageAccounts from "../components/manageaccounts/manageaccounts";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import ReportPage from "../components/reportgen/reportgen";
 
 const App = () => (
   <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -26,6 +27,7 @@ const App = () => (
       <PrivateRoute path="/app/addrec" component={AddRecordPage} />
       <PrivateRoute path="/app/updaterec" component={UpdateRecordPage} />
       <PrivateRoute path="/app/manageaccounts" component={ManageAccounts} />
+      <PrivateRoute path="/app/reportgen" component={ReportPage} />
       <Login path="/app/login" />
     </Router>
   </LocalizationProvider>

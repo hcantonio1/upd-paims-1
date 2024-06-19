@@ -53,6 +53,12 @@ const Navbar = () => {
       path: "/app/manageaccounts/",
       restrictedRoles: ["Trustee", "Encoder"],
     },
+    {
+      text: "Report Generation",
+      icon: <></>,
+      path: "/app/reportgen/",
+      restrictedRoles: ["Trustee"],
+    },
 
     // to be added once mafinalize na yung faq page
     // {
