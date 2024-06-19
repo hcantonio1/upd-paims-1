@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../common/layout";
-import { getUser } from "../../services/auth";
-import { Box, Button, Checkbox, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { FormRow, FormSubheadered, PaimsForm } from "../paimsform/paimsForm.js";
 import { AggregatedFormSelect } from "../paimsform/formSelect.js";
 import { fetchCategories, fetchDeptLocations, fetchDeptUsers, fetchStatuses } from "../../fetchutils/fetchdropdowndata.js";
 import FormDatePicker from "../paimsform/formDatePicker.js";
+
+import ReportGeneration from "./reportGeneration";
 
 const ReportPage = () => {
   const [users, setUsers] = useState([]);
