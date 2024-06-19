@@ -7,6 +7,7 @@ import { db } from "../../../firebase-config.js";
 import { commonCollections } from "../../services/prefetch.js";
 import { collection, onSnapshot } from "firebase/firestore";
 import { DataGrid } from "@mui/x-data-grid";
+import ReportGeneration from "./reportGeneration";
 
 const ReportPage = () => {
   
@@ -21,7 +22,9 @@ const ReportPage = () => {
           rowGap: 2,
         }}
       >
-        
+        <main>
+          <ReportGeneration />
+        </main>
       </Box>
     </Layout>
   );
