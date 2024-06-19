@@ -1,13 +1,15 @@
 import { db } from "../../firebase-config";
 import { collection, getDocs } from "firebase/firestore";
+import { getUser } from "../services/auth";
 
 export const fetchDeptUsers = async () => {
   try {
     const userCollection = collection(db, "user");
     const snapshot = await getDocs(userCollection);
     const users = snapshot.docs.map((doc) => doc.data());
-    // const myUsers = users.filter((data) => data.Department === dept);
-    return users;
+    const myDept = getUser().dept; // paimsUser.dept
+    const myUsers = users.filter((data) => data.Department === myDept);
+    return myUsers;
   } catch (error) {
     console.error("Error fetching users:", error);
   }
@@ -29,7 +31,29 @@ export const fetchDeptLocations = async () => {
     const locationCollection = collection(db, "item_location");
     const snapshot = await getDocs(locationCollection);
     const locations = snapshot.docs.map((doc) => doc.data());
-    return locations;
+    const myDept = getUser().dept; // paimsUser.dept
+
+    const isLocInDept = locations.map((loc) => {
+      // TYPE: Promise[] which resolves into bool[]
+      const p = async () => {
+        try {
+          const buildingCollection = collection(db, "building");
+          const bsnap = await getDocs(buildingCollection);
+          const buildings = bsnap.docs.map((b) => b.data());
+          const myBuilding = buildings.find((building) => loc.Building === building.Name);
+          // console.log(myBuilding.Department, loc.Building);
+          return myBuilding.Department === myDept;
+        } catch (err) {
+          console.error("Error fetching buildings:", err);
+        }
+      };
+      return p();
+    });
+
+    const boolArr = await Promise.all(isLocInDept);
+    // console.log(boolArr, locations);
+    const myLocs = locations.filter((_, index) => boolArr[index]);
+    return myLocs;
   } catch (error) {
     console.error("Error fetching locations:", error);
   }
