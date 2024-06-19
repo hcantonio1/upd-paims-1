@@ -49,9 +49,45 @@ const ReportGeneration = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        //try {
+        {/*
+        try {
+            const propRef = collection(db, "property");
+            let query = propRef;
 
-        //};
+            // Chain where clauses based on criteria
+            if (formData.CategoryIDs && formData.CategoryIDs.length > 0) {
+                query = query.where('CategoryID', 'in', formData.CategoryIDs);
+            }
+            if (formData.SupplierIDs && formData.SupplierIDs.length > 0) {
+                query = query.where('SupplierID', 'in', formData.SupplierIDs);
+            }
+            if (formData.LocationIDs && formData.LocationIDs.length > 0) {
+                query = query.where('LocationID', 'in', formData.LocationIDs);
+            }
+            if (formData.StatusIDs && formData.StatusIDs.length > 0) {
+                query = query.where('StatusID', 'in', formData.StatusIDs);
+            }
+            if (formData.TrusteeIDs && formData.TrusteeIDs.length > 0) {
+                query = query.where('TrusteeID', 'in', formData.TrusteeIDs);
+            }
+            if (Timestamp.fromDate(new Date(formData.StartDate)) && Timestamp.fromDate(new Date(formData.EndDate))) {
+                query = query.where('DateIssued', '>=', Timestamp.fromDate(new Date(formData.StartDate))).where('DateIssued', '<=', Timestamp.fromDate(new Date(formData.EndDate)));
+            } else if (Timestamp.fromDate(new Date(formData.StartDate))) {
+                query = query.where('DateIssued', '>=', Timestamp.fromDate(new Date(formData.StartDate)));
+            } else if (Timestamp.fromDate(new Date(formData.EndDate))) {
+                query = query.where('DateIssued', '<=', Timestamp.fromDate(new Date(formData.EndDate)));
+            }
+            
+            // Execute queries
+            query.get().then((querySnapshot) => {
+                querySnapshot.forEach((prop) => {
+                    console.log(prop.id, ' => ', prop.data());
+                });
+            }).catch((error) => {
+                console.error('Error executing queries: ', error);
+            });
+        };
+        */}
     };
 
     return (
