@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
+import { FormControl, InputLabel, Select, MenuItem, FormHelperText, Checkbox, ListItemText, Input } from "@mui/material";
 
 export const FormSelect = (props) => {
   const { id, label, choicevaluepairs } = props;
@@ -12,6 +12,30 @@ export const FormSelect = (props) => {
       <Select {...props} name={id} labelId={inputLabelLabel}>
         {choicevaluepairs.map((choice, index) => (
           <MenuItem key={`${label}_${index}`} value={choice[1]}>
+            {choice[0]}
+          </MenuItem>
+        ))}
+      </Select>
+      {props.error && <FormHelperText>{props.helpertext}</FormHelperText>}
+    </FormControl>
+  );
+};
+
+export const CustomFormMultiSelect = (props) => {
+  const { id, label, choicevaluepairs } = props;
+  const smallLabel = label.charAt(0).toLowerCase() + label.slice(1);
+  const inputLabelLabel = `select-${smallLabel}`;
+
+  // console.log(choicevaluepairs);
+  // console.log(props.value, `is ${choicevaluepairs[0][1]} here? ${props.value.indexOf(choicevaluepairs[0][0]) > -1}`);
+  return (
+    <FormControl id={id} size="small" error={!!props.error}>
+      <InputLabel id={inputLabelLabel}>{label}</InputLabel>
+      <Select {...props} name={id} labelId={inputLabelLabel}>
+        {choicevaluepairs.map((choice, index) => (
+          <MenuItem key={`${label}_${index}`} value={choice[1]} sx={getOptionStyle(choice[1], props.value)}>
+            {/* <Checkbox checked={props.value.indexOf(choice[0]) > -1} />
+            <ListItemText primary={choice[0]} /> */}
             {choice[0]}
           </MenuItem>
         ))}
@@ -42,7 +66,7 @@ export const AggregatedFormSelect = (props) => {
       ? options.map((option) => [getFullName(option), option.UserID])
       : null;
 
-  return <FormSelect {...props} choicevaluepairs={choicevaluepairs} />;
+  return props.multiple ? <CustomFormMultiSelect {...props} choicevaluepairs={choicevaluepairs}></CustomFormMultiSelect> : <FormSelect {...props} choicevaluepairs={choicevaluepairs} />;
 };
 
 const getFullName = (user) => {
@@ -51,4 +75,9 @@ const getFullName = (user) => {
 
 const getFullLoc = (location) => {
   return `${location.Building} ${location.RoomNumber}`;
+};
+
+const getOptionStyle = (choice, choices) => {
+  // console.log(`choice: ${choice}, choices: ${choices}, ${choices.indexOf(choice)}:${choices.indexOf(choice) > -1}`);
+  return choices.indexOf(choice) > -1 ? { fontWeight: "bold" } : { fontWeight: "regular" };
 };

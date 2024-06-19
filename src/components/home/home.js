@@ -27,15 +27,9 @@ const HomePage = () => {
         }}
       >
         {/* user information container  */}
-        <Box display="flex" flexDirection="column" >
+        <Box display="flex" flexDirection="column">
           {/* hello user  */}
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: "bold",
-              margin: 1,
-            }}
-          >
+          <Typography variant="h6" sx={{ fontWeight: "bold", margin: 1 }}>
             Hello, {getUser().firstname}!
           </Typography>
 
@@ -48,7 +42,6 @@ const HomePage = () => {
         <UserDetailDisplay IconComponent={Build} entryLabel="Role" entryValue={getUser().role} />
         {/* changelog container  */}
         <RestrictedComponent restrictedRoles={["Trustee", "Encoder"]}>
-
           <ChangeLogTable />
         </RestrictedComponent>
       </Box>
@@ -77,11 +70,15 @@ const ChangeLogTable = () => {
   };
 
   return (
-    <Box display="flex" flexDirection="column" sx={{
-      width: "100",
-      overflow: "hidden",
-      maxWidth: "100%",
-    }}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      sx={{
+        width: "100",
+        overflow: "hidden",
+        maxWidth: "100%",
+      }}
+    >
       {/* changelog text  */}
       <Box
         sx={{
@@ -100,7 +97,8 @@ const ChangeLogTable = () => {
         sx={{
           borderStyle: "solid",
           borderColor: "#e5e5e5",
-        }}>
+        }}
+      >
         <InventoryTable filterCondition={approvedFilter} buttonLabel="Approve" onButtonClick={onApproveClick} noLabelText={false} />
       </Box>
     </Box>
