@@ -4,6 +4,7 @@ import { HomeRounded, Folder, AddCircleOutline, AccountCircleRounded, ExpandLess
 import RestrictedComponent from "./restrictedComponent";
 import { navigate } from "gatsby";
 import { Box } from "@mui/material";
+import { ContentPaste } from "@mui/icons-material";
 
 const navbarWidth = 235;
 
@@ -55,7 +56,7 @@ const Navbar = () => {
     },
     {
       text: "Report Generation",
-      icon: <></>,
+      icon: <ContentPaste />,
       path: "/app/reportgen/",
       restrictedRoles: ["Trustee"],
     },
