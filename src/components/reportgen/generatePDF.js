@@ -2,7 +2,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-export const generateReport = (e) => {
+export const generatePDF = (rows) => {
   const dd = {
     content: [],
     // styles: {}
