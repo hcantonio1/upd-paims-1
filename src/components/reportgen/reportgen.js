@@ -45,6 +45,8 @@ const ReportPage = () => {
     try {
       const propRef = collection(db, "property");
       let firestoreQuery = query(propRef);
+      const itemDocRef = collection(db, "item_document");
+      let firestoreQuery1 = query(itemDocRef);
       console.log("Start!");
 
       // Construct dynamic where clauses based on selectionData
@@ -65,20 +67,26 @@ const ReportPage = () => {
         console.log("Locations selected!");
       }
       if (dateRange.startDate) {
-        firestoreQuery = query(firestoreQuery, where("DateIssued", ">=", Timestamp.fromDate(new Date(dateRange.startDate))));
+        firestoreQuery1 = query(firestoreQuery1, where("DateIssued", ">=", Timestamp.fromDate(new Date(dateRange.startDate))));
         console.log("Start date selected!");
       }
       if (dateRange.endDate) {
-        firestoreQuery = query(firestoreQuery, where("DateIssued", "<=", Timestamp.fromDate(new Date(dateRange.endDate))));
+        firestoreQuery1 = query(firestoreQuery1, where("DateIssued", "<=", Timestamp.fromDate(new Date(dateRange.endDate))));
         console.log("End date selected!");
       }
       console.log("Done forming queries!");
 
       // Execute queries
-      const querySnapshot = await getDocs(firestoreQuery);
-      querySnapshot.forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
-      });
+      const propSnapshot = await getDocs(firestoreQuery);
+      const itemDocSnapshot = await getDocs(firestoreQuery1);
+      const docIDs = itemDocSnapshot.docs.map((doc) => doc.id);
+      const finalProps = propSnapshot.docs
+        .filter((prop) => {
+          const documentId = prop.data().Documents[prop.data().VerNum];
+          return docIDs.some((docId) => docId === documentId);
+        })
+        .map((prop) => prop.data());
+      console.log(finalProps);
 
       // PDF Generation Part
     } catch (error) {
