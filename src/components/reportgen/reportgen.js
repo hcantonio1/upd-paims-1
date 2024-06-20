@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../common/layout";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { FormRow, FormSubheadered, PaimsForm } from "../paimsform/paimsForm.js";
 import { AggregatedFormSelect } from "../paimsform/formSelect.js";
 import { fetchCategories, fetchDeptLocations, fetchDeptUsers, fetchStatuses } from "../../fetchutils/fetchdropdowndata.js";
@@ -8,7 +8,6 @@ import FormDatePicker from "../paimsform/formDatePicker.js";
 import { db, storage } from "../../../firebase-config";
 import { Timestamp, getDocs, collection, query, where } from "firebase/firestore";
 import { PDFDocument } from "pdf-lib";
-
 
 const ReportPage = () => {
   const [users, setUsers] = useState([]);
@@ -18,6 +17,7 @@ const ReportPage = () => {
 
   const [selectionData, setSelectionData] = useState({ trustees: [], categories: [], locations: [], statuses: [] });
   const [dateRange, setDateRange] = useState({ startDate: null, endDate: null });
+  const [includesArchived, setIncludesArchived] = useState(false);
 
   useEffect(() => {
     const fetchdropdowndata = async () => {
@@ -33,9 +33,9 @@ const ReportPage = () => {
     // MUI Select sends an object target={name, value} as opposed to regular onChange which sends a target=HTML
     const newSelectionData = { ...selectionData };
     const key = e.target.name !== "" ? e.target.name : e.target.id;
-    const selectionDataKey = key === "TrusteeID" ? "trustees" : key === "CategoryID" ? "categories" : key === "StatusID" ? "statuses" : key === "LocationID" ? "locations" : null;
+    const selectionDataKey = key === "TrusteeID" ? "trustees" : key === "CategoryID" ? "categories" : key === "StatusID" ? "statuses" : key === "LocationID" ? "locations" : key;
     newSelectionData[selectionDataKey] = e.target.value;
-    // console.log(newSelectionData);
+    console.log(newSelectionData, dateRange, includesArchived);
     setSelectionData(newSelectionData);
   };
 
@@ -63,7 +63,7 @@ const ReportPage = () => {
       if (selectionData.locations.length > 0) {
         firestoreQuery = query(firestoreQuery, where("LocationID", "in", selectionData.locations));
         console.log("Locations selected!");
-      }      
+      }
       if (dateRange.startDate) {
         firestoreQuery = query(firestoreQuery, where("DateIssued", ">=", Timestamp.fromDate(new Date(dateRange.startDate))));
         console.log("Start date selected!");
@@ -81,14 +81,12 @@ const ReportPage = () => {
       });
 
       // PDF Generation Part
-      
-      
     } catch (error) {
       console.error("Error generating report:", error);
       alert("Failed to generate report.");
     }
     console.log("Ended!");
-  }
+  };
 
   return (
     <Layout pageTitle="REPORT GENERATION">
@@ -100,8 +98,8 @@ const ReportPage = () => {
               Generate Report
             </Button>
           </FormRow>
-          <Typography variant="h6">Generate a summary of all the properties under a select entity.</Typography>
-          <Typography variant="h6">Leave out the advanced options empty to generate a report for the entire department.</Typography>
+          <Typography variant="h9">Generate a summary of all the properties under a select entity.</Typography>
+          <Typography variant="h9">Leave out the advanced options empty to generate a report for the entire department.</Typography>
           <br />
           <FormSubheadered subheader={"Advanced Options"}>
             {/* <FormRow segments={4}> */}
@@ -116,6 +114,18 @@ const ReportPage = () => {
               <FormDatePicker id="startDate" label="Start Date" value={dateRange.startDate} onChange={(val) => setDateRange({ ...dateRange, startDate: val })} />
               <FormDatePicker id="endDate" label="End Date" value={dateRange.endDate} onChange={(val) => setDateRange({ ...dateRange, endDate: val })} />
             </FormRow>
+          </FormSubheadered>
+          <FormSubheadered subheader="Include Archived Properties">
+            <FormControlLabel
+              value={includesArchived}
+              control={<Checkbox />}
+              id="includesArchived"
+              label="Include archived properties in the report."
+              labelPlacement="end"
+              onChange={(e, val) => {
+                setIncludesArchived(val);
+              }}
+            />
           </FormSubheadered>
         </PaimsForm>
       </Box>
