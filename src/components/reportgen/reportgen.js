@@ -6,6 +6,7 @@ import { AggregatedFormSelect } from "../paimsform/formSelect.js";
 import { fetchCategories, fetchDeptLocations, fetchDeptUsers, fetchStatuses } from "../../fetchutils/fetchdropdowndata.js";
 import FormDatePicker from "../paimsform/formDatePicker.js";
 
+import { generateReport } from "./generatereport.js";
 import ReportGeneration from "./reportGeneration";
 
 const ReportPage = () => {
@@ -43,7 +44,7 @@ const ReportPage = () => {
       <Box sx={{ display: "flex", flexDirection: "column", p: 2, margin: 1 }}>
         <PaimsForm header="Generate a Document">
           <FormRow segments={4}>
-            <Button variant="contained" color="success">
+            <Button variant="contained" color="success" onClick={generateReport}>
               Generate Report
             </Button>
           </FormRow>
