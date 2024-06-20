@@ -54,7 +54,7 @@ export default HomePage;
 const ChangeLogTable = () => {
   const noLabelChangelog = "No recent changes";
   const approvedFilter = (row) => {
-    return row.isArchived !== 1 && row.isApproved !== 1;
+    return row.isApproved !== 1;
   };
   const onApproveClick = async (e, row) => {
     e.stopPropagation();
