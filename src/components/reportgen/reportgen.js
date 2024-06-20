@@ -5,8 +5,10 @@ import { FormRow, FormSubheadered, PaimsForm } from "../paimsform/paimsForm.js";
 import { AggregatedFormSelect } from "../paimsform/formSelect.js";
 import { fetchCategories, fetchDeptLocations, fetchDeptUsers, fetchStatuses } from "../../fetchutils/fetchdropdowndata.js";
 import FormDatePicker from "../paimsform/formDatePicker.js";
+import { db, storage } from "../../../firebase-config";
+import { Timestamp, getDocs, collection, query, where } from "firebase/firestore";
+import { PDFDocument } from "pdf-lib";
 
-import ReportGeneration from "./reportGeneration";
 
 const ReportPage = () => {
   const [users, setUsers] = useState([]);
@@ -37,13 +39,64 @@ const ReportPage = () => {
     setSelectionData(newSelectionData);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const propRef = collection(db, "property");
+      let firestoreQuery = query(propRef);
+      console.log("Start!");
+
+      // Construct dynamic where clauses based on selectionData
+      if (selectionData.trustees.length > 0) {
+        firestoreQuery = query(firestoreQuery, where("TrusteeID", "in", selectionData.trustees));
+        console.log("Trustees selected!");
+      }
+      if (selectionData.statuses.length > 0) {
+        firestoreQuery = query(firestoreQuery, where("StatusID", "in", selectionData.statuses));
+        console.log("Statuses selected!");
+      }
+      if (selectionData.categories.length > 0) {
+        firestoreQuery = query(firestoreQuery, where("CategoryID", "in", selectionData.categories));
+        console.log("Categories selected!");
+      }
+      if (selectionData.locations.length > 0) {
+        firestoreQuery = query(firestoreQuery, where("LocationID", "in", selectionData.locations));
+        console.log("Locations selected!");
+      }      
+      if (dateRange.startDate) {
+        firestoreQuery = query(firestoreQuery, where("DateIssued", ">=", Timestamp.fromDate(new Date(dateRange.startDate))));
+        console.log("Start date selected!");
+      }
+      if (dateRange.endDate) {
+        firestoreQuery = query(firestoreQuery, where("DateIssued", "<=", Timestamp.fromDate(new Date(dateRange.endDate))));
+        console.log("End date selected!");
+      }
+      console.log("Done forming queries!");
+
+      // Execute queries
+      const querySnapshot = await getDocs(firestoreQuery);
+      querySnapshot.forEach((doc) => {
+        console.log(doc.id, " => ", doc.data());
+      });
+
+      // PDF Generation Part
+      
+      
+    } catch (error) {
+      console.error("Error generating report:", error);
+      alert("Failed to generate report.");
+    }
+    console.log("Ended!");
+  }
+
   return (
     <Layout pageTitle="REPORT GENERATION">
       {/* report gen content container  */}
       <Box sx={{ display: "flex", flexDirection: "column", p: 2, margin: 1 }}>
-        <PaimsForm header="Generate a Document">
+        <PaimsForm header="Generate a Document" onSubmit={handleSubmit}>
           <FormRow segments={4}>
-            <Button variant="contained" color="success">
+            <Button type="submit" variant="contained" color="success">
               Generate Report
             </Button>
           </FormRow>
