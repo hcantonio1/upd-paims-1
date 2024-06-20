@@ -92,6 +92,7 @@ const ReportPage = () => {
       console.log(finalProps);
 
       // PDF Generation Part
+      generatePDF(finalProps);
     } catch (error) {
       console.error("Error generating report:", error);
       alert("Failed to generate report.");
