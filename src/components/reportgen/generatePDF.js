@@ -4,6 +4,12 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export const generatePDF = (properties) => {
+  const dateGenerated = new Date();
+
+  const dateGeneratedOptions = { year: "numeric", month: "long", day: "numeric" };
+  const dateGeneratedStr = dateGenerated.toLocaleDateString("en-US", dateGeneratedOptions);
+  // console.log(dateGeneratedStr);
+
   const tableItems = formatTableItems(properties);
   const dd = {
     pageOrientation: "landscape",
@@ -29,7 +35,7 @@ export const generatePDF = (properties) => {
         alignment: "center",
       },
     },
-    content: [...titleAndFields, tableAndSigs(tableItems)],
+    content: [...titleAndFields(dateGeneratedStr), tableAndSigs(tableItems)],
   };
 
   pdfMake.createPdf(dd).open();
@@ -45,56 +51,58 @@ const emptyTableCell = { text: "", style: "tablecell" };
 const emptyTableRow = Array(10).fill(emptyTableCell);
 
 // repeating page title and fields
-const titleAndFields = [
-  {
-    text: "REPORT ON THE PHYSICAL COUNT OF PROPERTY, PLANT AND EQUIPMENT",
-    style: "header",
-    alignment: "center",
-  },
-  {
-    text: `\n${twelvespc}221 - Office Equipment${twelvespc}`,
-    alignment: "center",
-    decoration: "underline",
-  },
-  {
-    text: "(Type of Property, Plant and Equipment)",
-    alignment: "center",
-  },
-  {
-    text: ["\nAs of ", { text: `${twelvespc}December 31, 2023${twelvespc}`, decoration: "underline" }, "      "],
-    alignment: "center",
-  },
-  {
-    text: ["\nEntity Name : ", { text: `${sixspc}College of Engineering - Department of Computer Science (CEN-DCS)${sixspc}`, decoration: "underline" }],
-  },
-  {
-    text: ["Fund Cluster: ", { text: `${_48spc}`, decoration: "underline" }],
-  },
-  {
-    text: [
-      "For which ",
-      { text: `${_48spc}`, decoration: "underline" },
-      `${sixspc}`,
-      { text: `${_48spc}`, decoration: "underline" },
-      `${sixspc}`,
-      { text: `${_48spc}`, decoration: "underline" },
-      " is accountable, having assumed such accountability on",
-      `${twelvespc}`,
-      { text: `${_48spc}`, decoration: "underline" },
-    ],
-  },
-  {
-    text: [
-      `............(Name of Accountable Officer)`,
-      `${twelvespc}`,
-      "(Official Designation)",
-      `${twelvespc}${sixspc}   `,
-      "(Entity Name)",
-      `${_48spc}${_48spc}${_24spc}${sixspc}   `,
-      "(Date of Assumption)",
-    ],
-  },
-];
+const titleAndFields = (dateGeneratedStr) => {
+  return [
+    {
+      text: "REPORT ON THE PHYSICAL COUNT OF PROPERTY, PLANT AND EQUIPMENT",
+      style: "header",
+      alignment: "center",
+    },
+    {
+      text: `\n${twelvespc}221 - Office Equipment${twelvespc}`,
+      alignment: "center",
+      decoration: "underline",
+    },
+    {
+      text: "(Type of Property, Plant and Equipment)",
+      alignment: "center",
+    },
+    {
+      text: ["\nAs of ", { text: `${twelvespc}${dateGeneratedStr}${twelvespc}`, decoration: "underline" }, "      "],
+      alignment: "center",
+    },
+    {
+      text: ["\nEntity Name : ", { text: `${sixspc}College of Engineering - Department of Computer Science (CEN-DCS)${sixspc}`, decoration: "underline" }],
+    },
+    {
+      text: ["Fund Cluster: ", { text: `${_48spc}`, decoration: "underline" }],
+    },
+    {
+      text: [
+        "For which ",
+        { text: `${_48spc}`, decoration: "underline" },
+        `${sixspc}`,
+        { text: `${_48spc}`, decoration: "underline" },
+        `${sixspc}`,
+        { text: `${_48spc}`, decoration: "underline" },
+        " is accountable, having assumed such accountability on",
+        `${twelvespc}`,
+        { text: `${_48spc}`, decoration: "underline" },
+      ],
+    },
+    {
+      text: [
+        `............(Name of Accountable Officer)`,
+        `${twelvespc}`,
+        "(Official Designation)",
+        `${twelvespc}${sixspc}   `,
+        "(Entity Name)",
+        `${_48spc}${_48spc}${_24spc}${sixspc}   `,
+        "(Date of Assumption)",
+      ],
+    },
+  ];
+};
 
 // create Table consisting of headers, content, and signatures
 const tableHeaders = [
