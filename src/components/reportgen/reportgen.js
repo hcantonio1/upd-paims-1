@@ -89,7 +89,7 @@ const ReportPage = () => {
           return docIDs.some((docId) => docId === documentId);
         })
         .map((prop) => prop.data());
-      console.log(finalProps);
+      // console.log(finalProps);
 
       // PDF Generation Part
       generatePDF(finalProps);

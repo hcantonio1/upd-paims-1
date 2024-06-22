@@ -10,6 +10,12 @@ export const generatePDF = (properties) => {
   const dateGeneratedStr = dateGenerated.toLocaleDateString("en-US", dateGeneratedOptions);
   // console.log(dateGeneratedStr);
 
+  const fields = {
+    date: dateGeneratedStr,
+    department: "College of Engineering - Department of Computer Science (CEN-DCS)",
+    category: `${_24spc}`,
+  };
+
   const tableItems = formatTableItems(properties);
   const dd = {
     pageOrientation: "landscape",
@@ -35,7 +41,7 @@ export const generatePDF = (properties) => {
         alignment: "center",
       },
     },
-    content: [...titleAndFields(dateGeneratedStr), tableAndSigs(tableItems)],
+    content: [...titleAndFields(fields), tableAndSigs(tableItems)],
   };
 
   pdfMake.createPdf(dd).open();
@@ -51,7 +57,7 @@ const emptyTableCell = { text: "", style: "tablecell" };
 const emptyTableRow = Array(10).fill(emptyTableCell);
 
 // repeating page title and fields
-const titleAndFields = (dateGeneratedStr) => {
+const titleAndFields = (fields) => {
   return [
     {
       text: "REPORT ON THE PHYSICAL COUNT OF PROPERTY, PLANT AND EQUIPMENT",
@@ -59,7 +65,7 @@ const titleAndFields = (dateGeneratedStr) => {
       alignment: "center",
     },
     {
-      text: `\n${twelvespc}221 - Office Equipment${twelvespc}`,
+      text: `\n${twelvespc}${fields.category}${twelvespc}`,
       alignment: "center",
       decoration: "underline",
     },
@@ -68,11 +74,11 @@ const titleAndFields = (dateGeneratedStr) => {
       alignment: "center",
     },
     {
-      text: ["\nAs of ", { text: `${twelvespc}${dateGeneratedStr}${twelvespc}`, decoration: "underline" }, "      "],
+      text: ["\nAs of ", { text: `${twelvespc}${fields.date}${twelvespc}`, decoration: "underline" }, "      "],
       alignment: "center",
     },
     {
-      text: ["\nEntity Name : ", { text: `${sixspc}College of Engineering - Department of Computer Science (CEN-DCS)${sixspc}`, decoration: "underline" }],
+      text: ["\nEntity Name : ", { text: `${sixspc}${fields.department}${sixspc}`, decoration: "underline" }],
     },
     {
       text: ["Fund Cluster: ", { text: `${_48spc}`, decoration: "underline" }],
