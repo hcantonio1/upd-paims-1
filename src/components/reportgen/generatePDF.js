@@ -8,7 +8,6 @@ export const generatePDF = (properties) => {
 
   const dateGeneratedOptions = { year: "numeric", month: "long", day: "numeric" };
   const dateGeneratedStr = dateGenerated.toLocaleDateString("en-US", dateGeneratedOptions);
-  // console.log(dateGeneratedStr);
 
   const fields = {
     date: dateGeneratedStr,
