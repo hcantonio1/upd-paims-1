@@ -30,4 +30,4 @@ Running the software
         - This is necessary to run queries for the database in the website
     - As of now, the current email and password for testing is:
         - Email: hcantonio1@up.edu.ph
-        - Password: thispass
+        - Password: thepass
