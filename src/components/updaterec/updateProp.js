@@ -21,6 +21,8 @@ const emptyPropertyErrors = {
   PropertyID: [],
   TrusteeID: [],
   StatusID: [],
+  UnitValue: [],
+  PropertyFound: [],
   DocumentID: [],
   DocumentType: [],
   DateIssued: [],
@@ -35,6 +37,8 @@ const UpdateProp = () => {
     TrusteeID: "",
     LocationID: "",
     PropertyID: "",
+    UnitValue: "",
+    PropertyFound: "",
     parID: {},
     iirupID: {},
     icsID: {},
@@ -67,6 +71,11 @@ const UpdateProp = () => {
     };
     fetchdropdowndata();
   }, []);
+
+  const isFoundDropdown = [
+    { text: "Property is found", value: true },
+    { text: "Property is not found", value: false },
+  ];
 
   useEffect(() => {
     const autofillDocumentData = async () => {
@@ -125,6 +134,15 @@ const UpdateProp = () => {
       if (formData.IssuedBy && formData.ReceivedBy && formData.IssuedBy === formData.ReceivedBy) {
         newFormErrors.IssuedBy.push("IssuedBy and ReceivedBy cannot be the same person");
         newFormErrors.ReceivedBy.push("IssuedBy and ReceivedBy cannot be the same person");
+      }
+      if (formData.UnitValue && !/^\d+$/.test(formData.UnitValue)) {
+        newFormErrors.UnitValue.push("Numbers only");
+      }
+      if (formData.UnitValue && parseInt(formData.UnitValue) < 0) {
+        newFormErrors.UnitValue.push("Please input a number at least zero");
+      }
+      if (formData.UnitValue && parseInt(formData.UnitValue) > 200000000) {
+        newFormErrors.UnitValue.push("Please input a reasonable amount");
       }
       setFormErrors(newFormErrors);
     };
@@ -266,6 +284,17 @@ const UpdateProp = () => {
         <FormRow segments={3}>
           <AggregatedFormSelect id={`StatusID`} label="Status" value={formData.StatusID} onChange={handleInputChange} options={statuses} />
           <AggregatedFormSelect id={`LocationID`} label="Location" value={formData.LocationID} onChange={handleInputChange} options={locations} />
+        </FormRow>
+        <FormRow segments={3}>
+          <SmallTextField
+            id="UnitValue"
+            label="Unit Value"
+            value={formData.UnitNumber}
+            onChange={handleInputChange}
+            error={!!propFieldHasError("UnitValue")}
+            helperText={propFieldHasError("UnitValue")}
+          />
+          <AggregatedFormSelect id={`PropertyFound`} label="Is the Property Found?" value={formData[`PropertyFound`]} onChange={handleInputChange} options={isFoundDropdown} />
         </FormRow>
       </FormSubheadered>
       <FormSubheadered subheader="Accompanying Document">
