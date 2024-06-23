@@ -44,6 +44,25 @@ const PropertyRow = ({ propRowData, handleChange, errors, locks, ...rest }) => {
         <AggregatedFormSelect id={`StatusID`} label="Status" value={propRowData[`StatusID`]} onChange={handleInputChange} options={statuses} />
         <AggregatedFormSelect id={`LocationID`} label="Location" value={propRowData[`LocationID`]} onChange={handleInputChange} options={locations} />
       </FormRow>
+      <FormRow segments={4}>
+        <SmallTextField id={`UnitOfMeasure`} label="Unit of Measure" value={propRowData[`UnitOfMeasure`]} onChange={handleInputChange} />
+        <SmallTextField
+          id={`UnitValue`}
+          label="Unit Value"
+          value={propRowData[`UnitValue`]}
+          onChange={handleInputChange}
+          inputProps={{
+            inputMode: "numeric",
+            pattern: "[0-9]*",
+            min: "0",
+            step: "any",
+          }}
+          title="Please input a number at least zero."
+          required
+          error={!!fieldHasError("UnitValue")}
+          helperText={fieldHasError("UnitValue")}
+        />
+      </FormRow>
     </FormSubheadered>
   );
 

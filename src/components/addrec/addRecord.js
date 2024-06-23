@@ -24,6 +24,8 @@ const PROPERTY_ROW_FIELDS = {
   PropertyID: "",
   PropertyName: "",
   TrusteeID: "",
+  UnitValue: "",
+  UnitOfMeasure: "",
   StatusID: "",
   SupplierID: "",
   PurchaseDate: null,
@@ -44,6 +46,8 @@ const emptyPropRowErrors = {
   PropertyID: [],
   PropertyName: [],
   TrusteeID: [],
+  UnitValue: [],
+  UnitOfMeasure: [],
   StatusID: [],
   SupplierID: [],
   PurchaseDate: [],
@@ -215,6 +219,21 @@ const InsertRecord = () => {
             errorTexts.push(`Property Row ${index + 1}\\PropertyID: Property already exists`);
             errorsThisCheck++;
           }
+          if (propRowData.UnitValue && !/^\d+$/.test(propRowData.UnitValue)) {
+            newPropRowDataErrors.UnitValue.push("Numbers only");
+            errorTexts.push(`Property Row ${index + 1}\\UnitValue: Numbers only`);
+            errorsThisCheck++;
+          }
+          if (propRowData.UnitValue && parseInt(propRowData.UnitValue) < 0) {
+            newPropRowDataErrors.UnitValue.push("Please input a number at least zero");
+            errorTexts.push(`Property Row ${index + 1}\\UnitValue: Please input a number at least zero`);
+            errorsThisCheck++;
+          }
+          if (propRowData.UnitValue && parseInt(propRowData.UnitValue) > 200000000) {
+            newPropRowDataErrors.UnitValue.push("Please input a reasonable amount");
+            errorTexts.push(`Property Row ${index + 1}\\UnitValue: Please input a reasonable amount`);
+            errorsThisCheck++;
+          }
 
           // PO errors
           if (propRowData.TotalCost && !/^\d+$/.test(propRowData.TotalCost)) {
@@ -335,6 +354,8 @@ const InsertRecord = () => {
       PropertyName: propRowData.PropertyName,
       TrusteeID: parseInt(propRowData.TrusteeID),
       StatusID: parseInt(propRowData.StatusID),
+      UnitValue: parseInt(propRowData.UnitValue),
+      UnitOfMeasure: propRowData.UnitOfMeasure,
       SupplierID: parseInt(propRowData.SupplierID),
       PurchaseOrderID: parseInt(propRowData.PurchaseOrderID),
       VerNum: "a",
