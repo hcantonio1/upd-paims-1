@@ -215,7 +215,7 @@ const UpdateProp = () => {
         VerNum: newVar,
         CategoryID: propData.CategoryID,
         Documents: propData.Documents,
-        PropertyID: formData.PropertyID,
+        PropertyID: parseInt(formData.PropertyID),
         PropertyName: propData.PropertyName,
         PurchaseOrderID: propData.PurchaseOrderID,
         SupplierID: propData.SupplierID,

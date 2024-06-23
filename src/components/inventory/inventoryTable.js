@@ -6,7 +6,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Box, Link, Button } from "@mui/material";
 import { getUser } from "../../services/auth.js";
 
-const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelText }) => {
+const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelText, useCollection }) => {
   const [inventoryData, setInventoryData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [userRoleAndID, setUserRoleAndID] = useState({ role: "", userID: null });
@@ -28,7 +28,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
     getUserRoleAndID();
   }, []);
 
-  const propertiesCollection = collection(db, "property");
+  const propertiesCollection = collection(db, useCollection);
 
   const renderActionCell = (rowData) => (
     <Button onClick={(e) => onButtonClick(e, rowData.row)} variant="contained" sx={{ color: "white", bgcolor: "#014421" }}>
