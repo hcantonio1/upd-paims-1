@@ -360,12 +360,12 @@ const InsertRecord = () => {
       UnitOfMeasure: propRowData.UnitOfMeasure,
       PropertyFound: propRowData.PropertyFound,
       SupplierID: parseInt(propRowData.SupplierID),
-      PurchaseOrderID: parseInt(propRowData.PurchaseOrderID),
+      PurchaseOrderID: propRowData.PurchaseOrderID,
       VerNum: "a",
     });
     await setDoc(doc(db, "purchase_order", propRowData.PurchaseOrderID), {
       PurchaseDate: Timestamp.fromDate(new Date(propRowData.PurchaseDate)),
-      PurchaseOrderID: parseInt(propRowData.PurchaseOrderID),
+      PurchaseOrderID: propRowData.PurchaseOrderID,
       SupplierID: parseInt(propRowData.SupplierID),
       TotalCost: parseInt(propRowData.TotalCost),
     });
