@@ -49,7 +49,7 @@ const Navbar = () => {
       restrictedRoles: ["Trustee"],
     },
     {
-      text: "Manage Accounts",
+      text: "Department",
       icon: <AccountCircleRounded />,
       path: "/app/manageaccounts/",
       restrictedRoles: ["Trustee", "Encoder"],
