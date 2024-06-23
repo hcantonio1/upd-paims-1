@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, InputLabel, Select, MenuItem, FormHelperText, Checkbox, ListItemText, Input } from "@mui/material";
+import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
 
 export const FormSelect = (props) => {
   const { id, label, choicevaluepairs } = props;
@@ -64,6 +64,8 @@ export const AggregatedFormSelect = (props) => {
       ? options.map((option) => [option.Type, option.Type])
       : ["IssuedBy", "ReceivedBy"].includes(raw_id)
       ? options.map((option) => [getFullName(option), option.UserID])
+      : raw_id === "PropertyFound"
+      ? options.map((option) => [option.text, option.value])
       : null;
 
   return props.multiple ? <CustomFormMultiSelect {...props} choicevaluepairs={choicevaluepairs}></CustomFormMultiSelect> : <FormSelect {...props} choicevaluepairs={choicevaluepairs} />;

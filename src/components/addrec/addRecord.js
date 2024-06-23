@@ -26,6 +26,7 @@ const PROPERTY_ROW_FIELDS = {
   TrusteeID: "",
   UnitValue: "",
   UnitOfMeasure: "",
+  PropertyFound: "",
   StatusID: "",
   SupplierID: "",
   PurchaseDate: null,
@@ -48,6 +49,7 @@ const emptyPropRowErrors = {
   TrusteeID: [],
   UnitValue: [],
   UnitOfMeasure: [],
+  PropertyFound: [],
   StatusID: [],
   SupplierID: [],
   PurchaseDate: [],
@@ -356,6 +358,7 @@ const InsertRecord = () => {
       StatusID: parseInt(propRowData.StatusID),
       UnitValue: parseInt(propRowData.UnitValue),
       UnitOfMeasure: propRowData.UnitOfMeasure,
+      PropertyFound: propRowData.PropertyFound,
       SupplierID: parseInt(propRowData.SupplierID),
       PurchaseOrderID: parseInt(propRowData.PurchaseOrderID),
       VerNum: "a",
@@ -378,7 +381,7 @@ const InsertRecord = () => {
     e.preventDefault();
     try {
       console.log("Uploading file to Firebase Storage");
-      const fileRef = ref(storage, `${getUser().dept}` + "/" + documentData.holdLink.name);
+      const fileRef = ref(storage, `${getUser().dept}/${documentData.holdLink.name}`);
       await uploadBytes(fileRef, documentData.holdLink);
       var fileUrl = await getDownloadURL(fileRef);
       console.log("File uploaded successfully:", fileUrl);

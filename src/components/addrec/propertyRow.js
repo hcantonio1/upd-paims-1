@@ -11,6 +11,10 @@ const PropertyRow = ({ propRowData, handleChange, errors, locks, ...rest }) => {
 
   const handleInputChange = handleChange;
   const { users, categories, statuses, locations } = rest.dropdowndata;
+  const isFoundDropdown = [
+    { text: "Property is found", value: true },
+    { text: "Property is not found", value: false },
+  ];
 
   const fieldHasError = (fieldID) => {
     // return helperText when it has error
@@ -19,51 +23,56 @@ const PropertyRow = ({ propRowData, handleChange, errors, locks, ...rest }) => {
   };
 
   const itemSubheadered = (
-    <FormSubheadered subheader="Item Details">
-      <FormRow segments={3}>
-        <SmallTextField
-          id={`PropertyID`}
-          label="Property ID"
-          value={propRowData[`PropertyID`]}
-          onChange={handleInputChange}
-          type="string"
-          inputProps={{
-            inputMode: "numeric",
-            pattern: "[0-9]*",
-          }}
-          error={!!fieldHasError("PropertyID")}
-          helperText={fieldHasError("PropertyID")}
-          title="Numbers only."
-          required
-        />
-        <SmallTextField id={`PropertyName`} label="Property Name" value={propRowData[`PropertyName`]} onChange={handleInputChange} />
-      </FormRow>
-      <FormRow segments={4}>
-        <AggregatedFormSelect id={`TrusteeID`} label="Trustee" value={propRowData[`TrusteeID`]} onChange={handleInputChange} options={users} />
-        <AggregatedFormSelect id={`CategoryID`} label="Category" value={propRowData[`CategoryID`]} onChange={handleInputChange} options={categories} />
-        <AggregatedFormSelect id={`StatusID`} label="Status" value={propRowData[`StatusID`]} onChange={handleInputChange} options={statuses} />
-        <AggregatedFormSelect id={`LocationID`} label="Location" value={propRowData[`LocationID`]} onChange={handleInputChange} options={locations} />
-      </FormRow>
-      <FormRow segments={4}>
-        <SmallTextField id={`UnitOfMeasure`} label="Unit of Measure" value={propRowData[`UnitOfMeasure`]} onChange={handleInputChange} />
-        <SmallTextField
-          id={`UnitValue`}
-          label="Unit Value"
-          value={propRowData[`UnitValue`]}
-          onChange={handleInputChange}
-          inputProps={{
-            inputMode: "numeric",
-            pattern: "[0-9]*",
-            min: "0",
-            step: "any",
-          }}
-          title="Please input a number at least zero."
-          required
-          error={!!fieldHasError("UnitValue")}
-          helperText={fieldHasError("UnitValue")}
-        />
-      </FormRow>
-    </FormSubheadered>
+    <>
+      <FormSubheadered subheader="Item Details">
+        <FormRow segments={3}>
+          <SmallTextField
+            id={`PropertyID`}
+            label="Property ID"
+            value={propRowData[`PropertyID`]}
+            onChange={handleInputChange}
+            type="string"
+            inputProps={{
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+            }}
+            error={!!fieldHasError("PropertyID")}
+            helperText={fieldHasError("PropertyID")}
+            title="Numbers only."
+            required
+          />
+          <SmallTextField id={`PropertyName`} label="Property Name" value={propRowData[`PropertyName`]} onChange={handleInputChange} />
+        </FormRow>
+        <FormRow segments={4}>
+          <AggregatedFormSelect id={`TrusteeID`} label="Trustee" value={propRowData[`TrusteeID`]} onChange={handleInputChange} options={users} />
+          <AggregatedFormSelect id={`CategoryID`} label="Category" value={propRowData[`CategoryID`]} onChange={handleInputChange} options={categories} />
+          <AggregatedFormSelect id={`StatusID`} label="Status" value={propRowData[`StatusID`]} onChange={handleInputChange} options={statuses} />
+          <AggregatedFormSelect id={`LocationID`} label="Location" value={propRowData[`LocationID`]} onChange={handleInputChange} options={locations} />
+        </FormRow>
+        <FormRow segments={4}>
+          <SmallTextField id={`UnitOfMeasure`} label="Unit of Measure" value={propRowData[`UnitOfMeasure`]} onChange={handleInputChange} />
+          <SmallTextField
+            id={`UnitValue`}
+            label="Unit Value"
+            value={propRowData[`UnitValue`]}
+            onChange={handleInputChange}
+            inputProps={{
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+              min: "0",
+              step: "any",
+            }}
+            title="Please input a number at least zero."
+            required
+            error={!!fieldHasError("UnitValue")}
+            helperText={fieldHasError("UnitValue")}
+          />
+        </FormRow>
+      </FormSubheadered>
+      <FormSubheadered subheader="Validation">
+        <AggregatedFormSelect id={`PropertyFound`} label="Is the Property Found?" value={propRowData[`PropertyFound`]} onChange={handleInputChange} options={isFoundDropdown} />
+      </FormSubheadered>
+    </>
   );
 
   const poSubheadered = (
