@@ -6,8 +6,7 @@ import { AggregatedFormSelect } from "../paimsform/formSelect.js";
 import { fetchCategories, fetchDeptLocations, fetchDeptUsers, fetchStatuses } from "../../fetchutils/fetchdropdowndata.js";
 import FormDatePicker from "../paimsform/formDatePicker.js";
 
-import { generatePDF } from "./generatePDF.js";
-import ReportGeneration from "./reportGeneration";
+import { generatePdf } from "./generatePdf.js";
 import { db, storage } from "../../../firebase-config";
 import { Timestamp, getDocs, collection, query, where } from "firebase/firestore";
 import { PDFDocument } from "pdf-lib";
@@ -89,10 +88,21 @@ const ReportPage = () => {
           return docIDs.some((docId) => docId === documentId);
         })
         .map((prop) => prop.data());
-      // console.log(finalProps);
 
-      // PDF Generation Part
-      generatePDF(finalProps);
+      // generate pdf
+      const dateGenerated = new Date();
+      const departmentText = "College of Engineering - Department of Computer Science (CEN-DCS)";
+      const selectedCategories = categories.filter((cat) => {
+        return selectionData.CategoryIDs.includes(cat.CategoryID);
+      });
+      // console.log(categories[0].CategoryID);
+      // console.log(selectionData.CategoryIDs, selectedCategories);
+      generatePdf({
+        date: dateGenerated,
+        categories: selectedCategories,
+        department: departmentText,
+        properties: finalProps,
+      });
     } catch (error) {
       console.error("Error generating report:", error);
       alert("Failed to generate report.");

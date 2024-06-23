@@ -3,18 +3,8 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
-export const generatePDF = (properties) => {
-  const dateGenerated = new Date();
-
-  const dateGeneratedOptions = { year: "numeric", month: "long", day: "numeric" };
-  const dateGeneratedStr = dateGenerated.toLocaleDateString("en-US", dateGeneratedOptions);
-
-  const fields = {
-    date: dateGeneratedStr,
-    department: "College of Engineering - Department of Computer Science (CEN-DCS)",
-    category: `${_24spc}`,
-  };
-
+export const generatePdf = ({ date, categories, department, properties }) => {
+  const fields = formatFieldData(date, categories, department);
   const tableItems = formatTableItems(properties);
   const dd = {
     pageOrientation: "landscape",
@@ -44,6 +34,19 @@ export const generatePDF = (properties) => {
   };
 
   pdfMake.createPdf(dd).open();
+};
+
+const formatFieldData = (dateGenerated, categories, department) => {
+  console.log(categories);
+  const dateGeneratedOptions = { year: "numeric", month: "long", day: "numeric" };
+  const dateGeneratedStr = dateGenerated.toLocaleDateString("en-US", dateGeneratedOptions);
+  const category = categories.length === 1 ? categories[0] : null;
+  const fields = {
+    date: dateGeneratedStr,
+    department: department,
+    category: !!category ? `${category.CategoryID} - ${category.CategoryName}` : "Multiple Categories",
+  };
+  return fields;
 };
 
 // spaces
