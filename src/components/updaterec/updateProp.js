@@ -164,15 +164,13 @@ const UpdateProp = () => {
       if (formData.DocumentType === "IIRUP") {
         archiveStat = 1;
       }
-      const propertyRef = doc(db, "property", formData.PropertyID);
-      await updateDoc(propertyRef, docUpdate);
 
       console.log("Uploading file to Firebase Storage");
       const fileRef = ref(storage, `${getUser().dept}` + "/" + formData.holdLink.name);
       //console.log(`${getUser().dept}` + "/" + formData.holdLink.name);
       await uploadBytes(fileRef, formData.holdLink);
       var fileUrl = await getDownloadURL(fileRef);
-      console.log("Temp File uploaded successfully:", fileUrl);
+      //console.log("Temp File uploaded successfully:", fileUrl);
 
       if (formData.holdLink.name === undefined) {
         fileUrl = formData.Link;
@@ -205,14 +203,26 @@ const UpdateProp = () => {
         }
       }
 
-      await updateDoc(propertyRef, {
+      const propertyRef = doc(db, "property", formData.PropertyID);
+      const propSnapshot = await getDoc(propertyRef);
+      const propData = propSnapshot.data();
+
+      await setDoc(doc(db, "pending_changes", formData.PropertyID), {
         LocationID: parseInt(formData.LocationID),
         StatusID: parseInt(formData.StatusID),
         TrusteeID: parseInt(formData.TrusteeID),
         isArchived: archiveStat,
-        isApproved: 0,
         VerNum: newVar,
+        CategoryID: propData.CategoryID,
+        Documents: propData.Documents,
+        PropertyID: formData.PropertyID,
+        PropertyName: propData.PropertyName,
+        PurchaseOrderID: propData.PurchaseOrderID,
+        SupplierID: propData.SupplierID,
       });
+
+      const pendRef = doc(db, "pending_changes", formData.PropertyID);
+      await updateDoc(pendRef, docUpdate);
 
       await setDoc(doc(db, "item_document", formData.DocumentID), {
         DateIssued: Timestamp.fromDate(new Date(formData.DateIssued)),
