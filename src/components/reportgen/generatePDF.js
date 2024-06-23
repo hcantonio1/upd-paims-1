@@ -122,7 +122,7 @@ const tableHeaders = [
   "QUANTITY per PROPERTY CARD",
   "QUANTITY per PHYSICAL COUNT",
   "SHORTAGE/OVERAGE",
-  "xxxxx",
+  "placeholder",
   "REMARKS",
 ];
 const tableHeaders2 = ["", "", "", "", "", "", "", "Quantity", "Value", ""];
@@ -165,13 +165,17 @@ const tableSigs = [
 const formatTableItems = (properties) => {
   const propertyRowOrder = ["PropertyName", "PropertyName", "PropertyID"];
   let output = properties.map((p) => _.at(p, propertyRowOrder));
-  output = output.map((p) => [...p, "", "", "", "", "", "", ""]);
+  output = output.concat(_.times(25 - output.length, () => emptyTableRow));
+  output = output.map((row) => {
+    return row.slice(0, 3).concat(["only", "", "1", "1", "", "", ""]);
+  });
+
   output = output.map((prop) =>
     prop.map((entry) => {
       return { text: entry, style: "tablecell" };
     })
   );
-  output = output.concat(_.times(25 - output.length, () => emptyTableRow));
+
   return output;
 };
 
