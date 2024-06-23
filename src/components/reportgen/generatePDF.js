@@ -4,8 +4,10 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export const generatePdf = ({ date, categories, department, properties }) => {
-  const fields = formatFieldData(date, categories, department);
-  const tableItems = formatTableItems(properties);
+  const titleAndFields = formatTitleAndFields(date, categories, department);
+
+  const tableAndSigs = formatTableAndSigs(properties);
+
   const dd = {
     pageOrientation: "landscape",
     pageSize: "A4",
@@ -30,23 +32,10 @@ export const generatePdf = ({ date, categories, department, properties }) => {
         alignment: "center",
       },
     },
-    content: [...titleAndFields(fields), tableAndSigs(tableItems)],
+    content: [...titleAndFields, tableAndSigs],
   };
 
   pdfMake.createPdf(dd).open();
-};
-
-const formatFieldData = (dateGenerated, categories, department) => {
-  console.log(categories);
-  const dateGeneratedOptions = { year: "numeric", month: "long", day: "numeric" };
-  const dateGeneratedStr = dateGenerated.toLocaleDateString("en-US", dateGeneratedOptions);
-  const category = categories.length === 1 ? categories[0] : null;
-  const fields = {
-    date: dateGeneratedStr,
-    department: department,
-    category: !!category ? `${category.CategoryID} - ${category.CategoryName}` : "Multiple Categories",
-  };
-  return fields;
 };
 
 // spaces
@@ -59,7 +48,8 @@ const emptyTableCell = { text: "", style: "tablecell" };
 const emptyTableRow = Array(10).fill(emptyTableCell);
 
 // repeating page title and fields
-const titleAndFields = (fields) => {
+const formatTitleAndFields = (date, categories, department) => {
+  const fields = formatFieldData(date, categories, department);
   return [
     {
       text: "REPORT ON THE PHYSICAL COUNT OF PROPERTY, PLANT AND EQUIPMENT",
@@ -112,63 +102,69 @@ const titleAndFields = (fields) => {
   ];
 };
 
+const formatFieldData = (dateGenerated, categories, department) => {
+  console.log(categories);
+  const dateGeneratedOptions = { year: "numeric", month: "long", day: "numeric" };
+  const dateGeneratedStr = dateGenerated.toLocaleDateString("en-US", dateGeneratedOptions);
+  const category = categories.length === 1 ? categories[0] : null;
+  const fields = {
+    date: dateGeneratedStr,
+    department: department,
+    category: !!category ? `${category.CategoryID} - ${category.CategoryName}` : "Multiple Categories",
+  };
+  return fields;
+};
+
 // create Table consisting of headers, content, and signatures
-const tableHeaders = [
-  "ARTICLE",
-  "DESCRIPTION",
-  "PROPERTY NUMBER",
-  "UNIT OF MEASURE",
-  "UNIT VALUE",
-  "QUANTITY per PROPERTY CARD",
-  "QUANTITY per PHYSICAL COUNT",
-  "SHORTAGE/OVERAGE",
-  "placeholder",
-  "REMARKS",
-];
-const tableHeaders2 = ["", "", "", "", "", "", "", "Quantity", "Value", ""];
-
-const tableSigsBody = [
-  ["", "", ""],
-  ["Certified Correct by:", "Approved by:", "Verified by:"],
-  ["", "", ""],
-  ["", "", ""],
-  ["", "", ""],
-  ["", "", ""],
-  [
-    { text: `${_96spc}${_48spc}`, decoration: "underline" },
-    { text: `${_96spc}${_48spc}`, decoration: "underline" },
-    { text: `${_96spc}${_48spc}`, decoration: "underline" },
-  ],
-  [
-    `Signature over Printed Name of Inventory Committee Chair and Members`,
-    "Signature over Printed Name of Head of Agency/Entity or Authorized Representative",
-    "Signature over Printed Name of COA Representative",
-  ],
-];
-
-const tableSigs = [
-  {
-    layout: "noBorders",
+const formatTableAndSigs = (properties) => {
+  const [row1, row2] = formatTableHeaderRows();
+  const tableItems = formatTableItems(properties);
+  const tableSigs = formatSigsToTable();
+  return {
     table: {
-      widths: ["*", "*", "*"],
+      headerRows: 2,
+      widths: [170, 170, "*", "*", "*", "*", "*", "*", "*", "*"],
       heights: 6,
-      body: tableSigsBody.map((row) => {
-        return row.map((entry) => {
-          return { text: entry, style: "tablecell" };
-        });
-      }),
+      body: [row1, row2, ...tableItems, tableSigs],
     },
-    colSpan: 10,
-  },
-];
+  };
+};
+
+const formatTableHeaderRows = () => {
+  const tableHeaders = [
+    "ARTICLE",
+    "DESCRIPTION",
+    "PROPERTY NUMBER",
+    "UNIT OF MEASURE",
+    "UNIT VALUE",
+    "QUANTITY per PROPERTY CARD",
+    "QUANTITY per PHYSICAL COUNT",
+    "SHORTAGE/OVERAGE",
+    "placeholder",
+    "REMARKS",
+  ];
+  const tableHeaders2 = ["", "", "", "", "", "", "", "Quantity", "Value", ""];
+
+  const headerRow = tableHeaders.map((header) => {
+    if (header.startsWith("QUANTITY")) return { text: header, style: "tableheader_quantity", rowSpan: 2 };
+    if (header.startsWith("SHORTAGE")) return { text: header, alignment: "center", bold: true, fontSize: 8, colSpan: 2, rowSpan: 1 };
+    return { text: header, style: "tableheader", rowSpan: 2 };
+  });
+
+  const headerRow1 = tableHeaders2.map((header) => {
+    return { text: header, style: "tableheader" };
+  });
+
+  return [headerRow, headerRow1];
+};
 
 const formatTableItems = (properties) => {
   const propertyRowOrder = ["PropertyName", "PropertyName", "PropertyID"];
   let output = properties.map((p) => _.at(p, propertyRowOrder));
-  output = output.concat(_.times(25 - output.length, () => emptyTableRow));
   output = output.map((row) => {
     return row.slice(0, 3).concat(["only", "", "1", "1", "", "", ""]);
   });
+  output = output.concat(_.times(25 - output.length, () => emptyTableRow));
 
   output = output.map((prop) =>
     prop.map((entry) => {
@@ -179,24 +175,41 @@ const formatTableItems = (properties) => {
   return output;
 };
 
-const tableAndSigs = (tableItems) => {
-  return {
-    table: {
-      headerRows: 2,
-      widths: [170, 170, "*", "*", "*", "*", "*", "*", "*", "*"],
-      heights: 6,
-      body: [
-        tableHeaders.map((header) => {
-          if (header.startsWith("QUANTITY")) return { text: header, style: "tableheader_quantity", rowSpan: 2 };
-          if (header.startsWith("SHORTAGE")) return { text: header, alignment: "center", bold: true, fontSize: 8, colSpan: 2, rowSpan: 1 };
-          return { text: header, style: "tableheader", rowSpan: 2 };
+const formatSigsToTable = () => {
+  const tableSigsBody = [
+    ["", "", ""],
+    ["Certified Correct by:", "Approved by:", "Verified by:"],
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+    [
+      { text: `${_96spc}${_48spc}`, decoration: "underline" },
+      { text: `${_96spc}${_48spc}`, decoration: "underline" },
+      { text: `${_96spc}${_48spc}`, decoration: "underline" },
+    ],
+    [
+      `Signature over Printed Name of Inventory Committee Chair and Members`,
+      "Signature over Printed Name of Head of Agency/Entity or Authorized Representative",
+      "Signature over Printed Name of COA Representative",
+    ],
+  ];
+
+  const tableSigs = [
+    {
+      layout: "noBorders",
+      table: {
+        widths: ["*", "*", "*"],
+        heights: 6,
+        body: tableSigsBody.map((row) => {
+          return row.map((entry) => {
+            return { text: entry, style: "tablecell" };
+          });
         }),
-        tableHeaders2.map((header) => {
-          return { text: header, style: "tableheader" };
-        }),
-        ...tableItems,
-        tableSigs,
-      ],
+      },
+      colSpan: 10,
     },
-  };
+  ];
+
+  return tableSigs;
 };
