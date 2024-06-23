@@ -81,7 +81,7 @@ const InventoryPage = () => {
                 borderStyle: "solid",
                 borderColor: "#e5e5e5",
               }}>
-              <InventoryTable filterCondition={normalFilter} buttonLabel="Archive" onButtonClick={onArchiveClick} noLabelText={true} />
+              <InventoryTable filterCondition={normalFilter} buttonLabel="Archive" onButtonClick={onArchiveClick} noLabelText={true} useCollection="property" />
             </Box>
           </Box>
           </div>
@@ -116,6 +116,7 @@ const InventoryPage = () => {
                         buttonLabel="Unarchive"
                         onButtonClick={onUnarchiveClick}
                         noLabelText={true}
+                        useCollection="property"
                       />
                     </Box>
                   </Box>

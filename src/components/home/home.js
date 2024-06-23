@@ -9,7 +9,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { DataGrid } from "@mui/x-data-grid";
 import UserDetailDisplay from "./userDetailDisplay.js";
 import InventoryTable from "../inventory/inventoryTable.js";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, deleteDoc } from "firebase/firestore";
 import RestrictedComponent from "../common/restrictedComponent.js";
 
 const HomePage = () => {
@@ -54,16 +54,36 @@ export default HomePage;
 const ChangeLogTable = () => {
   const noLabelChangelog = "No recent changes";
   const approvedFilter = (row) => {
-    return row.isApproved !== 1;
+    return true;
   };
+  
   const onApproveClick = async (e, row) => {
     e.stopPropagation();
     try {
       console.log("HUH", row);
-      const propertyDocRef = doc(db, "property", row.PropertyID.toString());
-      await updateDoc(propertyDocRef, {
-        isApproved: 1,
+      const pendRef = doc(db, "pending_changes", row.PropertyID.toString());
+      const pendSnapshot = await getDoc(pendRef);
+      const pendData = pendSnapshot.data();
+      await setDoc(doc(db, "property", row.PropertyID.toString()), {
+        CategoryID: pendData.CategoryID,
+        Documents: pendData.Documents,
+        isArchived: pendData.isArchived,
+        LocationID: pendData.LocationID,
+        PropertyID: pendData.PropertyID,
+        PropertyName: pendData.PropertyName,
+        TrusteeID: pendData.TrusteeID,
+        StatusID: pendData.StatusID,
+        SupplierID: pendData.SupplierID,
+        PurchaseOrderID: pendData.PurchaseOrderID,
+        VerNum: pendData.VerNum,
       });
+      deleteDoc(pendRef)
+        .then(() => {
+          console.log("Document successfully deleted!");
+        })
+        .catch((error) => {
+          console.error("Error removing document: ", error);
+        });
     } catch (error) {
       console.error("Error updating property:", error);
     }
@@ -99,7 +119,7 @@ const ChangeLogTable = () => {
           borderColor: "#e5e5e5",
         }}
       >
-        <InventoryTable filterCondition={approvedFilter} buttonLabel="Approve" onButtonClick={onApproveClick} noLabelText={false} />
+        <InventoryTable filterCondition={approvedFilter} buttonLabel="Approve" onButtonClick={onApproveClick} noLabelText={false} useCollection="pending_changes" />
       </Box>
     </Box>
   );
