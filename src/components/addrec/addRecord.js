@@ -541,7 +541,7 @@ const InsertRecord = () => {
                 }}
               />
               <Box display="flex" flexDirection="row" justifyContent="end">
-                {propertyRows.length === 1 ? <></> : <PrevPropRowButton onClick={prevPropRowButtonFunc} />}
+                {propertyRows.length === 1 || propRowToDisplay === 0 ? <></> : <PrevPropRowButton onClick={prevPropRowButtonFunc} />}
                 {propertyRows.length - 1 === propRowToDisplay ? <AddPropRowButton onClick={addPropRowButtonFunc} /> : <NextPropRowButton onClick={nextPropRowButtonFunc} />}
               </Box>
             </Paper>

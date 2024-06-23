@@ -70,7 +70,7 @@ const PropertyRow = ({ propRowData, handleChange, errors, locks, ...rest }) => {
         </FormRow>
       </FormSubheadered>
       <FormSubheadered subheader="Validation">
-        <AggregatedFormSelect id={`PropertyFound`} label="Is the Property Found?" value={propRowData[`PropertyFound`]} onChange={handleInputChange} options={isFoundDropdown} />
+        <AggregatedFormSelect sx={{ width: 2 / 3 }} id={`PropertyFound`} label="Is the Property Found?" value={propRowData[`PropertyFound`]} onChange={handleInputChange} options={isFoundDropdown} />
       </FormSubheadered>
     </>
   );
