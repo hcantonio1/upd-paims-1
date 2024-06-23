@@ -325,11 +325,11 @@ const InsertRecord = () => {
 
     var docObject = {};
     docObject["a"] = documentID;
-    await setDoc(doc(db, "property", propRowData.PropertyID), {
+    await setDoc(doc(db, "pending_changes", propRowData.PropertyID), {
       CategoryID: parseInt(propRowData.CategoryID),
       Documents: docObject,
       isArchived: 0,
-      isApproved: 0,
+      // isApproved: 0,
       LocationID: parseInt(propRowData.LocationID),
       PropertyID: parseInt(propRowData.PropertyID),
       PropertyName: propRowData.PropertyName,

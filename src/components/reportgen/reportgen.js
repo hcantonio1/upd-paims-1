@@ -7,9 +7,8 @@ import { fetchCategories, fetchDeptLocations, fetchDeptUsers, fetchStatuses } fr
 import FormDatePicker from "../paimsform/formDatePicker.js";
 
 import { generatePdf } from "./generatePdf.js";
-import { db, storage } from "../../../firebase-config";
+import { db } from "../../../firebase-config";
 import { Timestamp, getDocs, collection, query, where } from "firebase/firestore";
-import { PDFDocument } from "pdf-lib";
 
 const ReportPage = () => {
   const [users, setUsers] = useState([]);
@@ -75,6 +74,10 @@ const ReportPage = () => {
       if (dateRange.endDate) {
         firestoreQuery1 = query(firestoreQuery1, where("DateIssued", "<=", Timestamp.fromDate(new Date(dateRange.endDate))));
         console.log("End date selected!");
+      }
+      if (includesArchived !== true) {
+        firestoreQuery = query(firestoreQuery, where("isArchived", "==", 0));
+        console.log("Selected unarchived!");
       }
       console.log("Done forming queries!");
 
