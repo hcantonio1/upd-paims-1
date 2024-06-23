@@ -46,6 +46,9 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
     { field: "StatusName", headerName: "Status", width: 100 },
     { field: "TrusteeName", headerName: "Trustee", width: 100 },
     { field: "LocationName", headerName: "Location", flex: 1 },
+    { field: "UnitOfMeasure", headerName: "Unit", flex: 1 },
+    { field: "UnitValue", headerName: "Cost", flex: 1 },
+    { field: "PropertyFound", headerName: "isFound?", flex: 1 },
     { field: "PurchaseOrderID", headerName: "Purchase Order", flex: 1 },
     { field: "TotalCost", headerName: "Total Cost", flex: 1 },
     { field: "SupplierName", headerName: "Supplier", flex: 1 },
@@ -78,6 +81,8 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
       snapshot.docs.forEach((doc) => {
         let row = doc.data();
         // console.log(row);
+
+        // below process gets the common name for every id of, say, Trustee, Location, etc.
         commonCollections.forEach(({ name, columnNameOfID }) => {
           let id = row[columnNameOfID];
 
@@ -120,14 +125,15 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
           }
         });
 
+        // below process filters the items that should appear as invData (ie. the table rows)
         const isPropertyOfTrustee = row.TrusteeID === userRoleAndID?.userID;
-        // console.log("Dept of Property?", row.Department);
         const isSameDepartment = row.Department === userRoleAndID?.department;
         const isEncoderOrSupervisor = ["Encoder", "Supervisor", "Admin"].includes(userRoleAndID?.role);
         if (filterCondition(row) && userRoleAndID?.role && isSameDepartment && (isPropertyOfTrustee || isEncoderOrSupervisor)) {
           invData.push(row);
         }
       });
+      // console.log(invData);
       setInventoryData(invData);
     });
   }, [filterCondition, buttonLabel, onButtonClick, noLabelText, userRoleAndID]);
