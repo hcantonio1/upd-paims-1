@@ -10,7 +10,6 @@ export const DepartmentTable = ({ collectionName }) => {
   useEffect(() => {
     const getUserRoleAndID = async () => {
       try {
-        const test = auth.currentUser.email;
       } catch (err) {
         console.log("Error undefined user. Solve this by making states persistent.", err);
         return;
@@ -28,7 +27,7 @@ export const DepartmentTable = ({ collectionName }) => {
   const displayCol = columnsToDisplay(collectionName);
 
   const [tableRows, setTableRows] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredData] = useState([]);
 
   useEffect(() => {
     onSnapshot(colref, (snapshot) => {
@@ -41,7 +40,7 @@ export const DepartmentTable = ({ collectionName }) => {
       // console.log(tableRow);
       setTableRows(tableRow);
     });
-  }, [userRoleAndID]);
+  }, [collectionName, colref, userRoleAndID]);
 
   return (
     <div>
@@ -137,8 +136,8 @@ const columnsToDisplay = (collectionName) => {
   } else if (collectionName === "item_location") {
     return [
       { field: "LocationID", headerName: "ID", width: 100 },
-      { field: "RoomNumber", headerName: "Room Number", flex: 1 },
-      { field: "Building", headerName: "Building", flex: 1 },
+      { field: "Building", headerName: "Building", flex: 1},
+      { field: "RoomNumber", headerName: "Room Number", flex: 1},
     ];
   } else if (collectionName === "status") {
     return [

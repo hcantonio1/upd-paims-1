@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Layout from "../common/layout.js";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { auth, db } from "../../../firebase-config.js";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../../../firebase-config.js";
 import { Box, Typography, Button } from "@mui/material";
 import InventoryTable from "../inventory/inventoryTable.js";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { getUser } from "../../services/auth.js";
 
 const InventoryPage = () => {
   const [isGridVisible, setIsGridVisible] = useState(false);
@@ -109,6 +107,10 @@ const InventoryPage = () => {
                       sx={{
                         borderStyle: "solid",
                         borderColor: "#e5e5e5",
+                        overflowX: "auto", // Enables horizontal scrollbar if needed
+                        maxWidth: "100%", 
+                        display: "flex", 
+                        flexDirection: "column" 
                       }}
                     >
                       <InventoryTable

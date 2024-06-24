@@ -8,13 +8,12 @@ import { getUser } from "../../services/auth.js";
 
 const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonClick, onButtonClick2, noLabelText, useCollection }) => {
   const [inventoryData, setInventoryData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+  const [filteredData] = useState([]);
   const [userRoleAndID, setUserRoleAndID] = useState({ role: "", userID: null });
 
   useEffect(() => {
     const getUserRoleAndID = async () => {
       try {
-        const test = auth.currentUser.email;
       } catch (err) {
         console.log("Error undefined user. Solve this by making states persistent.", err);
         return;
@@ -58,20 +57,20 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
 
   const InvCol = [
     { field: "PropertyID", headerName: "ID", width: 80 },
-    { field: "PropertyName", headerName: "Name", flex: 1 },
-    { field: "CategoryName", headerName: "Category", width: 100 },
-    { field: "StatusName", headerName: "Status", width: 100 },
-    { field: "TrusteeName", headerName: "Trustee", width: 100 },
-    { field: "LocationName", headerName: "Location", flex: 1 },
-    { field: "UnitOfMeasure", headerName: "Unit", flex: 1 },
-    { field: "UnitValue", headerName: "Cost", flex: 1 },
-    { field: "PropertyFound", headerName: "isFound?", flex: 1 },
-    { field: "PurchaseOrderID", headerName: "Purchase Order", flex: 1 },
-    { field: "TotalCost", headerName: "Total Cost", flex: 1 },
-    { field: "SupplierName", headerName: "Supplier", flex: 1 },
-    { field: "SupplierID", headerName: "Supplier ID", flex: 1 },
-    { field: "VerNum", headerName: "Version", flex: 1 },
-    { field: "Department", headerName: "Department", flex: 1 },
+    { field: "PropertyName", headerName: "Name"},
+    { field: "CategoryName", headerName: "Category"},
+    { field: "StatusName", headerName: "Status"},
+    { field: "TrusteeName", headerName: "Trustee"},
+    { field: "LocationName", headerName: "Location"},
+    { field: "UnitOfMeasure", headerName: "Unit"},
+    { field: "UnitValue", headerName: "Cost"},
+    { field: "PropertyFound", headerName: "isFound?"},
+    { field: "PurchaseOrderID", headerName: "Purchase Order"},
+    { field: "TotalCost", headerName: "Total Cost"},
+    { field: "SupplierName", headerName: "Supplier"},
+    { field: "SupplierID", headerName: "Supplier ID"},
+    { field: "VerNum", headerName: "Version" },
+    { field: "Department", headerName: "Department" },
     {
       field: "DocumentLink",
       headerName: "Document",
@@ -82,16 +81,16 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
         </Link>
       ),
     },
-    { field: "DateIssued", headerName: "Date Issued", flex: 1 },
-    { field: "IssuedBy", headerName: "Issued By", flex: 1 },
+    { field: "DateIssued", headerName: "Date Issued" },
+    { field: "IssuedBy", headerName: "Issued By"},
 
     // { field: "actions", headerName: buttonLabel, flex: 1, renderCell: renderActionCell },
   ];
 
   if (["Supervisor", "Encoder", "Admin"].includes(getUser().role)) {
-    InvCol.push({ field: "actions", headerName: buttonLabel, flex: 1, renderCell: renderActionCell });
     if (!noLabelText){
-    InvCol.push({ field: "actions2", headerName: buttonLabel2, flex: 1, renderCell: renderActionCell2 });
+      InvCol.push({ field: "actions", headerName: buttonLabel, renderCell: renderActionCell });
+      InvCol.push({ field: "actions2", headerName: buttonLabel2, renderCell: renderActionCell2 });
     }
   }
   useEffect(() => {
@@ -107,7 +106,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
         commonCollections.forEach(({ name, columnNameOfID }) => {
           let id = row[columnNameOfID];
 
-          if (columnNameOfID == "DocumentID") {
+          if (columnNameOfID === "DocumentID") {
             let id = row.Documents[row.VerNum];
             const itemDocs = String(prefetched[name][id]);
             // console.log("item doc details>>", itemDocs, name, id)
@@ -123,7 +122,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
             row = { ...row, [newAttr2]: docDate };
             let newAttr3 = "IssuedBy";
             row = { ...row, [newAttr3]: docIssued };
-          } else if (columnNameOfID == "UserID") {
+          } else if (columnNameOfID === "UserID") {
             id = row.TrusteeID;
             const userInfo = String(prefetched[name][id]);
             const [firstName, lastName, department] = userInfo.split(" ");
@@ -134,7 +133,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
             row = { ...row, [newAttr1]: userName };
             let newAttr2 = "Department";
             row = { ...row, [newAttr2]: userDept };
-          } else if (columnNameOfID == "PurchaseOrderID") {
+          } else if (columnNameOfID === "PurchaseOrderID") {
             id = row.PurchaseOrderID;
             const cost = String(prefetched[name][id]);
             let newAttr = "TotalCost";
@@ -157,14 +156,14 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
       // console.log(invData);
       setInventoryData(invData);
     });
-  }, [filterCondition, buttonLabel, buttonLabel2, onButtonClick, onButtonClick2, noLabelText, userRoleAndID]);
+  }, [propertiesCollection, filterCondition, buttonLabel, buttonLabel2, onButtonClick, onButtonClick2, noLabelText, userRoleAndID]);
 
   const localeText = noLabelText ? { noRowsLabel: noInventory } : { noRowsLabel: noChangelog };
   // console.log("Labeltext:", noLabelText);
 
   return (
     <div>
-      <Box sx={{ height: 400, width: "100%" }}>
+      <Box sx={{ height: 500, width: "100%" }}>
         <DataGrid
           getRowId={(row) => row.PropertyID + "_" + row.PurchaseOrderID}
           rows={filteredData.length > 0 ? filteredData : inventoryData}

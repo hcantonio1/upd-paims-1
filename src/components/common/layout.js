@@ -11,8 +11,11 @@ const Layout = ({ pageTitle, children }) => {
     <Box
       display="flex"
       flexDirection="column"
+
       sx={{
-        height: "100vh",
+        // height: "100vh",
+        // overflowX: "auto", 
+        // overflowY: "auto",
         // border: 'solid',
         // borderColor: 'blue'
       }}
@@ -37,6 +40,8 @@ const Layout = ({ pageTitle, children }) => {
             backgroundColor: "#e5e5e5",
             height: "100%",
             width: "100%",
+            overflowX: "hidden", 
+            // overflowY: "auto",
           }}
         >
           {/* Page title */}
@@ -60,7 +65,7 @@ const Layout = ({ pageTitle, children }) => {
               mr: 2,
               ml: 2,
               mb: 2,
-              height: "100%",
+              // height: "100%",
             }}
           >
             {children}
