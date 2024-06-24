@@ -40,6 +40,7 @@ export const DepartmentTable = ({ collectionName }) => {
       });
       // console.log(tableRow);
       setTableRows(tableRow);
+      if (collectionName === "user") sessionStorage.setItem("accountsData", JSON.stringify(tableRow));
     });
   }, [collectionName, userRoleAndID]);
 

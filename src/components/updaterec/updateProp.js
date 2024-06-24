@@ -5,7 +5,7 @@ import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage
 import { db, storage } from "../../../firebase-config";
 import { fetchDeptLocations, fetchDeptUsers, fetchStatuses, fetchTypes } from "../../fetchutils/fetchdropdowndata";
 
-import { PaimsForm, FormSubheadered, FormRow, SubmitButton } from "../paimsform/paimsForm";
+import { PaimsForm, FormSubheadered, FormRow, SubmitButton } from "../paimsform/PaimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import { AggregatedFormSelect } from "../paimsform/formSelect";
 import FormDatePicker from "../paimsform/formDatePicker";
@@ -184,7 +184,7 @@ const UpdateProp = () => {
       }
 
       console.log("Uploading file to Firebase Storage");
-      const fileRef = ref(storage, `${getUser().dept}` + "/" + formData.holdLink.name);
+      const fileRef = ref(storage, `${getUser().dept}/${formData.holdLink.name}`);
       //console.log(`${getUser().dept}` + "/" + formData.holdLink.name);
       await uploadBytes(fileRef, formData.holdLink);
       var fileUrl = await getDownloadURL(fileRef);
@@ -210,7 +210,7 @@ const UpdateProp = () => {
             });
 
           console.log("Uploading merged file to Firebase Storage");
-          const newFileRef = ref(storage, `${getUser().dept}` + "/" + formData.holdLink.name);
+          const newFileRef = ref(storage, `${getUser().dept}/${formData.holdLink.name}`);
           const metadata = {
             name: formData.holdLink.name,
             contentType: "application/pdf",

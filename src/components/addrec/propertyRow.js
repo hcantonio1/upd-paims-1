@@ -1,5 +1,5 @@
 import React from "react";
-import { FormSubheadered, FormRow } from "../paimsform/paimsForm";
+import { FormSubheadered, FormRow } from "../paimsform/PaimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import FormDatePicker from "../paimsform/formDatePicker";
 import { AggregatedFormSelect } from "../paimsform/formSelect";

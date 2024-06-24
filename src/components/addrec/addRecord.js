@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import _ from "lodash";
 import Layout from "../common/layout";
 import { Box, Typography, Paper, Snackbar, Alert } from "@mui/material";
-import { PaimsForm, FormSubheadered, FormRow, SubmitButton } from "../paimsform/paimsForm";
+import { PaimsForm, FormSubheadered, FormRow, SubmitButton } from "../paimsform/PaimsForm";
 import SmallTextField from "../paimsform/smallTextField";
 import { AggregatedFormSelect } from "../paimsform/formSelect";
 import FormDatePicker from "../paimsform/formDatePicker";

@@ -7,18 +7,10 @@ import { DepartmentTable } from "./departmentTable.js";
 const ManageAccounts = () => {
   return (
     <Layout pageTitle="DEPARTMENT">
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          padding: 2,
-          margin: 1,
-        }}
-      >
+      <Box sx={{ display: "flex", flexDirection: "column", padding: 2, margin: 1 }}>
         <DepartmentTable collectionName="user" />
-        <div style={{ marginTop: "10px", marginBottom: "10px" }}>
-          <AddDeptAccountForm />
-        </div>
+        <br />
+        <AddDeptAccountForm />
         <br />
         <br />
         <DepartmentTable collectionName="supplier" />
