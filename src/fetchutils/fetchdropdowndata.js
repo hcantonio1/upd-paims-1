@@ -32,27 +32,12 @@ export const fetchDeptLocations = async () => {
     const snapshot = await getDocs(locationCollection);
     const locations = snapshot.docs.map((doc) => doc.data());
     const myDept = getUser().dept; // paimsUser.dept
-
-    const isLocInDept = locations.map((loc) => {
-      // TYPE: Promise[] which resolves into bool[]
-      const p = async () => {
-        try {
-          const buildingCollection = collection(db, "building");
-          const bsnap = await getDocs(buildingCollection);
-          const buildings = bsnap.docs.map((b) => b.data());
-          const myBuilding = buildings.find((building) => loc.Building === building.Name);
-          // console.log(myBuilding.Department, loc.Building);
-          return myBuilding.Department === myDept;
-        } catch (err) {
-          console.error("Error fetching buildings:", err);
-        }
-      };
-      return p();
+    const myLocs = locations.filter((loc) => {
+      return getUser()
+        .deptBuildings.map((b) => b.Name)
+        .includes(loc.Building);
     });
 
-    const boolArr = await Promise.all(isLocInDept);
-    // console.log(boolArr, locations);
-    const myLocs = locations.filter((_, index) => boolArr[index]);
     return myLocs;
   } catch (error) {
     console.error("Error fetching locations:", error);

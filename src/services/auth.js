@@ -5,7 +5,7 @@ import {
   // onAuthStateChanged,
   // createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, doc, getDocs, collection } from "firebase/firestore";
 import { fetchCommonData } from "./prefetch";
 
 export const isBrowser = () => typeof window !== "undefined";
@@ -51,7 +51,10 @@ const setUserData = async () => {
   const email = auth.currentUser.email;
   const docSnap = await getDoc(doc(db, "user", email));
   const data = docSnap.data();
+  const buildingSnapped = await getDocs(collection(db, "building"));
+  const buildingData = buildingSnapped.docs.map((b) => b.data());
 
+  console.log(buildingData.filter((b) => b.Department === data.Department));
   setUser({
     user: currentUser,
     email: email,
@@ -59,6 +62,7 @@ const setUserData = async () => {
     firstname: data.FirstName,
     lastname: data.LastName,
     dept: data.Department,
+    deptBuildings: buildingData.filter((b) => b.Department === data.Department),
   });
 };
 

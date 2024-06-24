@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { auth, db } from "../../../firebase-config.js";
 import { onSnapshot, doc, getDoc, collection } from "firebase/firestore";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { getUser } from "../../services/auth.js";
 
 export const DepartmentTable = ({ collectionName }) => {
   const [userRoleAndID, setUserRoleAndID] = useState({ role: "", userID: null });
@@ -160,7 +161,9 @@ const isSameDepartment = (collectionName, row, userRoleAndID) => {
   } else if (collectionName === "supplier") {
     return true;
   } else if (collectionName === "item_location") {
-    return true;
+    return getUser()
+      .deptBuildings.map((b) => b.Name)
+      .includes(row.Building);
   } else if (collectionName === "status") {
     return true;
   } else if (collectionName === "building") {
