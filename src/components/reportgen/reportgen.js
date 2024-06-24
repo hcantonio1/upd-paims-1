@@ -5,12 +5,15 @@ import { FormRow, FormSubheadered, PaimsForm } from "../paimsform/paimsForm.js";
 import { AggregatedFormSelect } from "../paimsform/formSelect.js";
 import { fetchCategories, fetchDeptLocations, fetchDeptUsers, fetchStatuses } from "../../fetchutils/fetchdropdowndata.js";
 import FormDatePicker from "../paimsform/formDatePicker.js";
+import {KeyboardArrowDown, KeyboardArrowUp} from '@mui/icons-material';
+
 
 import { generatePdf } from "./generatePdf.js";
 import { db } from "../../../firebase-config";
 import { Timestamp, getDocs, collection, query, where } from "firebase/firestore";
 
 const ReportPage = () => {
+
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [locations, setLocations] = useState([]);
@@ -19,6 +22,13 @@ const ReportPage = () => {
   const [selectionData, setSelectionData] = useState({ TrusteeIDs: [], CategoryIDs: [], LocationIDs: [], StatusIDs: [] });
   const [dateRange, setDateRange] = useState({ startDate: null, endDate: null });
   const [includesArchived, setIncludesArchived] = useState(false);
+
+  const [isGridVisible, setIsGridVisible] = useState(false);
+
+  const toggleGridVisibility = () => {
+    setIsGridVisible(!isGridVisible);
+  };
+
 
   useEffect(() => {
     const fetchdropdowndata = async () => {
@@ -117,41 +127,58 @@ const ReportPage = () => {
     <Layout pageTitle="REPORT GENERATION">
       {/* report gen content container  */}
       <Box sx={{ display: "flex", flexDirection: "column", p: 2, margin: 1 }}>
-        <PaimsForm header="Generate a Document" onSubmit={handleSubmit}>
-          <FormRow segments={4}>
-            <Button type="submit" variant="contained" color="success">
+        <PaimsForm header="Generate a Report" onSubmit={handleSubmit}>
+          <Typography variant="h9">Generate a summary of properties. Leave all options blank to generate a report for the entire department.</Typography>
+          <br></br>
+          <AggregatedFormSelect multiple id={`CategoryID`} label="Category" value={selectionData.CategoryIDs} onChange={handleInputChange} options={categories} />
+
+          <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '10px', marginBottom: '10px' }}>
+              <Button onClick={toggleGridVisibility} 
+                sx={{
+                  color: 'black',
+                  fontSize: '15pt',
+                  fontWeight: 'bold',
+                  bgcolor: 'white',
+                  textTransform: 'none',
+                }}
+                endIcon={ isGridVisible ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                >
+                {isGridVisible ? "Hide Advanced Options" : "Show Advanced Options"}
+              </Button>
+            </div>
+              {isGridVisible && (
+                <div>
+                  <FormSubheadered subheader={"Advanced Options"}>
+                    <AggregatedFormSelect multiple id={`TrusteeID`} label="Trustee" value={selectionData.TrusteeIDs} onChange={handleInputChange} options={users} />
+                    <AggregatedFormSelect multiple id={`StatusID`} label="Status" value={selectionData.StatusIDs} onChange={handleInputChange} options={statuses} />
+                    <AggregatedFormSelect multiple id={`LocationID`} label="Location" value={selectionData.LocationIDs} onChange={handleInputChange} options={locations} />
+                  </FormSubheadered>
+                  <br></br>
+                  <FormSubheadered subheader="Specify a Date Range">
+                    <FormRow segments={3}>
+                      <FormDatePicker id="startDate" label="Start Date" value={dateRange.startDate} onChange={(val) => setDateRange({ ...dateRange, startDate: val })} />
+                      <FormDatePicker id="endDate" label="End Date" value={dateRange.endDate} onChange={(val) => setDateRange({ ...dateRange, endDate: val })} />
+                    </FormRow>
+                  </FormSubheadered>
+                  <br></br>
+                  <FormSubheadered subheader="Include Archived Properties">
+                    <FormControlLabel
+                      value={includesArchived}
+                      control={<Checkbox />}
+                      id="includesArchived"
+                      label="Include archived properties in the report."
+                      labelPlacement="end"
+                      onChange={(e, val) => {
+                        setIncludesArchived(val);
+                      }}
+                    />
+                  </FormSubheadered>
+                </div>
+               )}
+               <br></br>
+            <Button type="submit" variant="contained" sx={{ color: 'white', bgcolor: '#014421', marginLeft: 'auto' }}>
               Generate Report
             </Button>
-          </FormRow>
-          <Typography variant="h9">Generate a summary of all the properties under a select entity.</Typography>
-          <Typography variant="h9">Leave out the advanced options empty to generate a report for the entire department.</Typography>
-          <br />
-          <FormSubheadered subheader={"Advanced Options"}>
-            {/* <FormRow segments={4}> */}
-            <AggregatedFormSelect multiple id={`TrusteeID`} label="Trustee" value={selectionData.TrusteeIDs} onChange={handleInputChange} options={users} />
-            <AggregatedFormSelect multiple id={`CategoryID`} label="Category" value={selectionData.CategoryIDs} onChange={handleInputChange} options={categories} />
-            <AggregatedFormSelect multiple id={`StatusID`} label="Status" value={selectionData.StatusIDs} onChange={handleInputChange} options={statuses} />
-            <AggregatedFormSelect multiple id={`LocationID`} label="Location" value={selectionData.LocationIDs} onChange={handleInputChange} options={locations} />
-            {/* </FormRow> */}
-          </FormSubheadered>
-          <FormSubheadered subheader="Specify a Date Range">
-            <FormRow segments={3}>
-              <FormDatePicker id="startDate" label="Start Date" value={dateRange.startDate} onChange={(val) => setDateRange({ ...dateRange, startDate: val })} />
-              <FormDatePicker id="endDate" label="End Date" value={dateRange.endDate} onChange={(val) => setDateRange({ ...dateRange, endDate: val })} />
-            </FormRow>
-          </FormSubheadered>
-          <FormSubheadered subheader="Include Archived Properties">
-            <FormControlLabel
-              value={includesArchived}
-              control={<Checkbox />}
-              id="includesArchived"
-              label="Include archived properties in the report."
-              labelPlacement="end"
-              onChange={(e, val) => {
-                setIncludesArchived(val);
-              }}
-            />
-          </FormSubheadered>
         </PaimsForm>
       </Box>
     </Layout>
