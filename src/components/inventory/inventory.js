@@ -86,7 +86,7 @@ const InventoryPage = () => {
 
           <div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px', marginBottom: '10px' }}>
-              <Button onClick={toggleGridVisibility} variant="contained" sx={{ color: 'white', bgcolor: '#014421', marginLeft: 'auto' }}>
+              <Button onClick={toggleGridVisibility} variant="contained" sx={{ color: 'white', bgcolor: '#014421', marginLeft: 'auto', '&:hover': { bgcolor: '#dea80f' } }}>
                 {isGridVisible ? "Hide Archive" : "Show Archive"}
               </Button>
             </div>

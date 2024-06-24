@@ -176,7 +176,7 @@ const ReportPage = () => {
                 </div>
                )}
                <br></br>
-            <Button type="submit" variant="contained" sx={{ color: 'white', bgcolor: '#014421', marginLeft: 'auto' }}>
+            <Button type="submit" variant="contained" sx={{ color: 'white', bgcolor: '#014421', marginLeft: 'auto', '&:hover': { bgcolor: '#dea80f' } }}>
               Generate Report
             </Button>
         </PaimsForm>

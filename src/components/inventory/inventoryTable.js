@@ -39,7 +39,8 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
     };
   
     return (
-      <Button onClick={(e) => onButtonClick(e, rowData.row)} variant="contained" sx={{ color: "white", bgcolor: "#014421" }}>
+      <Button onClick={(e) => onButtonClick(e, rowData.row)} variant="contained" 
+      sx={{ color: "white", bgcolor: "#014421", '&:hover': { bgcolor: '#dea80f' } }}>
         {getButtonText()}
       </Button>
     );
@@ -47,7 +48,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
   
 
     const renderActionCell2 = (rowData) => (
-    <Button onClick={(e) => onButtonClick2(e, rowData.row)} variant="contained" sx={{ color: "white", bgcolor: "#7b1113" }}>
+    <Button onClick={(e) => onButtonClick2(e, rowData.row)} variant="contained" sx={{ color: "white", bgcolor: "#7b1113", '&:hover': { bgcolor: '#dea80f' } }}>
       {"X"}
     </Button>
   );

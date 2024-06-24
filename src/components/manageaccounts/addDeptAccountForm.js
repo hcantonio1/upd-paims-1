@@ -94,7 +94,7 @@ const AddDeptAccountForm = () => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-      <Button variant="contained" onClick={buttonClick} sx={{  width: 1 / 3, backgroundColor: "#014421", marginLeft: 'auto' }}>
+      <Button variant="contained" onClick={buttonClick} sx={{  width: 1 / 3, backgroundColor: "#014421", marginLeft: 'auto', '&:hover': { bgcolor: '#dea80f' } }}>
         {collapsed ? "New Department Account" : "Hide Section"}
       </Button>
       {collapsed ? <></> : form}
