@@ -19,6 +19,15 @@ const ManageAccounts = () => {
         <div style={{ marginTop: "10px", marginBottom: "10px" }}>
           <AddDeptAccountForm />
         </div>
+        <br />
+        <br />
+        <DepartmentTable collectionName="supplier" />
+        <br />
+        <br />
+        <DepartmentTable collectionName="item_location" />
+        <br />
+        <br />
+        <DepartmentTable collectionName="status" />
       </Box>
     </Layout>
   );

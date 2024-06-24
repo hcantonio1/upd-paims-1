@@ -33,10 +33,12 @@ export const DepartmentTable = ({ collectionName }) => {
   useEffect(() => {
     onSnapshot(colref, (snapshot) => {
       let tableRow = [];
-      snapshot.docs.forEach((doc) => {
+      snapshot.docs.forEach((doc, index) => {
         let row = doc.data();
+        // row = { ...row, id: `${collectionName}_row${index}` };
         if (isSameDepartment(collectionName, row, userRoleAndID)) tableRow.push(row);
       });
+      // console.log(tableRow);
       setTableRows(tableRow);
     });
   }, [userRoleAndID]);
@@ -61,7 +63,9 @@ export const DepartmentTable = ({ collectionName }) => {
           }}
         >
           <DataGrid
-            getRowId={(row) => row.UserID}
+            getRowId={(row) => {
+              return dataGridHelper.getRowId(collectionName, row);
+            }}
             rows={filteredData.length > 0 ? filteredData : tableRows}
             columns={displayCol}
             initialState={{
@@ -121,11 +125,27 @@ const columnsToDisplay = (collectionName) => {
       { field: "FirstName", headerName: "First Name", flex: 1 },
     ];
   } else if (collectionName === "supplier") {
-    return [];
+    return [
+      { field: "SupplierID", headerName: "ID", width: 100 },
+      { field: "SupplierName", headerName: "Name", flex: 1 },
+      { field: "SupplierContact", headerName: "Contact Number", flex: 1 },
+      { field: "UnitNumber", headerName: "Unit Number", flex: 1 },
+      { field: "StreetName", headerName: "Street", flex: 1 },
+      { field: "City", headerName: "City", flex: 1 },
+      { field: "State", headerName: "Province", flex: 1 },
+    ];
   } else if (collectionName === "item_location") {
-    return [];
+    return [
+      { field: "LocationID", headerName: "ID", width: 100 },
+      { field: "RoomNumber", headerName: "Room Number", flex: 1 },
+      { field: "Building", headerName: "Building", flex: 1 },
+    ];
   } else if (collectionName === "status") {
-    return [];
+    return [
+      { field: "StatusID", headerName: "ID", width: 100 },
+      { field: "StatusName", headerName: "Status", flex: 1 },
+      { field: "StatusDesc", headerName: "Description", flex: 1 },
+    ];
   } else if (collectionName === "building") {
     // not important
   } else if (collectionName === "item_document") {
@@ -147,4 +167,20 @@ const isSameDepartment = (collectionName, row, userRoleAndID) => {
     // not important
   }
   return false;
+};
+
+const dataGridHelper = {
+  getRowId: function (collectionName, row) {
+    if (collectionName === "user") {
+      return `${collectionName}${row.UserID}`;
+    } else if (collectionName === "supplier") {
+      return `${collectionName}${row.SupplierID}`;
+    } else if (collectionName === "item_location") {
+      return `${collectionName}${row.LocationID}`;
+    } else if (collectionName === "status") {
+      return `${collectionName}${row.StatusID}`;
+    } else if (collectionName === "building") {
+      // not important
+    }
+  },
 };

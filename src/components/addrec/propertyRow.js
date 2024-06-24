@@ -49,7 +49,7 @@ const PropertyRow = ({ propRowData, handleChange, errors, locks, ...rest }) => {
           <AggregatedFormSelect id={`StatusID`} label="Status" value={propRowData[`StatusID`]} onChange={handleInputChange} options={statuses} />
           <AggregatedFormSelect id={`LocationID`} label="Location" value={propRowData[`LocationID`]} onChange={handleInputChange} options={locations} />
         </FormRow>
-        <FormRow segments={4}>
+        <FormRow segments={3}>
           <SmallTextField id={`UnitOfMeasure`} label="Unit of Measure" value={propRowData[`UnitOfMeasure`]} onChange={handleInputChange} />
           <SmallTextField
             id={`UnitValue`}
