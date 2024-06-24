@@ -20,8 +20,8 @@ export const handleLogin = async ({ email, password }) => {
     const authToken = await signInWithEmailAndPassword(auth, email, password);
     sessionStorage.setItem("Auth Token", authToken._tokenResponse.refreshToken);
   } catch (error) {
-    console.log("Invalid email or password.", error);
-    return { error: "Invalid email or password." };
+    console.log("Invalid credentials or Network problem", error);
+    return { error: "Invalid credentials or Network problem" };
   }
   try {
     await setUserData();
@@ -54,7 +54,6 @@ const setUserData = async () => {
   const buildingSnapped = await getDocs(collection(db, "building"));
   const buildingData = buildingSnapped.docs.map((b) => b.data());
 
-  console.log(buildingData.filter((b) => b.Department === data.Department));
   setUser({
     user: currentUser,
     email: email,

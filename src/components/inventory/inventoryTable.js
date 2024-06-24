@@ -28,8 +28,6 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
     getUserRoleAndID();
   }, []);
 
-  const propertiesCollection = collection(db, useCollection);
-
   const renderActionCell = (rowData) => {
     const getButtonText = () => {
       if (buttonLabel === "Approve") {
@@ -38,16 +36,15 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
         return buttonLabel;
       }
     };
-  
+
     return (
       <Button onClick={(e) => onButtonClick(e, rowData.row)} variant="contained" sx={{ color: "white", bgcolor: "#014421" }}>
         {getButtonText()}
       </Button>
     );
   };
-  
 
-    const renderActionCell2 = (rowData) => (
+  const renderActionCell2 = (rowData) => (
     <Button onClick={(e) => onButtonClick2(e, rowData.row)} variant="contained" sx={{ color: "white", bgcolor: "#7b1113" }}>
       {"X"}
     </Button>
@@ -90,11 +87,12 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
 
   if (["Supervisor", "Encoder", "Admin"].includes(getUser().role)) {
     InvCol.push({ field: "actions", headerName: buttonLabel, flex: 1, renderCell: renderActionCell });
-    if (!noLabelText){
-    InvCol.push({ field: "actions2", headerName: buttonLabel2, flex: 1, renderCell: renderActionCell2 });
+    if (!noLabelText) {
+      InvCol.push({ field: "actions2", headerName: buttonLabel2, flex: 1, renderCell: renderActionCell2 });
     }
   }
   useEffect(() => {
+    const propertiesCollection = collection(db, useCollection);
     onSnapshot(propertiesCollection, (snapshot) => {
       const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
 
@@ -107,7 +105,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
         commonCollections.forEach(({ name, columnNameOfID }) => {
           let id = row[columnNameOfID];
 
-          if (columnNameOfID == "DocumentID") {
+          if (columnNameOfID === "DocumentID") {
             let id = row.Documents[row.VerNum];
             const itemDocs = String(prefetched[name][id]);
             // console.log("item doc details>>", itemDocs, name, id)
@@ -123,7 +121,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
             row = { ...row, [newAttr2]: docDate };
             let newAttr3 = "IssuedBy";
             row = { ...row, [newAttr3]: docIssued };
-          } else if (columnNameOfID == "UserID") {
+          } else if (columnNameOfID === "UserID") {
             id = row.TrusteeID;
             const userInfo = String(prefetched[name][id]);
             const [firstName, lastName, department] = userInfo.split(" ");
@@ -134,7 +132,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
             row = { ...row, [newAttr1]: userName };
             let newAttr2 = "Department";
             row = { ...row, [newAttr2]: userDept };
-          } else if (columnNameOfID == "PurchaseOrderID") {
+          } else if (columnNameOfID === "PurchaseOrderID") {
             id = row.PurchaseOrderID;
             const cost = String(prefetched[name][id]);
             let newAttr = "TotalCost";
@@ -157,7 +155,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
       // console.log(invData);
       setInventoryData(invData);
     });
-  }, [filterCondition, buttonLabel, buttonLabel2, onButtonClick, onButtonClick2, noLabelText, userRoleAndID]);
+  }, [useCollection, filterCondition, buttonLabel, buttonLabel2, onButtonClick, onButtonClick2, noLabelText, userRoleAndID]);
 
   const localeText = noLabelText ? { noRowsLabel: noInventory } : { noRowsLabel: noChangelog };
   // console.log("Labeltext:", noLabelText);

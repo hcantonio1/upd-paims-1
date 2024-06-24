@@ -31,7 +31,6 @@ export const fetchDeptLocations = async () => {
     const locationCollection = collection(db, "item_location");
     const snapshot = await getDocs(locationCollection);
     const locations = snapshot.docs.map((doc) => doc.data());
-    const myDept = getUser().dept; // paimsUser.dept
     const myLocs = locations.filter((loc) => {
       return getUser()
         .deptBuildings.map((b) => b.Name)
