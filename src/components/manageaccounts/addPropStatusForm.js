@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, FormControl, InputLabel, MenuItem, Paper, Select, Modal } from "@mui/material";
 import { FormRow, PaimsForm } from "../paimsform/PaimsForm";
 import SmallTextField from "../paimsform/smallTextField";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../../../firebase-config";
 
 export const AddPropStatusForm = () => {
   const [open, setOpen] = useState(false);
@@ -20,10 +22,14 @@ export const AddPropStatusForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // create new supplier
+    await setDoc(doc(db, "status", `status${formData.StatusID}`), {
+      StatusID: parseInt(formData.StatusID),
+      StatusName: formData.StatusName,
+      StatusDesc: formData.StatusDesc,
+    });
+    setOpen(false);
   };
 
   const form = (
@@ -38,6 +44,9 @@ export const AddPropStatusForm = () => {
           <FormRow segments={1}>
             <SmallTextField id="StatusDesc" label="Description" value={formData.StatusDesc} onChange={handleInputChange} />
           </FormRow>
+          <Button type="submit" variant="contained" size="small" color="success">
+            Submit
+          </Button>
         </Box>
       </form>
     </Paper>
