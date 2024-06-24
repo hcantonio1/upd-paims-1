@@ -60,7 +60,7 @@ const ChangeLogTable = () => {
   const onApproveClick = async (e, row) => {
     e.stopPropagation();
     try {
-      console.log("HUH", row);
+      // console.log("HUH", row);
       const pendRef = doc(db, "pending_changes", row.PropertyID.toString());
       const pendSnapshot = await getDoc(pendRef);
       const pendData = pendSnapshot.data();
@@ -77,6 +77,23 @@ const ChangeLogTable = () => {
         PurchaseOrderID: pendData.PurchaseOrderID,
         VerNum: pendData.VerNum,
       });
+      deleteDoc(pendRef)
+        .then(() => {
+          console.log("Document successfully deleted!");
+        })
+        .catch((error) => {
+          console.error("Error removing document: ", error);
+        });
+    } catch (error) {
+      console.error("Error updating property:", error);
+    }
+  };
+
+  const onDisproveClick = async (e, row) => {
+    e.stopPropagation();
+    try {
+      // console.log("HUH", row);
+      const pendRef = doc(db, "pending_changes", row.PropertyID.toString());
       deleteDoc(pendRef)
         .then(() => {
           console.log("Document successfully deleted!");
@@ -119,7 +136,7 @@ const ChangeLogTable = () => {
           borderColor: "#e5e5e5",
         }}
       >
-        <InventoryTable filterCondition={approvedFilter} buttonLabel="Approve" onButtonClick={onApproveClick} noLabelText={false} useCollection="pending_changes" />
+        <InventoryTable filterCondition={approvedFilter} buttonLabel="Approve" buttonLabel2="Deny" onButtonClick={onApproveClick} onButtonClick2={onDisproveClick} noLabelText={false} useCollection="pending_changes" />
       </Box>
     </Box>
   );

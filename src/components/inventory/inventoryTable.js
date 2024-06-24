@@ -6,7 +6,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Box, Link, Button } from "@mui/material";
 import { getUser } from "../../services/auth.js";
 
-const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelText, useCollection }) => {
+const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonClick, onButtonClick2, noLabelText, useCollection }) => {
   const [inventoryData, setInventoryData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [userRoleAndID, setUserRoleAndID] = useState({ role: "", userID: null });
@@ -30,9 +30,26 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
 
   const propertiesCollection = collection(db, useCollection);
 
-  const renderActionCell = (rowData) => (
-    <Button onClick={(e) => onButtonClick(e, rowData.row)} variant="contained" sx={{ color: "white", bgcolor: "#014421" }}>
-      {buttonLabel}
+  const renderActionCell = (rowData) => {
+    const getButtonText = () => {
+      if (buttonLabel === "Approve") {
+        return "✓";
+      } else {
+        return buttonLabel;
+      }
+    };
+  
+    return (
+      <Button onClick={(e) => onButtonClick(e, rowData.row)} variant="contained" sx={{ color: "white", bgcolor: "#014421" }}>
+        {getButtonText()}
+      </Button>
+    );
+  };
+  
+
+    const renderActionCell2 = (rowData) => (
+    <Button onClick={(e) => onButtonClick2(e, rowData.row)} variant="contained" sx={{ color: "white", bgcolor: "#7b1113" }}>
+      {"X"}
     </Button>
   );
 
@@ -52,6 +69,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
     { field: "PurchaseOrderID", headerName: "Purchase Order", flex: 1 },
     { field: "TotalCost", headerName: "Total Cost", flex: 1 },
     { field: "SupplierName", headerName: "Supplier", flex: 1 },
+    { field: "SupplierID", headerName: "Supplier ID", flex: 1 },
     { field: "VerNum", headerName: "Version", flex: 1 },
     { field: "Department", headerName: "Department", flex: 1 },
     {
@@ -72,6 +90,9 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
 
   if (["Supervisor", "Encoder", "Admin"].includes(getUser().role)) {
     InvCol.push({ field: "actions", headerName: buttonLabel, flex: 1, renderCell: renderActionCell });
+    if (!noLabelText){
+    InvCol.push({ field: "actions2", headerName: buttonLabel2, flex: 1, renderCell: renderActionCell2 });
+    }
   }
   useEffect(() => {
     onSnapshot(propertiesCollection, (snapshot) => {
@@ -136,7 +157,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
       // console.log(invData);
       setInventoryData(invData);
     });
-  }, [filterCondition, buttonLabel, onButtonClick, noLabelText, userRoleAndID]);
+  }, [filterCondition, buttonLabel, buttonLabel2, onButtonClick, onButtonClick2, noLabelText, userRoleAndID]);
 
   const localeText = noLabelText ? { noRowsLabel: noInventory } : { noRowsLabel: noChangelog };
   // console.log("Labeltext:", noLabelText);
@@ -159,10 +180,14 @@ const InventoryTable = ({ filterCondition, buttonLabel, onButtonClick, noLabelTe
               columnVisibilityModel: {
                 VerNum: false,
                 actions: !noLabelText,
+                actions2: !noLabelText,
                 Department: false,
                 DateIssued: false,
                 IssuedBy: false,
                 TotalCost: false,
+                UnitOfMeasure: false,
+                PropertyFound: false,
+                SupplierID: false,
               },
             },
           }}
