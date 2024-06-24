@@ -24,14 +24,13 @@ export const DepartmentTable = ({ collectionName }) => {
     getUserRoleAndID();
   }, []);
 
-  const colref = collection(db, collectionName);
-
   const displayCol = columnsToDisplay(collectionName);
 
   const [tableRows, setTableRows] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
+    const colref = collection(db, collectionName);
     onSnapshot(colref, (snapshot) => {
       let tableRow = [];
       snapshot.docs.forEach((doc, index) => {
@@ -42,7 +41,7 @@ export const DepartmentTable = ({ collectionName }) => {
       // console.log(tableRow);
       setTableRows(tableRow);
     });
-  }, [userRoleAndID]);
+  }, [collectionName, userRoleAndID]);
 
   return (
     <div>
@@ -159,7 +158,7 @@ const isSameDepartment = (collectionName, row, userRoleAndID) => {
   if (collectionName === "user") {
     return row.Department === userRoleAndID?.department;
   } else if (collectionName === "supplier") {
-    return true;
+    return row.Department === userRoleAndID?.department;
   } else if (collectionName === "item_location") {
     return getUser()
       .deptBuildings.map((b) => b.Name)

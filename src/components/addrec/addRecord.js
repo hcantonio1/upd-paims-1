@@ -342,6 +342,7 @@ const InsertRecord = () => {
       SupplierID: parseInt(propRowData.SupplierID),
       SupplierName: propRowData.SupplierName,
       UnitNumber: parseInt(propRowData.UnitNumber),
+      Department: getUser().dept,
     });
 
     var docObject = {};
