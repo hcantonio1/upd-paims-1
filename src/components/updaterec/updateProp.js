@@ -110,6 +110,8 @@ const UpdateProp = () => {
             LocationID: parseInt(propData.LocationID),
             StatusID: parseInt(propData.StatusID),
             TrusteeID: parseInt(propData.TrusteeID),
+            UnitValue: parseInt(propData.UnitValue),
+            PropertyFound: propData.PropertyFound === "true",
             VerNum: propData.VerNum,
             Documents: propData.Documents,
           };
@@ -229,6 +231,8 @@ const UpdateProp = () => {
         LocationID: parseInt(formData.LocationID),
         StatusID: parseInt(formData.StatusID),
         TrusteeID: parseInt(formData.TrusteeID),
+        UnitValue: parseInt(formData.UnitValue),
+        PropertyFound: formData.PropertyFound,
         isArchived: archiveStat,
         VerNum: newVar,
         CategoryID: propData.CategoryID,
@@ -289,7 +293,7 @@ const UpdateProp = () => {
           <SmallTextField
             id="UnitValue"
             label="Unit Value"
-            value={formData.UnitNumber}
+            value={formData.UnitValue}
             onChange={handleInputChange}
             error={!!propFieldHasError("UnitValue")}
             helperText={propFieldHasError("UnitValue")}

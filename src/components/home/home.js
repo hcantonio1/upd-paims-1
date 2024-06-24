@@ -70,6 +70,9 @@ const ChangeLogTable = () => {
         TrusteeID: pendData.TrusteeID,
         StatusID: pendData.StatusID,
         SupplierID: pendData.SupplierID,
+        UnitValue: pendData.UnitValue,
+        UnitOfMeasure: pendData.UnitOfMeasure,
+        PropertyFound: pendData.PropertyFound,
         PurchaseOrderID: pendData.PurchaseOrderID,
         VerNum: pendData.VerNum,
       });
@@ -138,7 +141,7 @@ const ChangeLogTable = () => {
           buttonLabel2="Deny"
           onButtonClick={onApproveClick}
           onButtonClick2={onDisproveClick}
-          noLabelText="No recent changes."
+          noLabelText={false}
           useCollection="pending_changes"
         />
       </Box>
