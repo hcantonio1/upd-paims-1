@@ -27,8 +27,6 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
     getUserRoleAndID();
   }, []);
 
-  const propertiesCollection = collection(db, useCollection);
-
   const renderActionCell = (rowData) => {
     const getButtonText = () => {
       if (buttonLabel === "Approve") {
@@ -37,18 +35,16 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
         return buttonLabel;
       }
     };
-  
+
     return (
-      <Button onClick={(e) => onButtonClick(e, rowData.row)} variant="contained" 
-      sx={{ color: "white", bgcolor: "#014421", '&:hover': { bgcolor: '#dea80f' } }}>
+      <Button onClick={(e) => onButtonClick(e, rowData.row)} variant="contained" sx={{ color: "white", bgcolor: "#014421", "&:hover": { bgcolor: "#dea80f" } }}>
         {getButtonText()}
       </Button>
     );
   };
-  
 
-    const renderActionCell2 = (rowData) => (
-    <Button onClick={(e) => onButtonClick2(e, rowData.row)} variant="contained" sx={{ color: "white", bgcolor: "#7b1113", '&:hover': { bgcolor: '#dea80f' } }}>
+  const renderActionCell2 = (rowData) => (
+    <Button onClick={(e) => onButtonClick2(e, rowData.row)} variant="contained" sx={{ color: "white", bgcolor: "#7b1113", "&:hover": { bgcolor: "#dea80f" } }}>
       {"X"}
     </Button>
   );
@@ -58,18 +54,18 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
 
   const InvCol = [
     { field: "PropertyID", headerName: "ID", width: 80 },
-    { field: "PropertyName", headerName: "Name"},
-    { field: "CategoryName", headerName: "Category"},
-    { field: "StatusName", headerName: "Status"},
-    { field: "TrusteeName", headerName: "Trustee"},
-    { field: "LocationName", headerName: "Location"},
-    { field: "UnitOfMeasure", headerName: "Unit"},
-    { field: "UnitValue", headerName: "Cost"},
-    { field: "PropertyFound", headerName: "isFound?"},
-    { field: "PurchaseOrderID", headerName: "Purchase Order"},
-    { field: "TotalCost", headerName: "Total Cost"},
-    { field: "SupplierName", headerName: "Supplier"},
-    { field: "SupplierID", headerName: "Supplier ID"},
+    { field: "PropertyName", headerName: "Name" },
+    { field: "CategoryName", headerName: "Category" },
+    { field: "StatusName", headerName: "Status" },
+    { field: "TrusteeName", headerName: "Trustee" },
+    { field: "LocationName", headerName: "Location" },
+    { field: "UnitOfMeasure", headerName: "Unit" },
+    { field: "UnitValue", headerName: "Cost" },
+    { field: "PropertyFound", headerName: "isFound?" },
+    { field: "PurchaseOrderID", headerName: "Purchase Order" },
+    { field: "TotalCost", headerName: "Total Cost" },
+    { field: "SupplierName", headerName: "Supplier" },
+    { field: "SupplierID", headerName: "Supplier ID" },
     { field: "VerNum", headerName: "Version" },
     { field: "Department", headerName: "Department" },
     {
@@ -83,18 +79,19 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
       ),
     },
     { field: "DateIssued", headerName: "Date Issued" },
-    { field: "IssuedBy", headerName: "Issued By"},
+    { field: "IssuedBy", headerName: "Issued By" },
 
     // { field: "actions", headerName: buttonLabel, flex: 1, renderCell: renderActionCell },
   ];
 
   if (["Supervisor", "Encoder", "Admin"].includes(getUser().role)) {
-    if (!noLabelText){
+    if (!noLabelText) {
       InvCol.push({ field: "actions", headerName: buttonLabel, renderCell: renderActionCell });
       InvCol.push({ field: "actions2", headerName: buttonLabel2, renderCell: renderActionCell2 });
     }
   }
   useEffect(() => {
+    const propertiesCollection = collection(db, useCollection);
     onSnapshot(propertiesCollection, (snapshot) => {
       const prefetched = JSON.parse(sessionStorage.getItem("prefetched"));
 
@@ -157,7 +154,7 @@ const InventoryTable = ({ filterCondition, buttonLabel, buttonLabel2, onButtonCl
       // console.log(invData);
       setInventoryData(invData);
     });
-  }, [propertiesCollection, filterCondition, buttonLabel, buttonLabel2, onButtonClick, onButtonClick2, noLabelText, userRoleAndID]);
+  }, [useCollection, filterCondition, buttonLabel, buttonLabel2, onButtonClick, onButtonClick2, noLabelText, userRoleAndID]);
 
   const localeText = noLabelText ? { noRowsLabel: noInventory } : { noRowsLabel: noChangelog };
   // console.log("Labeltext:", noLabelText);

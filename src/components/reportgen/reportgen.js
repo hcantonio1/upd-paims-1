@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../common/layout";
 import { Box, Button, Checkbox, FormControlLabel, Typography } from "@mui/material";
-import { FormRow, FormSubheadered, PaimsForm } from "../paimsform/paimsForm.js";
+import { FormRow, FormSubheadered, PaimsForm } from "../paimsform/PaimsForm.js";
 import { AggregatedFormSelect } from "../paimsform/formSelect.js";
 import { fetchCategories, fetchDeptLocations, fetchDeptUsers, fetchStatuses } from "../../fetchutils/fetchdropdowndata.js";
 import FormDatePicker from "../paimsform/formDatePicker.js";

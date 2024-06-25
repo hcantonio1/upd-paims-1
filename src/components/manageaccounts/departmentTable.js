@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { auth, db } from "../../../firebase-config.js";
 import { onSnapshot, doc, getDoc, collection } from "firebase/firestore";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { getUser } from "../../services/auth.js";
 
 export const DepartmentTable = ({ collectionName }) => {
   const [userRoleAndID, setUserRoleAndID] = useState({ role: "", userID: null });
@@ -22,14 +23,13 @@ export const DepartmentTable = ({ collectionName }) => {
     getUserRoleAndID();
   }, []);
 
-  const colref = collection(db, collectionName);
-
   const displayCol = columnsToDisplay(collectionName);
 
   const [tableRows, setTableRows] = useState([]);
   const [filteredData] = useState([]);
 
   useEffect(() => {
+    const colref = collection(db, collectionName);
     onSnapshot(colref, (snapshot) => {
       let tableRow = [];
       snapshot.docs.forEach((doc, index) => {
@@ -39,8 +39,9 @@ export const DepartmentTable = ({ collectionName }) => {
       });
       // console.log(tableRow);
       setTableRows(tableRow);
+      if (collectionName === "user") sessionStorage.setItem("accountsData", JSON.stringify(tableRow));
     });
-  }, [collectionName, colref, userRoleAndID]);
+  }, [collectionName, userRoleAndID]);
 
   return (
     <div>
@@ -136,8 +137,8 @@ const columnsToDisplay = (collectionName) => {
   } else if (collectionName === "item_location") {
     return [
       { field: "LocationID", headerName: "ID", width: 100 },
-      { field: "Building", headerName: "Building", flex: 1},
-      { field: "RoomNumber", headerName: "Room Number", flex: 1},
+      { field: "Building", headerName: "Building", flex: 1 },
+      { field: "RoomNumber", headerName: "Room Number", flex: 1 },
     ];
   } else if (collectionName === "status") {
     return [
@@ -157,9 +158,11 @@ const isSameDepartment = (collectionName, row, userRoleAndID) => {
   if (collectionName === "user") {
     return row.Department === userRoleAndID?.department;
   } else if (collectionName === "supplier") {
-    return true;
+    return row.Department === userRoleAndID?.department;
   } else if (collectionName === "item_location") {
-    return true;
+    return getUser()
+      .deptBuildings.map((b) => b.Name)
+      .includes(row.Building);
   } else if (collectionName === "status") {
     return true;
   } else if (collectionName === "building") {

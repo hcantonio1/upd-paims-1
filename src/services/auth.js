@@ -5,7 +5,7 @@ import {
   // onAuthStateChanged,
   // createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, doc, getDocs, collection } from "firebase/firestore";
 import { fetchCommonData } from "./prefetch";
 
 export const isBrowser = () => typeof window !== "undefined";
@@ -20,8 +20,8 @@ export const handleLogin = async ({ email, password }) => {
     const authToken = await signInWithEmailAndPassword(auth, email, password);
     sessionStorage.setItem("Auth Token", authToken._tokenResponse.refreshToken);
   } catch (error) {
-    console.log("Invalid email or password.", error);
-    return { error: "Invalid email or password." };
+    console.log("Invalid credentials or Network problem", error);
+    return { error: "Invalid credentials or Network problem" };
   }
   try {
     await setUserData();
@@ -51,6 +51,8 @@ const setUserData = async () => {
   const email = auth.currentUser.email;
   const docSnap = await getDoc(doc(db, "user", email));
   const data = docSnap.data();
+  const buildingSnapped = await getDocs(collection(db, "building"));
+  const buildingData = buildingSnapped.docs.map((b) => b.data());
 
   setUser({
     user: currentUser,
@@ -59,6 +61,7 @@ const setUserData = async () => {
     firstname: data.FirstName,
     lastname: data.LastName,
     dept: data.Department,
+    deptBuildings: buildingData.filter((b) => b.Department === data.Department),
   });
 };
 

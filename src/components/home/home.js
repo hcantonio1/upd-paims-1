@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Layout from "../common/layout";
 import { getUser } from "../../services/auth";
 import { Box, Typography } from "@mui/material";
 import { AccountCircle, Build } from "@mui/icons-material";
 import { db } from "../../../firebase-config.js";
-import { commonCollections } from "../../services/prefetch.js";
-import { collection, onSnapshot } from "firebase/firestore";
-import { DataGrid } from "@mui/x-data-grid";
 import UserDetailDisplay from "./userDetailDisplay.js";
 import InventoryTable from "../inventory/inventoryTable.js";
 import { doc, setDoc, getDoc, deleteDoc } from "firebase/firestore";
@@ -52,11 +49,10 @@ const HomePage = () => {
 export default HomePage;
 
 const ChangeLogTable = () => {
-  const noLabelChangelog = "No recent changes";
   const approvedFilter = (row) => {
     return true;
   };
-  
+
   const onApproveClick = async (e, row) => {
     e.stopPropagation();
     try {
@@ -74,6 +70,9 @@ const ChangeLogTable = () => {
         TrusteeID: pendData.TrusteeID,
         StatusID: pendData.StatusID,
         SupplierID: pendData.SupplierID,
+        UnitValue: pendData.UnitValue,
+        UnitOfMeasure: pendData.UnitOfMeasure,
+        PropertyFound: pendData.PropertyFound,
         PurchaseOrderID: pendData.PurchaseOrderID,
         VerNum: pendData.VerNum,
       });
@@ -136,7 +135,15 @@ const ChangeLogTable = () => {
           borderColor: "#e5e5e5",
         }}
       >
-        <InventoryTable filterCondition={approvedFilter} buttonLabel="Approve" buttonLabel2="Deny" onButtonClick={onApproveClick} onButtonClick2={onDisproveClick} noLabelText={false} useCollection="pending_changes" />
+        <InventoryTable
+          filterCondition={approvedFilter}
+          buttonLabel="Approve"
+          buttonLabel2="Deny"
+          onButtonClick={onApproveClick}
+          onButtonClick2={onDisproveClick}
+          noLabelText={false}
+          useCollection="pending_changes"
+        />
       </Box>
     </Box>
   );

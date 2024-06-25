@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Box, TextField, Button, FormControl, InputLabel, MenuItem, Paper, Select } from "@mui/material";
+import { Box, Button, FormControl, InputLabel, MenuItem, Paper, Select, Modal } from "@mui/material";
 import { createDepartmentAccount } from "../../services/admin_funcs";
+import { FormRow } from "../paimsform/PaimsForm";
+import SmallTextField from "../paimsform/smallTextField";
 
 const AddDeptAccountForm = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -57,24 +59,25 @@ const AddDeptAccountForm = () => {
       <form onSubmit={handleSubmit}>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <h2>Create Account</h2>
-          <FormControl sx={{ width: 1 / 2 }}>
-            <InputLabel id="select-role">Role</InputLabel>
-            <Select labelId="select-role" id="role" value={formData.role} label="Role" onChange={handleSelectRole}>
-              <MenuItem value="Encoder">Encoder</MenuItem>
-              <MenuItem value="Trustee">Trustee</MenuItem>
-            </Select>
-          </FormControl>
-          <Box sx={{ display: "flex", flexDirection: "row", width: 1 / 2, gap: 2 }} noValidate autoComplete="off">
-            <TextField1 sx={{ width: 1 / 2 }} id="firstname" label="First Name" onChange={handleInputChange} />
-            <TextField1 sx={{ width: 1 / 2 }} id="lastname" label="Last Name" onChange={handleInputChange} />
-          </Box>
-          <Box width="50%">
-            <TextField1 sx={{ width: 1 }} id="email" label="Email" onChange={handleInputChange} />
-          </Box>
-          <Box sx={{ display: "flex", flexDirection: "row", width: 1 / 2, gap: 2 }} noValidate autoComplete="off">
-            <TextField1 sx={{ width: 1 / 2 }} id="password" label="Password" type="password" onChange={handleInputChange} />
-            <TextField1
-              sx={{ width: 1 / 2 }}
+          <FormRow segments={1}>
+            <FormControl>
+              <InputLabel id="select-role">Role</InputLabel>
+              <Select labelId="select-role" id="role" value={formData.role} label="Role" onChange={handleSelectRole}>
+                <MenuItem value="Encoder">Encoder</MenuItem>
+                <MenuItem value="Trustee">Trustee</MenuItem>
+              </Select>
+            </FormControl>
+          </FormRow>
+          <FormRow segments={2}>
+            <SmallTextField id={`firstname`} label="First Name" onChange={handleInputChange} />
+            <SmallTextField id={`lastname`} label="Last Name" onChange={handleInputChange} />
+          </FormRow>
+          <FormRow segments={1}>
+            <SmallTextField id={`email`} label="Email" onChange={handleInputChange} />
+          </FormRow>
+          <FormRow segments={2}>
+            <SmallTextField id={`password`} label="Password" type="password" onChange={handleInputChange} />
+            <SmallTextField
               id="confirm-password"
               label="Confirm Password"
               type="password"
@@ -83,27 +86,27 @@ const AddDeptAccountForm = () => {
               helperText={confirmPassChanged ? (passwordsMatch ? "Passwords match" : "Passwords must match") : ""}
               color={confirmPassChanged ? (passwordsMatch ? "success" : "error") : "primary"}
             />
-          </Box>
-          <Button sx={{ width: 1 / 2, backgroundColor: "#014421" }} type="submit" variant="contained" size="small" >
+          </FormRow>
+          <Button type="submit" variant="contained" size="small" color="success">
             Register {formData.role}
-          </Button>
+          </Button>{" "}
         </Box>
       </form>
     </Paper>
   );
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-      <Button variant="contained" onClick={buttonClick} sx={{  width: 1 / 3, backgroundColor: "#014421", marginLeft: 'auto', '&:hover': { bgcolor: '#dea80f' } }}>
-        {collapsed ? "New Department Account" : "Hide Section"}
-      </Button>
-      {collapsed ? <></> : form}
-    </Box>
+    <>
+      <Modal open={!collapsed} onClose={() => setCollapsed(true)}>
+        <Box sx={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>{form}</Box>
+      </Modal>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Button variant="contained" onClick={buttonClick} sx={{ width: 1 / 3, backgroundColor: "#014421", marginLeft: "auto" }}>
+          {collapsed ? "New Department Account" : "Hide Section"}
+        </Button>
+      </Box>
+    </>
   );
 };
 
 export default AddDeptAccountForm;
-
-const TextField1 = (props) => {
-  return <TextField {...props} variant="standard" required />;
-};
